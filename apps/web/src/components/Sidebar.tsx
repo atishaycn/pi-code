@@ -2257,13 +2257,6 @@ export default function Sidebar() {
       return;
     }
 
-    const confirmed = window.confirm(
-      "Run `bun run restart:desktop` now? This will kill this repo's packaged desktop/backend child processes, print listeners on ports 3773/3774/3775/5733, rebuild the desktop app, and launch a fresh instance.",
-    );
-    if (!confirmed) {
-      return;
-    }
-
     setIsRestartingApp(true);
     void bridge.restartApp().catch((error) => {
       setIsRestartingApp(false);
