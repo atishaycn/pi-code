@@ -1,3 +1,4 @@
+import { FileDiff, Virtualizer } from "@pierre/diffs/react";
 import { type MessageId, type TurnId } from "@t3tools/contracts";
 import {
   Fragment,
@@ -61,6 +62,13 @@ import {
   type ParsedTerminalContextEntry,
 } from "~/lib/terminalContext";
 import { cn } from "~/lib/utils";
+import {
+  buildFileDiffRenderKey,
+  DIFF_RENDER_UNSAFE_CSS,
+  getRenderablePatch,
+  resolveDiffThemeName,
+  resolveFileDiffPath,
+} from "~/lib/diffRendering";
 import { type TimestampFormat } from "@t3tools/contracts/settings";
 import { formatTimestamp } from "../../timestampFormat";
 import {
@@ -73,6 +81,7 @@ import {
   type SubagentInvocation,
   type SubagentResultSummary,
 } from "../../subagentActivity";
+import { Dialog, DialogDescription, DialogHeader, DialogPopup, DialogTitle } from "../ui/dialog";
 
 const ALWAYS_UNVIRTUALIZED_TAIL_ROWS = 8;
 
@@ -379,7 +388,11 @@ export const MessagesTimeline = memo(function MessagesTimeline({
               )}
               <div className="space-y-0.5">
                 {visibleEntries.map((workEntry) => (
-                  <SimpleWorkEntryRow key={`work-row:${workEntry.id}`} workEntry={workEntry} />
+                  <SimpleWorkEntryRow
+                    key={`work-row:${workEntry.id}`}
+                    workEntry={workEntry}
+                    resolvedTheme={resolvedTheme}
+                  />
                 ))}
               </div>
             </div>
@@ -592,15 +605,8 @@ export const MessagesTimeline = memo(function MessagesTimeline({
   if (!hasMessages && !isWorking) {
     return (
       <div className="flex h-full items-center justify-center">
-        <p className="text-sm text-muted-foreground/30">
-          {emptyStateProjectName ? (
-            <>
-              Send a message in{" "}
-              <span className="font-medium text-warning">{emptyStateProjectName}</span>.
-            </>
-          ) : (
-            "Send a message to start the conversation."
-          )}
+        <p className="text-center text-sm font-medium text-warning">
+          {emptyStateProjectName ?? "Send a message to start the conversation."}
         </p>
       </div>
     );
@@ -857,7 +863,11 @@ const SubagentWorkGroup = memo(function SubagentWorkGroup(props: {
           </p>
           <div className="space-y-0.5">
             {visibleUpdateEntries.map((workEntry) => (
-              <SimpleWorkEntryRow key={`subagent-update:${workEntry.id}`} workEntry={workEntry} />
+              <SimpleWorkEntryRow
+                key={`subagent-update:${workEntry.id}`}
+                workEntry={workEntry}
+                resolvedTheme={resolvedTheme}
+              />
             ))}
           </div>
         </div>
@@ -1049,6 +1059,7 @@ function toolWorkEntryHeading(workEntry: WorkLogEntry): string {
 
 export const SimpleWorkEntryRow = memo(function SimpleWorkEntryRow(props: {
   workEntry: WorkLogEntry;
+  resolvedTheme: "light" | "dark";
 }) {
   const { workEntry } = props;
   const iconConfig = workToneIcon(workEntry.tone);
@@ -1085,6 +1096,7 @@ export const SimpleWorkEntryRow = memo(function SimpleWorkEntryRow(props: {
         detailBlockText={detailBlockText}
         hasChangedFiles={hasChangedFiles}
         previewIsChangedFiles={previewIsChangedFiles}
+        resolvedTheme={props.resolvedTheme}
       />
     );
   }
@@ -1213,6 +1225,7 @@ const ToolWorkEntryCard = memo(function ToolWorkEntryCard(props: {
   detailBlockText: string | null;
   hasChangedFiles: boolean;
   previewIsChangedFiles: boolean;
+  resolvedTheme: "light" | "dark";
 }) {
   const {
     workEntry,
@@ -1275,7 +1288,11 @@ const ToolWorkEntryCard = memo(function ToolWorkEntryCard(props: {
 
           {detailBlockText && (
             <div className="mt-3 overflow-hidden rounded-lg border border-white/6 bg-black/8">
-              <ToolOutputBlock text={detailBlockText} variant="command" />
+              <ToolOutputBlock
+                text={detailBlockText}
+                variant="command"
+                resolvedTheme={props.resolvedTheme}
+              />
             </div>
           )}
 
@@ -1361,7 +1378,7 @@ const ToolWorkEntryCard = memo(function ToolWorkEntryCard(props: {
 
           {detailBlockText && (
             <div className="mt-2 overflow-hidden rounded-lg border border-white/6 bg-black/8">
-              <ToolOutputBlock text={detailBlockText} />
+              <ToolOutputBlock text={detailBlockText} resolvedTheme={props.resolvedTheme} />
             </div>
           )}
 
@@ -1392,15 +1409,33 @@ const ToolWorkEntryCard = memo(function ToolWorkEntryCard(props: {
 const ToolOutputBlock = memo(function ToolOutputBlock(props: {
   text: string;
   variant?: "default" | "command";
+  resolvedTheme: "light" | "dark";
 }) {
   const language = inferToolOutputLanguage(props.text);
   const textClassName =
     props.variant === "command"
       ? "text-[var(--tool-card-muted)]/92"
       : "text-[var(--tool-card-fg)]/92";
+  const renderablePatch = useMemo(
+    () =>
+      language === "diff"
+        ? getRenderablePatch(props.text, `timeline-tool:${props.resolvedTheme}`)
+        : null,
+    [language, props.resolvedTheme, props.text],
+  );
 
   if (language === "json") {
     return <JsonToolOutput text={props.text} textClassName={textClassName} />;
+  }
+
+  if (renderablePatch?.kind === "files") {
+    return (
+      <PatchToolOutput
+        files={renderablePatch.files}
+        resolvedTheme={props.resolvedTheme}
+        textClassName={textClassName}
+      />
+    );
   }
 
   return (
@@ -1412,6 +1447,105 @@ const ToolOutputBlock = memo(function ToolOutputBlock(props: {
     >
       {renderToolOutputLines(props.text)}
     </pre>
+  );
+});
+
+const PatchToolOutput = memo(function PatchToolOutput(props: {
+  files: ReadonlyArray<Parameters<typeof resolveFileDiffPath>[0]>;
+  resolvedTheme: "light" | "dark";
+  textClassName: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const sortedFiles = useMemo(
+    () =>
+      [...props.files].toSorted((left, right) =>
+        resolveFileDiffPath(left).localeCompare(resolveFileDiffPath(right), undefined, {
+          numeric: true,
+          sensitivity: "base",
+        }),
+      ),
+    [props.files],
+  );
+  const visibleFilePaths = sortedFiles.slice(0, 3).map((fileDiff) => resolveFileDiffPath(fileDiff));
+  const hiddenFileCount = sortedFiles.length - visibleFilePaths.length;
+
+  return (
+    <>
+      <div className="rounded-lg border border-white/8 bg-black/10 px-3 py-2.5">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--tool-card-title)]/88">
+              Patch preview
+            </p>
+            <p className={cn("text-[11px]", props.textClassName)}>
+              {sortedFiles.length} file{sortedFiles.length === 1 ? "" : "s"} changed
+            </p>
+          </div>
+          <Button type="button" size="xs" variant="outline" onClick={() => setOpen(true)}>
+            Open patch
+          </Button>
+        </div>
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          {visibleFilePaths.map((filePath) => (
+            <span
+              key={`tool-patch-path:${filePath}`}
+              className="rounded-md border border-white/8 bg-black/10 px-1.5 py-0.5 font-mono text-[10px] text-[var(--tool-card-accent)]/85"
+              title={filePath}
+            >
+              {filePath}
+            </span>
+          ))}
+          {hiddenFileCount > 0 && (
+            <span className="px-1 text-[10px] text-[var(--tool-card-fg)]/55">
+              +{hiddenFileCount}
+            </span>
+          )}
+        </div>
+      </div>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogPopup className="flex h-[min(88vh,58rem)] max-w-[min(96vw,90rem)] flex-col overflow-hidden border-border/70 bg-background p-0">
+          <DialogHeader className="border-b border-border/70 pb-4">
+            <DialogTitle className="text-base">Patch preview</DialogTitle>
+            <DialogDescription>Editor-style diff view for tool output in chat.</DialogDescription>
+          </DialogHeader>
+          <div className="min-h-0 flex-1 overflow-hidden px-4 pb-4">
+            <Virtualizer
+              className="h-full overflow-auto rounded-xl border border-border/70 bg-card/65 px-2 pb-2"
+              config={{
+                overscrollSize: 600,
+                intersectionObserverMargin: 1200,
+              }}
+            >
+              {sortedFiles.map((fileDiff) => {
+                const filePath = resolveFileDiffPath(fileDiff);
+                const fileKey = buildFileDiffRenderKey(fileDiff);
+                const themedFileKey = `${fileKey}:${props.resolvedTheme}`;
+                return (
+                  <div
+                    key={themedFileKey}
+                    data-diff-file-path={filePath}
+                    className="mb-2 rounded-md first:mt-2 last:mb-0"
+                  >
+                    <FileDiff
+                      fileDiff={fileDiff}
+                      options={{
+                        diffStyle: "unified",
+                        lineDiffType: "none",
+                        overflow: "wrap",
+                        theme: resolveDiffThemeName(props.resolvedTheme),
+                        themeType: props.resolvedTheme,
+                        unsafeCSS: DIFF_RENDER_UNSAFE_CSS,
+                      }}
+                    />
+                  </div>
+                );
+              })}
+            </Virtualizer>
+          </div>
+        </DialogPopup>
+      </Dialog>
+    </>
   );
 });
 

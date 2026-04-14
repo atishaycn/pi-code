@@ -2693,7 +2693,13 @@ describe("ChatView timeline estimator parity (full app)", () => {
       );
 
       // The empty thread view and composer should still be visible.
-      await expect.element(page.getByText("Send a message in Project.")).toBeInTheDocument();
+      await waitForElement(
+        () =>
+          Array.from(document.querySelectorAll("p.text-warning")).find(
+            (element) => element.textContent?.trim() === "Project",
+          ) as HTMLParagraphElement | null,
+        "Unable to find centered project empty state.",
+      );
       await expect.element(page.getByTestId("composer-editor")).toBeInTheDocument();
     } finally {
       await mounted.cleanup();

@@ -43,7 +43,7 @@ beforeAll(() => {
 });
 
 describe("MessagesTimeline", () => {
-  it("renders project-aware empty state copy with orange project name", async () => {
+  it("renders only the centered orange project name for an empty project thread", async () => {
     const { MessagesTimeline } = await import("./MessagesTimeline");
     const markup = renderToStaticMarkup(
       <MessagesTimeline
@@ -73,9 +73,9 @@ describe("MessagesTimeline", () => {
       />,
     );
 
-    expect(markup).toContain("Send a message in ");
     expect(markup).toContain("Project Alpha");
     expect(markup).toContain("text-warning");
+    expect(markup).not.toContain("Send a message in");
   });
 
   it("renders an edit button beside the copy button for sent user messages", async () => {
@@ -223,6 +223,54 @@ describe("MessagesTimeline", () => {
 
     expect(markup).toContain("Context compacted");
     expect(markup).toContain("Work log");
+  });
+
+  it("renders runtime warning payload text in the work log", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        hasMessages
+        isWorking={false}
+        activeTurnInProgress={false}
+        activeTurnStartedAt={null}
+        scrollContainer={null}
+        timelineEntries={[
+          {
+            id: "entry-runtime-warning",
+            kind: "work",
+            createdAt: "2026-03-17T19:12:28.000Z",
+            entry: {
+              id: "work-runtime-warning",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              label: "Runtime warning",
+              preview: "TPS 32.1 tok/s. out 336, in 3,244, cache r/w 0/0, total 3,580, 10.5s",
+              tone: "info",
+            },
+          },
+        ]}
+        completionDividerBeforeEntryId={null}
+        completionSummary={null}
+        turnDiffSummaryByAssistantMessageId={new Map()}
+        nowIso="2026-03-17T19:12:30.000Z"
+        expandedWorkGroups={{}}
+        onToggleWorkGroup={() => {}}
+        onOpenTurnDiff={() => {}}
+        revertTurnCountByUserMessageId={new Map()}
+        onRevertUserMessage={() => {}}
+        onEditUserMessage={() => {}}
+        isRevertingCheckpoint={false}
+        onImageExpand={() => {}}
+        markdownCwd={undefined}
+        resolvedTheme="light"
+        timestampFormat="locale"
+        workspaceRoot={undefined}
+      />,
+    );
+
+    expect(markup).toContain("Runtime warning");
+    expect(markup).toContain(
+      "TPS 32.1 tok/s. out 336, in 3,244, cache r/w 0/0, total 3,580, 10.5s",
+    );
   });
 
   it("renders tool entries as terminal-style cards with diff output", async () => {
