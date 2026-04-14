@@ -18,6 +18,7 @@ import {
   ServerPiDoctorError,
   ServerPiRpcError,
   ServerRoadmapStatusError,
+  ServerThreadStatusLogError,
   ThreadId,
   type TerminalEvent,
   WS_METHODS,
@@ -60,6 +61,7 @@ import { ProjectSetupScriptRunner } from "./project/Services/ProjectSetupScriptR
 import { getPiWorkspaceInventory, readPiResourceFile, writePiResourceFile } from "./piWorkspace";
 import { getRoadmapStatus } from "./roadmapStatus";
 import { generatePiDoctorReport } from "./piDoctor";
+import { appendThreadStatusDebugLog } from "./threadStatusDebugLog";
 
 function normalizePiRuntimeState(
   state: Awaited<
@@ -688,7 +690,7 @@ const WsRpcLayer = WsRpcGroup.toLayer(
           WS_METHODS.serverGetPiDoctorReport,
           Effect.gen(function* () {
             const settings = yield* serverSettings.getSettings.pipe(
-              Effect.catchTag("ServerSettingsError", () => Effect.succeed(undefined)),
+              Effect.catchTag("ServerSettingsError", () => Effect.void),
             );
             const providers = yield* providerRegistry.getProviders;
             const homePath = settings?.providers.codex.homePath.trim();
@@ -832,6 +834,24 @@ const WsRpcLayer = WsRpcGroup.toLayer(
             });
             return result ?? {};
           }),
+          { "rpc.aggregate": "server" },
+        ),
+      [WS_METHODS.serverAppendThreadStatusLog]: (input) =>
+        observeRpcEffect(
+          WS_METHODS.serverAppendThreadStatusLog,
+          appendThreadStatusDebugLog({
+            logsDir: config.logsDir,
+            threadId: input.threadId,
+            recordJson: input.recordJson,
+          }).pipe(
+            Effect.mapError(
+              (cause) =>
+                new ServerThreadStatusLogError({
+                  message: "Failed to append thread status log.",
+                  cause,
+                }),
+            ),
+          ),
           { "rpc.aggregate": "server" },
         ),
       [WS_METHODS.projectsSearchEntries]: (input) =>

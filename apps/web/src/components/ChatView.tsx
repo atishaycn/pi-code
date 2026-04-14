@@ -61,6 +61,7 @@ import {
   findSidebarProposedPlan,
   findLatestProposedPlan,
   deriveWorkLogEntries,
+  derivePostCompletionContinuationSignalAt,
   hasActionableProposedPlan,
   hasToolActivityForTurn,
   hasAssistantReplyForLatestTurn,
@@ -69,6 +70,7 @@ import {
   deriveIsRunningTurn,
 } from "../session-logic";
 import { isScrollContainerNearBottom, isScrollContainerNearTop } from "../chat-scroll";
+import { observeAutoScrollMutations } from "../auto-scroll-observer";
 import {
   buildPendingUserInputAnswers,
   derivePendingUserInputProgress,
@@ -208,6 +210,7 @@ import {
   collectUserMessageBlobPreviewUrls,
   createLocalDispatchSnapshot,
   deriveComposerDispatchStatusCopy,
+  deriveComposerProcessingStatusCopy,
   deriveComposerSendState,
   replaceQueuedEntryWithDraft,
   hasServerAcknowledgedLocalDispatch,
@@ -221,6 +224,7 @@ import {
   revokeUserMessagePreviewUrls,
   threadHasStarted,
   waitForStartedServerThread,
+  waitForThreadRevert,
 } from "./ChatView.logic";
 import { useLocalStorage } from "~/hooks/useLocalStorage";
 import {
@@ -372,6 +376,12 @@ interface TerminalLaunchContext {
 }
 
 type PersistentTerminalLaunchContext = Pick<TerminalLaunchContext, "cwd" | "worktreePath">;
+
+interface EditingHistoricalMessageState {
+  messageId: MessageId;
+  revertTurnCount: number;
+  hadAttachments: boolean;
+}
 
 function splitStreamingReasoningLines(text: string): string[] {
   return text.split(/\r?\n/);
@@ -791,6 +801,8 @@ export default function ChatView({ threadId }: ChatViewProps) {
   const [attachmentPreviewHandoffByMessageId, setAttachmentPreviewHandoffByMessageId] = useState<
     Record<string, string[]>
   >({});
+  const [editingHistoricalMessage, setEditingHistoricalMessage] =
+    useState<EditingHistoricalMessageState | null>(null);
   const [composerCursor, setComposerCursor] = useState(() =>
     collapseExpandedComposerCursor(prompt, prompt.length),
   );
@@ -1075,72 +1087,6 @@ export default function ChatView({ threadId }: ChatViewProps) {
     [openOrReuseProjectDraftThread],
   );
 
-  const showActiveThreadCompletedStatus = useMemo(() => {
-    if (!serverThread || !latestTurnSettled) {
-      return false;
-    }
-
-    return hasUnseenCompletion({
-      hasActionableProposedPlan: false,
-      hasPendingApprovals: false,
-      hasPendingUserInput: false,
-      interactionMode: activeThread?.interactionMode ?? "default",
-      isRunningTurn: false,
-      latestTurn: activeLatestTurn,
-      lastVisitedAt: activeThreadLastVisitedAt,
-      session: activeThread?.session ?? null,
-    });
-  }, [
-    activeLatestTurn,
-    activeThread?.interactionMode,
-    activeThread?.session,
-    activeThreadLastVisitedAt,
-    latestTurnSettled,
-    serverThread,
-  ]);
-
-  useEffect(() => {
-    if (!serverThread?.id) return;
-    if (!activeLatestTurn?.completedAt) return;
-    if (!showActiveThreadCompletedStatus) return;
-
-    let timeoutId: number | null = null;
-
-    const clearScheduledDismiss = () => {
-      if (timeoutId === null) {
-        return;
-      }
-      window.clearTimeout(timeoutId);
-      timeoutId = null;
-    };
-
-    const scheduleDismiss = () => {
-      clearScheduledDismiss();
-      if (document.visibilityState !== "visible" || !document.hasFocus()) {
-        return;
-      }
-      timeoutId = window.setTimeout(() => {
-        timeoutId = null;
-        markThreadVisited(serverThread.id, activeLatestTurn.completedAt ?? undefined);
-      }, ACTIVE_THREAD_COMPLETED_STATUS_DISMISS_MS);
-    };
-
-    scheduleDismiss();
-    window.addEventListener("focus", scheduleDismiss);
-    document.addEventListener("visibilitychange", scheduleDismiss);
-
-    return () => {
-      clearScheduledDismiss();
-      window.removeEventListener("focus", scheduleDismiss);
-      document.removeEventListener("visibilitychange", scheduleDismiss);
-    };
-  }, [
-    activeLatestTurn?.completedAt,
-    markThreadVisited,
-    serverThread?.id,
-    showActiveThreadCompletedStatus,
-  ]);
-
   const sessionProvider = activeThread?.session?.provider ?? null;
   const selectedProviderByThreadId = composerDraft.activeProvider ?? null;
   const threadProvider =
@@ -1332,23 +1278,110 @@ export default function ChatView({ threadId }: ChatViewProps) {
     () => hasAssistantReplyForLatestTurn(activeThread?.messages ?? [], activeLatestTurn),
     [activeLatestTurn, activeThread?.messages],
   );
+  const conversationMessageCount = useMemo(
+    () =>
+      (activeThread?.messages ?? []).filter(
+        (message) => message.role === "user" || message.role === "assistant",
+      ).length,
+    [activeThread?.messages],
+  );
+  const hasPriorConversationHistory =
+    hasAssistantReplyForActiveTurn || conversationMessageCount > 1;
   const isActiveThreadManuallyCompleted = matchesThreadCompletionOverride({
     latestTurn: activeLatestTurn,
     override: activeThreadCompletionOverride,
   });
-  const isRunningTurn =
-    !isActiveThreadManuallyCompleted &&
-    deriveIsRunningTurn({
-      activeLatestTurn,
-      latestTurnSettled,
-      sessionOrchestrationStatus: activeThread?.session?.orchestrationStatus,
-      sessionActiveTurnId: activeThread?.session?.activeTurnId,
-      hasStreamingAssistantMessage,
-      hasAssistantReplyForActiveTurn,
-      hasWorkLogEntry: currentTurnWorkLogEntries.length > 0,
-      nowIso,
+  const postCompletionContinuationSignalAt = derivePostCompletionContinuationSignalAt({
+    latestTurn: activeLatestTurn,
+    workEntries: workLogEntries,
+    messages: activeThread?.messages ?? [],
+  });
+  const isRunningTurn = deriveIsRunningTurn({
+    activeLatestTurn,
+    latestTurnSettled,
+    sessionOrchestrationStatus: activeThread?.session?.orchestrationStatus,
+    sessionActiveTurnId: activeThread?.session?.activeTurnId,
+    hasStreamingAssistantMessage,
+    hasAssistantReplyForActiveTurn,
+    hasWorkLogEntry: currentTurnWorkLogEntries.length > 0,
+    postCompletionContinuationSignalAt,
+    nowIso,
+  });
+  const composerProcessingStatus = deriveComposerProcessingStatusCopy({
+    isRunningTurn,
+    latestTurnSettled,
+    nowMs: nowTick,
+    latestWorkEntry: currentTurnWorkLogEntries.at(-1) ?? null,
+  });
+  const composerStatus = composerDispatchStatus ?? composerProcessingStatus;
+  const showActiveThreadCompletedStatus = useMemo(() => {
+    if (!serverThread || !latestTurnSettled || isRunningTurn) {
+      return false;
+    }
+
+    return hasUnseenCompletion({
+      hasActionableProposedPlan: false,
+      hasPendingApprovals: false,
+      hasPendingUserInput: false,
+      interactionMode: activeThread?.interactionMode ?? "default",
+      isRunningTurn,
+      latestTurn: activeLatestTurn,
+      lastVisitedAt: activeThreadLastVisitedAt,
+      session: activeThread?.session ?? null,
     });
+  }, [
+    activeLatestTurn,
+    activeThread?.interactionMode,
+    activeThread?.session,
+    activeThreadLastVisitedAt,
+    isRunningTurn,
+    latestTurnSettled,
+    serverThread,
+  ]);
+
+  useEffect(() => {
+    if (!serverThread?.id) return;
+    if (!activeLatestTurn?.completedAt) return;
+    if (!showActiveThreadCompletedStatus) return;
+
+    let timeoutId: number | null = null;
+
+    const clearScheduledDismiss = () => {
+      if (timeoutId === null) {
+        return;
+      }
+      window.clearTimeout(timeoutId);
+      timeoutId = null;
+    };
+
+    const scheduleDismiss = () => {
+      clearScheduledDismiss();
+      if (document.visibilityState !== "visible" || !document.hasFocus()) {
+        return;
+      }
+      timeoutId = window.setTimeout(() => {
+        timeoutId = null;
+        markThreadVisited(serverThread.id, activeLatestTurn.completedAt ?? undefined);
+      }, ACTIVE_THREAD_COMPLETED_STATUS_DISMISS_MS);
+    };
+
+    scheduleDismiss();
+    window.addEventListener("focus", scheduleDismiss);
+    document.addEventListener("visibilitychange", scheduleDismiss);
+
+    return () => {
+      clearScheduledDismiss();
+      window.removeEventListener("focus", scheduleDismiss);
+      document.removeEventListener("visibilitychange", scheduleDismiss);
+    };
+  }, [
+    activeLatestTurn?.completedAt,
+    markThreadVisited,
+    serverThread?.id,
+    showActiveThreadCompletedStatus,
+  ]);
   const showLiveReasoningPanel =
+    hasPriorConversationHistory &&
     isRunningTurn &&
     !latestTurnSettled &&
     thinkingWorkLogEntries.length > 0 &&
@@ -2781,6 +2814,20 @@ export default function ChatView({ threadId }: ChatViewProps) {
       cancelPendingInteractionAnchorAdjustment();
     };
   }, [cancelPendingInteractionAnchorAdjustment, cancelPendingStickToBottom]);
+  useEffect(() => {
+    const scrollContainer = messagesScrollRef.current;
+    if (!scrollContainer) {
+      return;
+    }
+
+    return observeAutoScrollMutations(scrollContainer, () => {
+      if (!shouldAutoScrollRef.current) {
+        return;
+      }
+      scrollMessagesToBottom();
+      scheduleStickToBottom();
+    });
+  }, [activeThread?.id, scheduleStickToBottom, scrollMessagesToBottom]);
   useLayoutEffect(() => {
     if (!activeThread?.id) return;
     shouldAutoScrollRef.current = true;
@@ -2882,6 +2929,7 @@ export default function ChatView({ threadId }: ChatViewProps) {
   useEffect(() => {
     setExpandedWorkGroups({});
     setPullRequestDialogState(null);
+    setEditingHistoricalMessage(null);
     if (planSidebarOpenOnNextThreadRef.current) {
       planSidebarOpenOnNextThreadRef.current = false;
       setPlanSidebarOpen(true);
@@ -3389,24 +3437,26 @@ export default function ChatView({ threadId }: ChatViewProps) {
     focusComposer();
   };
 
-  const onRevertToTurnCount = useCallback(
-    async (turnCount: number) => {
+  const revertThreadToTurnCount = useCallback(
+    async (input: {
+      turnCount: number;
+      confirmMessage: string;
+      timeoutMs?: number;
+      failureMessage?: string;
+    }): Promise<boolean> => {
       const api = readNativeApi();
-      if (!api || !activeThread || isRevertingCheckpoint) return;
+      if (!api || !activeThread || isRevertingCheckpoint) {
+        return false;
+      }
 
       if (isRunningTurn || isSendBusy || isConnecting) {
         setThreadError(activeThread.id, "Interrupt the current turn before reverting checkpoints.");
-        return;
+        return false;
       }
-      const confirmed = await api.dialogs.confirm(
-        [
-          `Revert this thread to checkpoint ${turnCount}?`,
-          "This will discard newer messages and turn diffs in this thread.",
-          "This action cannot be undone.",
-        ].join("\n"),
-      );
+
+      const confirmed = await api.dialogs.confirm(input.confirmMessage);
       if (!confirmed) {
-        return;
+        return false;
       }
 
       setIsRevertingCheckpoint(true);
@@ -3416,18 +3466,43 @@ export default function ChatView({ threadId }: ChatViewProps) {
           type: "thread.checkpoint.revert",
           commandId: newCommandId(),
           threadId: activeThread.id,
-          turnCount,
+          turnCount: input.turnCount,
           createdAt: new Date().toISOString(),
         });
+        const reverted = await waitForThreadRevert(
+          activeThread.id,
+          input.turnCount,
+          input.timeoutMs,
+        );
+        if (!reverted) {
+          throw new Error(input.failureMessage ?? "Timed out waiting for thread revert.");
+        }
+        return true;
       } catch (err) {
         setThreadError(
           activeThread.id,
           err instanceof Error ? err.message : "Failed to revert thread state.",
         );
+        return false;
+      } finally {
+        setIsRevertingCheckpoint(false);
       }
-      setIsRevertingCheckpoint(false);
     },
     [activeThread, isConnecting, isRevertingCheckpoint, isRunningTurn, isSendBusy, setThreadError],
+  );
+
+  const onRevertToTurnCount = useCallback(
+    async (turnCount: number) => {
+      await revertThreadToTurnCount({
+        turnCount,
+        confirmMessage: [
+          `Revert this thread to checkpoint ${turnCount}?`,
+          "This will discard newer messages and turn diffs in this thread.",
+          "This action cannot be undone.",
+        ].join("\n"),
+      });
+    },
+    [revertThreadToTurnCount],
   );
 
   const onSend = async (e?: { preventDefault: () => void }) => {
@@ -3435,6 +3510,13 @@ export default function ChatView({ threadId }: ChatViewProps) {
     const api = readNativeApi();
     if (!api || !activeThread || isSendBusy || isConnecting || sendInFlightRef.current) return;
     clearActiveThreadCompletionOverride(activeThread.id);
+    if (editingHistoricalMessage && isRunningTurn) {
+      setThreadError(
+        activeThread.id,
+        "Interrupt the current turn before editing an earlier message.",
+      );
+      return;
+    }
     if (isRunningTurn) {
       const queuedDraft = createQueuedFollowUpDraftFromComposer();
       if (queuedDraft) {
@@ -3470,7 +3552,39 @@ export default function ChatView({ threadId }: ChatViewProps) {
       imageCount: composerImages.length,
       terminalContexts: composerTerminalContexts,
     });
-    if (showPlanFollowUpPrompt && activeProposedPlan) {
+    if (!hasSendableContent) {
+      if (expiredTerminalContextCount > 0) {
+        const toastCopy = buildExpiredTerminalContextToastCopy(
+          expiredTerminalContextCount,
+          "empty",
+        );
+        toastManager.add({
+          type: "warning",
+          title: toastCopy.title,
+          description: toastCopy.description,
+        });
+      }
+      return;
+    }
+    if (editingHistoricalMessage) {
+      const reverted = await revertThreadToTurnCount({
+        turnCount: editingHistoricalMessage.revertTurnCount,
+        confirmMessage: [
+          "Start a new conversation from this edited message?",
+          "This will keep only the context before the selected message, discard newer messages in this thread, and send your edited version as the next turn.",
+          editingHistoricalMessage.hadAttachments
+            ? "Original attachments will not be resent automatically. Re-add them now if you still need them."
+            : null,
+          "This action cannot be undone.",
+        ]
+          .filter((line): line is string => line !== null)
+          .join("\n"),
+        failureMessage: "Timed out waiting for the thread to rewind before resending.",
+      });
+      if (!reverted) {
+        return;
+      }
+    } else if (showPlanFollowUpPrompt && activeProposedPlan) {
       const followUp = resolvePlanFollowUpSubmission({
         draftText: trimmed,
         planMarkdown: activeProposedPlan.planMarkdown,
@@ -3487,7 +3601,9 @@ export default function ChatView({ threadId }: ChatViewProps) {
       return;
     }
     const standaloneSlashCommand =
-      composerImages.length === 0 && sendableComposerTerminalContexts.length === 0
+      !editingHistoricalMessage &&
+      composerImages.length === 0 &&
+      sendableComposerTerminalContexts.length === 0
         ? parseStandaloneComposerSlashCommand(trimmed)
         : null;
     if (standaloneSlashCommand) {
@@ -3503,20 +3619,6 @@ export default function ChatView({ threadId }: ChatViewProps) {
       setComposerHighlightedItemId(null);
       setComposerCursor(0);
       setComposerTrigger(null);
-      return;
-    }
-    if (!hasSendableContent) {
-      if (expiredTerminalContextCount > 0) {
-        const toastCopy = buildExpiredTerminalContextToastCopy(
-          expiredTerminalContextCount,
-          "empty",
-        );
-        toastManager.add({
-          type: "warning",
-          title: toastCopy.title,
-          description: toastCopy.description,
-        });
-      }
       return;
     }
     if (!activeProject) return;
@@ -3600,6 +3702,7 @@ export default function ChatView({ threadId }: ChatViewProps) {
     }
     promptRef.current = "";
     clearComposerDraftContent(threadIdForSend);
+    setEditingHistoricalMessage(null);
     setComposerHighlightedItemId(null);
     setComposerCursor(0);
     setComposerTrigger(null);
@@ -5066,6 +5169,29 @@ export default function ChatView({ threadId }: ChatViewProps) {
     void onRevertToTurnCount(targetTurnCount);
   };
 
+  const onEditUserMessage = useCallback(
+    (input: { messageId: MessageId; text: string; hadAttachments: boolean }) => {
+      const revertTurnCount = revertTurnCountByUserMessageId.get(input.messageId);
+      if (typeof revertTurnCount !== "number") {
+        return;
+      }
+
+      promptRef.current = input.text;
+      clearComposerDraftContent(threadId);
+      setPrompt(input.text);
+      setEditingHistoricalMessage({
+        messageId: input.messageId,
+        revertTurnCount,
+        hadAttachments: input.hadAttachments,
+      });
+      setComposerHighlightedItemId(null);
+      setComposerCursor(collapseExpandedComposerCursor(input.text, input.text.length));
+      setComposerTrigger(detectComposerTrigger(input.text, input.text.length));
+      focusComposer();
+    },
+    [clearComposerDraftContent, focusComposer, revertTurnCountByUserMessageId, setPrompt, threadId],
+  );
+
   // Empty state: no active thread
   if (!activeThread) {
     return (
@@ -5207,6 +5333,7 @@ export default function ChatView({ threadId }: ChatViewProps) {
                 onOpenTurnDiff={onOpenTurnDiff}
                 revertTurnCountByUserMessageId={revertTurnCountByUserMessageId}
                 onRevertUserMessage={onRevertUserMessage}
+                onEditUserMessage={onEditUserMessage}
                 isRevertingCheckpoint={isRevertingCheckpoint}
                 onImageExpand={onExpandTimelineImage}
                 markdownCwd={gitCwd ?? undefined}
@@ -5315,6 +5442,33 @@ export default function ChatView({ threadId }: ChatViewProps) {
                         />
                       </div>
                     )}
+
+                    {editingHistoricalMessage ? (
+                      <div className="mb-3 rounded-2xl border border-amber-500/25 bg-amber-500/8 px-3 py-2.5">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="text-[11px] font-medium text-foreground/85">
+                              Editing earlier message
+                            </p>
+                            <p className="mt-1 text-[11px] leading-5 text-muted-foreground/80">
+                              Send will rewind this thread to before selected message, discard newer
+                              replies, and continue from your edited version.
+                              {editingHistoricalMessage.hadAttachments
+                                ? " Original attachments will not be resent automatically."
+                                : ""}
+                            </p>
+                          </div>
+                          <Button
+                            type="button"
+                            size="xs"
+                            variant="outline"
+                            onClick={() => setEditingHistoricalMessage(null)}
+                          >
+                            Cancel edit
+                          </Button>
+                        </div>
+                      </div>
+                    ) : null}
 
                     {showLiveReasoningPanel || queuedFollowUps.length > 0 ? (
                       <div className="mb-3 space-y-2" data-testid="processing-status-region">
@@ -5746,16 +5900,16 @@ export default function ChatView({ threadId }: ChatViewProps) {
                         {activeContextWindow ? (
                           <ContextWindowMeter usage={activeContextWindow} />
                         ) : null}
-                        {composerDispatchStatus ? (
+                        {composerStatus ? (
                           <div
                             className="hidden max-w-72 min-w-0 flex-col text-right sm:flex"
-                            data-testid="composer-dispatch-status"
+                            data-testid="composer-status"
                           >
                             <span className="truncate font-medium text-[11px] text-foreground/80">
-                              {composerDispatchStatus.title}
+                              {composerStatus.title}
                             </span>
                             <span className="truncate text-[10px] text-muted-foreground/70">
-                              {composerDispatchStatus.description}
+                              {composerStatus.description}
                             </span>
                           </div>
                         ) : null}

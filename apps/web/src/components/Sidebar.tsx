@@ -325,14 +325,10 @@ function SidebarThreadRow(props: SidebarThreadRowProps) {
     latestTurn: thread.latestTurn,
     override: threadCompletionOverride,
   });
-  const isThreadRunning = isThreadActivelyRunning({
-    ...thread,
-    isRunningTurn: isManuallyCompleted ? false : thread.isRunningTurn,
-  });
+  const isThreadRunning = isThreadActivelyRunning(thread);
   const threadStatus = resolveThreadStatusPill({
     thread: {
       ...thread,
-      isRunningTurn: isManuallyCompleted ? false : thread.isRunningTurn,
       lastVisitedAt,
       isManuallyCompleted,
     },
@@ -1597,7 +1593,6 @@ export default function Sidebar() {
           return resolveThreadStatusPill({
             thread: {
               ...thread,
-              isRunningTurn: isManuallyCompleted ? false : thread.isRunningTurn,
               lastVisitedAt: threadLastVisitedAtById[thread.id],
               isManuallyCompleted,
             },
@@ -1675,7 +1670,6 @@ export default function Sidebar() {
           const threadStatus = resolveThreadStatusPill({
             thread: {
               ...thread,
-              isRunningTurn: isManuallyCompleted ? false : thread.isRunningTurn,
               lastVisitedAt: threadLastVisitedAtById[thread.id],
               isManuallyCompleted,
             },

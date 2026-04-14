@@ -1002,7 +1002,12 @@ const make = Effect.fn("make")(function* () {
       event.type === "thread.started" ||
       event.type === "turn.started"
     ) {
-      const nextActiveTurnId = event.type === "turn.started" ? (eventTurnId ?? null) : activeTurnId;
+      const nextActiveTurnId =
+        event.type === "turn.started"
+          ? (eventTurnId ?? null)
+          : event.type === "session.state.changed" && event.payload.state === "running"
+            ? (eventTurnId ?? activeTurnId)
+            : activeTurnId;
       const status = (() => {
         switch (event.type) {
           case "session.state.changed":

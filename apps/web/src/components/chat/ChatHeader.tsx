@@ -96,10 +96,10 @@ export const ChatHeader = memo(function ChatHeader({
         {showCompletedStatus && (
           <Badge
             variant="outline"
-            className="shrink-0 border-emerald-500/35 text-[10px] font-medium text-emerald-700 dark:border-emerald-300/30 dark:text-emerald-300"
+            className="shrink-0 border-orange-500/35 text-[10px] font-medium text-orange-700 dark:border-orange-300/30 dark:text-orange-300"
           >
-            <span className="mr-1.5 size-1.5 rounded-full bg-emerald-500 dark:bg-emerald-300" />
-            Completed
+            <span className="mr-1.5 size-1.5 rounded-full bg-orange-500 dark:bg-orange-300" />
+            Done
           </Badge>
         )}
         {activeProjectName && !isGitRepo && (

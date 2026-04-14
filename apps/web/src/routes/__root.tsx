@@ -52,6 +52,7 @@ import { createOrchestrationRecoveryCoordinator } from "../orchestrationRecovery
 import { deriveReplayRetryDecision } from "../orchestrationRecovery";
 import { useRoadmapLiveState } from "../roadmap/roadmapLiveState";
 import { getWsRpcClient } from "~/wsRpcClient";
+import { ThreadStatusDiagnosticsCoordinator } from "../threadStatusDiagnostics";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -83,6 +84,7 @@ function RootRouteView() {
         <EventRouter />
         <WebSocketConnectionCoordinator />
         <SlowRpcAckToastCoordinator />
+        <ThreadStatusDiagnosticsCoordinator />
         <WebSocketConnectionSurface>
           <CommandPalette>
             <AppSidebarLayout>

@@ -41,6 +41,11 @@ import {
   type PiRpcSessionState,
   type PiThinkingLevel,
 } from "../pi/PiRpc";
+import {
+  isPiTurnCompletionTerminalEvent,
+  PI_TURN_COMPLETION_QUIET_PERIOD_MS,
+  shouldPiTurnCompletionStayOpen,
+} from "../piTurnCompletion";
 
 const PROVIDER = "codex" as const;
 const PI_SESSION_DIRECTORY = "pi-sessions";
@@ -82,6 +87,13 @@ interface ToolLifecycleState {
   readonly args?: Record<string, unknown>;
 }
 
+interface PendingTurnCompletion {
+  readonly state: "completed" | "failed" | "interrupted" | "cancelled";
+  readonly requestedAt: string;
+  readonly errorMessage?: string;
+  timeoutId: ReturnType<typeof globalThis.setTimeout> | null;
+}
+
 interface TurnState {
   readonly turnId: TurnId;
   readonly startedAt: string;
@@ -89,6 +101,26 @@ interface TurnState {
   readonly requestedModel: string | null;
   aborted: boolean;
   failureMessage?: string;
+  pendingCompletion: PendingTurnCompletion | null;
+}
+
+function clearPendingTurnCompletion(turn: TurnState): void {
+  const pendingCompletion = turn.pendingCompletion;
+  if (pendingCompletion?.timeoutId !== null && pendingCompletion !== null) {
+    globalThis.clearTimeout(pendingCompletion.timeoutId);
+  }
+  turn.pendingCompletion = null;
+}
+
+async function shouldFinalizePendingTurnCompletion(session: PiAdapterSession): Promise<boolean> {
+  const state = await session.process.getState();
+  return (
+    state.isStreaming === false &&
+    state.pendingMessageCount <= 0 &&
+    session.latestQueueState.steeringCount <= 0 &&
+    session.latestQueueState.followUpCount <= 0 &&
+    session.toolStates.size === 0
+  );
 }
 
 export interface PiSessionRuntimeController {
@@ -124,6 +156,11 @@ interface PiAdapterSession {
   model: string | null;
   thinkingLevel: PiThinkingLevel;
   activeTurn: TurnState | null;
+  lastCompletedTurn: Omit<TurnState, "aborted" | "failureMessage" | "pendingCompletion"> | null;
+  latestQueueState: {
+    steeringCount: number;
+    followUpCount: number;
+  };
   closing: boolean;
   toolStates: Map<string, ToolLifecycleState>;
   assistantTextByItemId: Map<string, string>;
@@ -312,6 +349,8 @@ export const PiCodexAdapterLive = Layer.effect(
   Effect.gen(function* () {
     const config = yield* ServerConfig;
     const serverSettings = yield* ServerSettingsService;
+    const services = yield* Effect.services();
+    const runPromise = Effect.runPromiseWith(services);
     const eventPubSub = yield* Effect.acquireRelease(
       PubSub.unbounded<ProviderRuntimeEvent>(),
       PubSub.shutdown,
@@ -369,7 +408,7 @@ export const PiCodexAdapterLive = Layer.effect(
     };
 
     const publish = async (event: ProviderRuntimeEvent): Promise<void> => {
-      await Effect.runPromise(PubSub.publish(eventPubSub, event));
+      await runPromise(PubSub.publish(eventPubSub, event));
     };
 
     const nextRuntimeEvent = (
@@ -395,7 +434,7 @@ export const PiCodexAdapterLive = Layer.effect(
       readonly fullAutonomy: boolean;
       readonly env: NodeJS.ProcessEnv;
     }> => {
-      const settings = await Effect.runPromise(serverSettings.getSettings);
+      const settings = await runPromise(serverSettings.getSettings);
       return {
         binaryPath: resolvePiLauncherPath(settings.providers.codex.binaryPath),
         enableAutoreason: settings.providers.codex.enableAutoreason,
@@ -429,6 +468,116 @@ export const PiCodexAdapterLive = Layer.effect(
       return images;
     };
 
+    const emitSessionStateChanged = async (
+      session: PiAdapterSession,
+      state: "starting" | "running" | "waiting" | "ready" | "interrupted" | "stopped" | "error",
+      turnId?: TurnId,
+      reason?: string,
+    ): Promise<void> => {
+      await publish(
+        nextRuntimeEvent(session, {
+          type: "session.state.changed",
+          ...(turnId ? { turnId } : {}),
+          payload: {
+            state,
+            ...(reason ? { reason } : {}),
+          },
+        }),
+      );
+    };
+
+    const finalizeTurnCompletion = async (session: PiAdapterSession): Promise<void> => {
+      const turn = session.activeTurn;
+      const pendingCompletion = turn?.pendingCompletion;
+      if (!turn || !pendingCompletion) {
+        return;
+      }
+
+      const canFinalize = await shouldFinalizePendingTurnCompletion(session);
+      if (!canFinalize) {
+        schedulePendingTurnCompletion(
+          session,
+          pendingCompletion.state,
+          pendingCompletion.errorMessage,
+        );
+        return;
+      }
+
+      clearPendingTurnCompletion(turn);
+      session.lastCompletedTurn = {
+        turnId: turn.turnId,
+        startedAt: turn.startedAt,
+        requestedAt: turn.requestedAt,
+        requestedModel: turn.requestedModel,
+      };
+      await publish(
+        nextRuntimeEvent(session, {
+          type: "turn.completed",
+          turnId: turn.turnId,
+          payload: {
+            state: pendingCompletion.state,
+            ...(pendingCompletion.errorMessage
+              ? { errorMessage: pendingCompletion.errorMessage }
+              : {}),
+          },
+        }),
+      );
+      session.activeTurn = null;
+      session.toolStates.clear();
+      session.assistantTextByItemId.clear();
+      session.reasoningTextByItemId.clear();
+    };
+
+    const schedulePendingTurnCompletion = (
+      session: PiAdapterSession,
+      state: "completed" | "failed" | "interrupted" | "cancelled",
+      errorMessage?: string,
+    ): void => {
+      const turn = session.activeTurn;
+      if (!turn) {
+        return;
+      }
+
+      clearPendingTurnCompletion(turn);
+      const pendingCompletion: PendingTurnCompletion = {
+        state,
+        requestedAt: new Date().toISOString(),
+        ...(errorMessage ? { errorMessage } : {}),
+        timeoutId: null,
+      };
+      pendingCompletion.timeoutId = globalThis.setTimeout(() => {
+        const activeTurn = session.activeTurn;
+        if (
+          !activeTurn ||
+          activeTurn !== turn ||
+          activeTurn.pendingCompletion !== pendingCompletion
+        ) {
+          return;
+        }
+        void finalizeTurnCompletion(session).catch((error: unknown) => {
+          const message =
+            error instanceof Error
+              ? error.message
+              : "Failed to finalize pending pi turn completion.";
+          void emitRuntimeError(session, message);
+        });
+      }, PI_TURN_COMPLETION_QUIET_PERIOD_MS);
+      turn.pendingCompletion = pendingCompletion;
+    };
+
+    const touchPendingTurnCompletion = (session: PiAdapterSession): void => {
+      const turn = session.activeTurn;
+      const pendingCompletion = turn?.pendingCompletion;
+      if (!turn || !pendingCompletion) {
+        return;
+      }
+      schedulePendingTurnCompletion(
+        session,
+        pendingCompletion.state,
+        pendingCompletion.errorMessage,
+      );
+    };
+
     const emitTurnCompleted = async (
       session: PiAdapterSession,
       state: "completed" | "failed" | "interrupted" | "cancelled",
@@ -437,20 +586,7 @@ export const PiCodexAdapterLive = Layer.effect(
       if (!session.activeTurn) {
         return;
       }
-      await publish(
-        nextRuntimeEvent(session, {
-          type: "turn.completed",
-          turnId: session.activeTurn.turnId,
-          payload: {
-            state,
-            ...(errorMessage ? { errorMessage } : {}),
-          },
-        }),
-      );
-      session.activeTurn = null;
-      session.toolStates.clear();
-      session.assistantTextByItemId.clear();
-      session.reasoningTextByItemId.clear();
+      schedulePendingTurnCompletion(session, state, errorMessage);
     };
 
     const emitRuntimeError = async (session: PiAdapterSession, message: string): Promise<void> => {
@@ -626,10 +762,40 @@ export const PiCodexAdapterLive = Layer.effect(
       }
     };
 
+    const reviveDetachedTurnIfNeeded = async (
+      session: PiAdapterSession,
+      event: PiRpcEvent,
+    ): Promise<void> => {
+      if (
+        session.activeTurn ||
+        !shouldPiTurnCompletionStayOpen(event) ||
+        !session.lastCompletedTurn
+      ) {
+        return;
+      }
+
+      session.activeTurn = {
+        ...session.lastCompletedTurn,
+        aborted: false,
+        pendingCompletion: null,
+      };
+      await emitSessionStateChanged(
+        session,
+        "running",
+        session.activeTurn.turnId,
+        "Late provider activity resumed after apparent completion.",
+      );
+    };
+
     const handleProcessEvent = async (
       session: PiAdapterSession,
       event: PiRpcEvent,
     ): Promise<void> => {
+      await reviveDetachedTurnIfNeeded(session, event);
+      if (session.activeTurn?.pendingCompletion && shouldPiTurnCompletionStayOpen(event)) {
+        touchPendingTurnCompletion(session);
+      }
+
       switch (event.type) {
         case "extension_ui_request":
           await handleExtensionUiRequest(session, event);
@@ -932,6 +1098,9 @@ export const PiCodexAdapterLive = Layer.effect(
           return;
         case "turn_end":
         case "agent_end": {
+          if (!isPiTurnCompletionTerminalEvent(event)) {
+            return;
+          }
           const failureMessage = session.activeTurn?.failureMessage;
           const nextState = session.activeTurn?.aborted
             ? "interrupted"
@@ -942,6 +1111,10 @@ export const PiCodexAdapterLive = Layer.effect(
           return;
         }
         case "queue_update":
+          session.latestQueueState = {
+            steeringCount: event.steering.length,
+            followUpCount: event.followUp.length,
+          };
           return;
       }
     };
@@ -981,11 +1154,24 @@ export const PiCodexAdapterLive = Layer.effect(
             stderr.trim() || `pi RPC exited (code=${code ?? "null"}, signal=${signal ?? "null"})`;
           void (async () => {
             if (session.activeTurn) {
-              await emitTurnCompleted(
-                session,
-                session.activeTurn.aborted ? "interrupted" : "failed",
-                session.activeTurn.failureMessage ?? exitDetail,
-              );
+              clearPendingTurnCompletion(session.activeTurn);
+              await finalizeTurnCompletion(session).catch(() => undefined);
+              if (session.activeTurn) {
+                await publish(
+                  nextRuntimeEvent(session, {
+                    type: "turn.completed",
+                    turnId: session.activeTurn.turnId,
+                    payload: {
+                      state: session.activeTurn.aborted ? "interrupted" : "failed",
+                      errorMessage: session.activeTurn.failureMessage ?? exitDetail,
+                    },
+                  }),
+                );
+                session.activeTurn = null;
+                session.toolStates.clear();
+                session.assistantTextByItemId.clear();
+                session.reasoningTextByItemId.clear();
+              }
             }
             if (!session.closing) {
               await emitRuntimeError(session, exitDetail);
@@ -1027,6 +1213,11 @@ export const PiCodexAdapterLive = Layer.effect(
         thinkingLevel:
           (state.thinkingLevel as PiThinkingLevel | undefined) ?? DEFAULT_THINKING_LEVEL,
         activeTurn: null,
+        lastCompletedTurn: null,
+        latestQueueState: {
+          steeringCount: 0,
+          followUpCount: 0,
+        },
         closing: false,
         toolStates: new Map(),
         assistantTextByItemId: new Map(),
@@ -1137,12 +1328,14 @@ export const PiCodexAdapterLive = Layer.effect(
             session.thinkingLevel = modelSelection.thinkingLevel;
           }
 
+          session.lastCompletedTurn = null;
           session.activeTurn = {
             turnId,
             requestedAt: new Date().toISOString(),
             startedAt: new Date().toISOString(),
             requestedModel: session.model,
             aborted: false,
+            pendingCompletion: null,
           };
           session.toolStates.clear();
           session.assistantTextByItemId.clear();
@@ -1187,8 +1380,22 @@ export const PiCodexAdapterLive = Layer.effect(
             }
             const failureMessage = error.message;
             session.activeTurn.failureMessage = failureMessage;
+            clearPendingTurnCompletion(session.activeTurn);
             await emitRuntimeError(session, failureMessage);
-            await emitTurnCompleted(session, "failed", failureMessage);
+            await publish(
+              nextRuntimeEvent(session, {
+                type: "turn.completed",
+                turnId: session.activeTurn.turnId,
+                payload: {
+                  state: "failed",
+                  errorMessage: failureMessage,
+                },
+              }),
+            );
+            session.activeTurn = null;
+            session.toolStates.clear();
+            session.assistantTextByItemId.clear();
+            session.reasoningTextByItemId.clear();
           }),
         ),
       );
@@ -1322,6 +1529,7 @@ export const PiCodexAdapterLive = Layer.effect(
           const session = getSessionOrFail(threadId);
           session.closing = true;
           if (session.activeTurn) {
+            clearPendingTurnCompletion(session.activeTurn);
             session.activeTurn.aborted = true;
             await session.process.abort().catch(() => undefined);
           }
@@ -1355,6 +1563,7 @@ export const PiCodexAdapterLive = Layer.effect(
             }
             session.closing = true;
             if (session.activeTurn) {
+              clearPendingTurnCompletion(session.activeTurn);
               session.activeTurn.aborted = true;
               await session.process.abort().catch(() => undefined);
             }

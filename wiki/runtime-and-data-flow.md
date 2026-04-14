@@ -99,6 +99,8 @@ In main path, [`PiCodexAdapter`](../apps/server/src/provider/Layers/PiCodexAdapt
 - starts pi RPC process
 - maps pi events into canonical provider runtime events
 - tracks active turn state, tool states, buffered text, pending user input
+- holds `activeTurn` open through a short completion quiet window after `turn_end` / `agent_end`
+- rebinds late assistant/tool events to same turn during that window instead of emitting detached post-completion activity
 - exposes start/send/interrupt/respond/stop/list/has-session methods
 
 ## Provider runtime ingestion flow
@@ -184,13 +186,67 @@ Main file: [`apps/web/src/store.ts`](../apps/web/src/store.ts)
 - thread IDs by project ID
 - bootstrap completion flag
 
+### Chat timeline subagent rendering
+
+Current chat timeline subagent UI is web-derived, not a dedicated server projection.
+
+- `apps/web/src/session-logic.ts` now preserves `tool.started` entries for `collab_agent_tool_call` so delegation blocks can render as soon as invocation starts.
+- `apps/web/src/subagentActivity.ts` parses provider tool payloads into normalized subagent shapes:
+  - Pi `subagent` tool single / parallel / chain inputs
+  - Claude Task-style delegated teammate inputs
+  - textual result summaries like `✓ scout: ...`
+- `apps/web/src/components/chat/MessagesTimeline.tsx` renders those parsed invocations as block cards inside the normal work-log row, including:
+  - mode badge (`Single`, `Series`, `Parallel`)
+  - per-step agent/task blocks
+  - chain handoff labels when a later step uses `{previous}`
+  - compact update rows beneath the block
+
 ### Important reducer behaviors
 
 - assistant message deltas merge into message state
 - session updates can create/reroute `latestTurn`
 - diff summaries rebind to assistant message IDs
 - revert prunes messages/proposed plans/activities/checkpoints
+- editing an earlier user message in UI works by rewinding thread to checkpoint before that message, then sending edited text as the next turn in same thread
 - sidebar summaries are derived and memo-ish updated only when changed
+
+### Sidebar status diagnostics log
+
+The web root now runs a thread-status diagnostics coordinator.
+
+What it does:
+
+- watches app store + UI store changes
+- recomputes the same sidebar status decision used for thread pills
+- writes one NDJSON record per thread change through server RPC
+- stores logs under `${logsDirectoryPath}/thread-status/<thread-id>.ndjson`
+
+Each record includes:
+
+- previous snapshot and next snapshot
+- status label transition (`Working`, `Completed`, etc.)
+- decision reason (`actively-running`, `manual-complete`, `pending-approval`, etc.)
+- manual completion override and `lastVisitedAt`
+- latest turn + session fields
+- previous / anchor / next message window
+- recent activity summaries
+
+Use this when sidebar state looks wrong but raw orchestration events look right. It shows which client-side inputs produced the visible sidebar status.
+
+### Post-completion continuation handling
+
+Thread status can stay `Working` briefly after a completed turn when fresh tool or assistant activity arrives after the first completion signal.
+
+Current split of responsibility:
+
+- server `PiCodexAdapter` delays final `turn.completed` for a short quiet period after `turn_end` / `agent_end`
+- if late work arrives during that window, same provider turn stays active and events keep same turn binding
+- web `session-logic.ts` still keeps a bounded continuation fallback window so UI remains correct if provider lifecycle finishes early or detached late activity slips through
+
+Target visible behavior:
+
+- show `Working` while real processing continues
+- switch to `Completed` only after work actually goes quiet
 
 ## Desktop backend boot flow
 

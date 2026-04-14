@@ -2523,11 +2523,77 @@ describe("ChatView timeline estimator parity (full app)", () => {
         () => {
           const threadRow = document.querySelector(`[data-testid="thread-row-${THREAD_ID}"]`);
           expect(threadRow?.textContent).toContain("Browser test thread");
-          expect(threadRow?.textContent).toContain("Completed");
+          expect(threadRow?.textContent).toContain("Done");
           expect(threadRow?.textContent).not.toContain("Working");
           expect(document.querySelector('[data-testid="processing-status-panel"]')).toBeNull();
           expect(document.body.textContent).not.toContain("Current turn still running");
           expect(document.body.textContent).not.toContain("Pi working");
+        },
+        { timeout: 8_000, interval: 16 },
+      );
+    } finally {
+      await mounted.cleanup();
+    }
+  });
+
+  it("hides live reasoning during the first turn of a brand new chat", async () => {
+    const runningTurnId = "turn-first-turn-reasoning" as TurnId;
+    const snapshot = createDraftOnlySnapshot();
+    const thread = createThread({
+      threadId: THREAD_ID,
+      title: "New thread",
+      sessionStatus: "running",
+      messages: [
+        {
+          ...createUserMessage({
+            id: "msg-user-first-turn-reasoning" as MessageId,
+            text: "first turn target",
+            offsetSeconds: 2_100,
+          }),
+          turnId: runningTurnId,
+        },
+      ],
+      activities: [
+        {
+          id: EventId.makeUnsafe("activity-first-turn-reasoning"),
+          tone: "thinking",
+          kind: "thinking.delta",
+          summary: "Planning first reply",
+          payload: {
+            itemId: "reasoning-first-turn-1",
+            streamKind: "reasoning_text",
+            detail: "Thinking through first response.",
+          },
+          createdAt: isoAt(2_101),
+          sequence: 1,
+          turnId: runningTurnId,
+        },
+      ],
+      latestTurn: {
+        turnId: runningTurnId,
+        state: "running",
+        requestedAt: isoAt(2_100),
+        startedAt: isoAt(2_101),
+        completedAt: null,
+        assistantMessageId: null,
+      },
+      updatedAt: isoAt(2_101),
+    });
+
+    const mounted = await mountChatView({
+      viewport: DEFAULT_VIEWPORT,
+      snapshot: {
+        ...snapshot,
+        threads: [thread],
+      },
+    });
+
+    try {
+      await vi.waitFor(
+        () => {
+          expect(document.body.textContent).toContain("first turn target");
+          expect(document.querySelector('[data-testid="processing-work-log-panel"]')).toBeNull();
+          expect(document.body.textContent).not.toContain("Live reasoning");
         },
         { timeout: 8_000, interval: 16 },
       );

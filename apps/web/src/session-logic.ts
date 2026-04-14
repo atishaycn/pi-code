@@ -19,6 +19,7 @@ import type {
   ThreadSession,
   TurnDiffSummary,
 } from "./types";
+import { deriveSubagentInvocationFromPayload, type SubagentInvocation } from "./subagentActivity";
 
 export type ProviderPickerKind = ProviderKind | "cursor";
 
@@ -51,6 +52,7 @@ export interface WorkLogEntry {
     | "command_output"
     | "file_change_output";
   sourceItemId?: string;
+  subagent?: SubagentInvocation;
 }
 
 interface DerivedWorkLogEntry extends WorkLogEntry {
@@ -517,7 +519,7 @@ export function deriveWorkLogEntries(
       }
       return activityCreatedAtMs >= latestTurnStartedAtMs;
     })
-    .filter((activity) => activity.kind !== "tool.started")
+    .filter((activity) => activity.kind !== "tool.started" || isSubagentToolActivity(activity))
     .filter((activity) => activity.kind !== "task.started" && activity.kind !== "task.completed")
     .filter((activity) => activity.kind !== "context-window.updated")
     .filter((activity) => activity.summary !== "Checkpoint captured")
@@ -526,6 +528,18 @@ export function deriveWorkLogEntries(
   return collapseDerivedWorkLogEntries(entries).map(
     ({ activityKind: _activityKind, collapseKey: _collapseKey, ...entry }) => entry,
   );
+}
+
+function isSubagentToolActivity(activity: OrchestrationThreadActivity): boolean {
+  if (activity.kind !== "tool.started") {
+    return false;
+  }
+
+  const payload =
+    activity.payload && typeof activity.payload === "object"
+      ? (activity.payload as Record<string, unknown>)
+      : null;
+  return payload?.itemType === "collab_agent_tool_call";
 }
 
 function isPlanBoundaryToolActivity(activity: OrchestrationThreadActivity): boolean {
@@ -564,12 +578,14 @@ function toDerivedWorkLogEntry(activity: OrchestrationThreadActivity): DerivedWo
     parsedDetail.changedFiles?.length ? parsedDetail.changedFiles : undefined,
   );
   const sourceItemId = asTrimmedString(payload?.itemId);
+  const subagent = deriveSubagentInvocationFromPayload(payload);
   const entry: DerivedWorkLogEntry = {
     id: activity.id,
     createdAt: activity.createdAt,
     label: activity.summary,
     tone: parsedDetail.toneOverride ?? (activity.tone === "approval" ? "info" : activity.tone),
     activityKind: activity.kind,
+    ...(subagent ? { subagent } : {}),
   };
   if (parsedDetail.preview) {
     entry.preview = parsedDetail.preview;
@@ -740,6 +756,7 @@ function mergeDerivedWorkLogEntries(
   const collapseKey = next.collapseKey ?? previous.collapseKey;
   const streamKind = next.streamKind ?? previous.streamKind;
   const sourceItemId = next.sourceItemId ?? previous.sourceItemId;
+  const subagent = next.subagent ?? previous.subagent;
   return {
     ...previous,
     ...(next.activityKind === "thinking.delta" || next.activityKind === "tool.output.delta"
@@ -755,6 +772,7 @@ function mergeDerivedWorkLogEntries(
     ...(requestKind ? { requestKind } : {}),
     ...(streamKind ? { streamKind } : {}),
     ...(sourceItemId ? { sourceItemId } : {}),
+    ...(subagent ? { subagent } : {}),
     ...(collapseKey ? { collapseKey } : {}),
     ...(next.activityKind !== "thinking.delta" && next.activityKind !== "tool.output.delta"
       ? {
@@ -1488,6 +1506,46 @@ export function hasAssistantReplyForLatestTurn(
 }
 
 const MAX_WAIT_FOR_ASSISTANT_REPLY_AFTER_COMPLETION_MS = 5_000;
+const POST_COMPLETION_CONTINUATION_WINDOW_MS = 15_000;
+
+export function derivePostCompletionContinuationSignalAt(input: {
+  latestTurn: Pick<NonNullable<Thread["latestTurn"]>, "completedAt"> | null;
+  workEntries: ReadonlyArray<Pick<WorkLogEntry, "createdAt">>;
+  messages: ReadonlyArray<Pick<ChatMessage, "role" | "createdAt" | "completedAt" | "streaming">>;
+}): string | null {
+  const completedAt = input.latestTurn?.completedAt;
+  if (!completedAt) {
+    return null;
+  }
+
+  let latestSignalAt: string | null = null;
+
+  for (const workEntry of input.workEntries) {
+    if (workEntry.createdAt <= completedAt) {
+      continue;
+    }
+    if (latestSignalAt === null || workEntry.createdAt > latestSignalAt) {
+      latestSignalAt = workEntry.createdAt;
+    }
+  }
+
+  for (const message of input.messages) {
+    if (message.role !== "assistant") {
+      continue;
+    }
+    const messageSignalAt = message.streaming
+      ? message.createdAt
+      : (message.completedAt ?? message.createdAt);
+    if (messageSignalAt <= completedAt) {
+      continue;
+    }
+    if (latestSignalAt === null || messageSignalAt > latestSignalAt) {
+      latestSignalAt = messageSignalAt;
+    }
+  }
+
+  return latestSignalAt;
+}
 
 export function deriveIsRunningTurn(input: {
   activeLatestTurn: Pick<
@@ -1500,9 +1558,25 @@ export function deriveIsRunningTurn(input: {
   hasStreamingAssistantMessage: boolean;
   hasAssistantReplyForActiveTurn: boolean;
   hasWorkLogEntry: boolean;
+  postCompletionContinuationSignalAt?: string | null;
   nowIso?: string | null;
   allowPostCompletionReplyWait?: boolean;
 }): boolean {
+  const completedAt = input.activeLatestTurn?.completedAt ?? null;
+  const completedAtMs = completedAt ? Date.parse(completedAt) : Number.NaN;
+  const continuationSignalAtMs = input.postCompletionContinuationSignalAt
+    ? Date.parse(input.postCompletionContinuationSignalAt)
+    : Number.NaN;
+  const nowMs = input.nowIso ? Date.parse(input.nowIso) : Number.NaN;
+  const hasRecentPostCompletionContinuation =
+    input.activeLatestTurn !== null &&
+    completedAt !== null &&
+    !Number.isNaN(completedAtMs) &&
+    !Number.isNaN(continuationSignalAtMs) &&
+    continuationSignalAtMs > completedAtMs &&
+    (Number.isNaN(nowMs) ||
+      nowMs - continuationSignalAtMs <= POST_COMPLETION_CONTINUATION_WINDOW_MS);
+
   const hasCompletedAssistantReplyForActiveTurn =
     input.hasAssistantReplyForActiveTurn &&
     !input.hasStreamingAssistantMessage &&
@@ -1511,13 +1585,13 @@ export function deriveIsRunningTurn(input: {
     input.hasAssistantReplyForActiveTurn &&
     !input.latestTurnSettled &&
     input.activeLatestTurn?.completedAt !== null;
-  if (hasCompletedAssistantReplyForActiveTurn || hasSettledAssistantReplyForActiveTurn) {
+  if (
+    (hasCompletedAssistantReplyForActiveTurn || hasSettledAssistantReplyForActiveTurn) &&
+    !hasRecentPostCompletionContinuation
+  ) {
     return false;
   }
 
-  const completedAt = input.activeLatestTurn?.completedAt ?? null;
-  const completedAtMs = completedAt ? Date.parse(completedAt) : Number.NaN;
-  const nowMs = input.nowIso ? Date.parse(input.nowIso) : Number.NaN;
   const finalReplyWaitTimedOut =
     input.activeLatestTurn !== null &&
     input.activeLatestTurn.assistantMessageId !== null &&
@@ -1563,7 +1637,8 @@ export function deriveIsRunningTurn(input: {
     sessionHasActiveTurn ||
     input.hasStreamingAssistantMessage ||
     latestTurnStillRunningOrFinalizing ||
-    waitingForAssistantReply
+    waitingForAssistantReply ||
+    hasRecentPostCompletionContinuation
   );
 }
 

@@ -19,6 +19,7 @@ import {
   hasActionableProposedPlan,
   derivePendingApprovals,
   derivePendingUserInputs,
+  derivePostCompletionContinuationSignalAt,
   deriveWorkLogEntries,
   deriveIsRunningTurn,
   hasAssistantReplyForLatestTurn,
@@ -228,12 +229,23 @@ function buildSidebarThreadSummary(thread: Thread): SidebarThreadSummary {
     thread.messages,
     latestTurn,
   );
-  const hasWorkLogEntry =
-    deriveWorkLogEntries(
-      thread.activities,
-      latestTurnId ?? undefined,
-      latestTurn?.startedAt ?? undefined,
-    ).length > 0;
+  const currentTurnWorkLogEntries = deriveWorkLogEntries(
+    thread.activities,
+    latestTurnId ?? undefined,
+    latestTurn?.startedAt ?? undefined,
+  );
+  const allTurnWorkLogEntries = deriveWorkLogEntries(
+    thread.activities,
+    latestTurnId ?? undefined,
+    latestTurn?.startedAt ?? undefined,
+    { includeAllTurns: true },
+  );
+  const hasWorkLogEntry = currentTurnWorkLogEntries.length > 0;
+  const postCompletionContinuationSignalAt = derivePostCompletionContinuationSignalAt({
+    latestTurn,
+    workEntries: allTurnWorkLogEntries,
+    messages: thread.messages,
+  });
 
   return {
     id: thread.id,
@@ -261,6 +273,8 @@ function buildSidebarThreadSummary(thread: Thread): SidebarThreadSummary {
       hasStreamingAssistantMessage,
       hasAssistantReplyForActiveTurn,
       hasWorkLogEntry,
+      postCompletionContinuationSignalAt,
+      nowIso: new Date().toISOString(),
       allowPostCompletionReplyWait: false,
     }),
   };

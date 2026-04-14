@@ -116,6 +116,7 @@ export function createWsNativeApi(): NativeApi {
       getPiThreadRuntime: rpcClient.server.getPiThreadRuntime,
       updatePiThreadRuntime: rpcClient.server.updatePiThreadRuntime,
       compactPiThread: rpcClient.server.compactPiThread,
+      appendThreadStatusLog: rpcClient.server.appendThreadStatusLog,
     },
     orchestration: {
       getSnapshot: rpcClient.orchestration.getSnapshot,

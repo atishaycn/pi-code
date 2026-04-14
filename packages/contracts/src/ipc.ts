@@ -25,6 +25,8 @@ import type {
   ProjectWriteFileResult,
 } from "./project";
 import type {
+  ServerAppendThreadStatusLogInput,
+  ServerAppendThreadStatusLogResult,
   ServerCompactPiThreadInput,
   ServerCompactPiThreadResult,
   ServerConfig,
@@ -232,6 +234,9 @@ export interface NativeApi {
       input: ServerUpdatePiThreadRuntimeInput,
     ) => Promise<ServerUpdatePiThreadRuntimeResult>;
     compactPiThread: (input: ServerCompactPiThreadInput) => Promise<ServerCompactPiThreadResult>;
+    appendThreadStatusLog: (
+      input: ServerAppendThreadStatusLogInput,
+    ) => Promise<ServerAppendThreadStatusLogResult>;
   };
   orchestration: {
     getSnapshot: () => Promise<OrchestrationReadModel>;

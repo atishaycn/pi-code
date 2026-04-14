@@ -1,5 +1,6 @@
 import { ProjectId, type ModelSelection, type ThreadId, type TurnId } from "@t3tools/contracts";
 import { truncate } from "@t3tools/shared/String";
+import { inferCheckpointTurnCountByTurnId } from "../session-logic";
 import { type ChatMessage, type SessionPhase, type Thread, type ThreadSession } from "../types";
 import { randomUUID } from "~/lib/utils";
 import { type ComposerImageAttachment, type DraftThreadState } from "../composerDraftStore";
@@ -392,6 +393,82 @@ export async function waitForStartedServerThread(
   });
 }
 
+function hasThreadRevertedToTurnCount(
+  thread: Thread | undefined,
+  targetTurnCount: number,
+): boolean {
+  if (!thread) {
+    return false;
+  }
+
+  const latestCheckpointTurnCount =
+    thread.turnDiffSummaries.at(-1)?.checkpointTurnCount ??
+    (() => {
+      const inferred = inferCheckpointTurnCountByTurnId(thread.turnDiffSummaries);
+      const latestTurnId = thread.turnDiffSummaries.at(-1)?.turnId;
+      return latestTurnId ? inferred[latestTurnId] : undefined;
+    })();
+
+  if (targetTurnCount === 0) {
+    return thread.turnDiffSummaries.length === 0 && thread.latestTurn === null;
+  }
+
+  return (
+    thread.turnDiffSummaries.length === targetTurnCount &&
+    latestCheckpointTurnCount === targetTurnCount
+  );
+}
+
+export async function waitForThreadRevert(
+  threadId: ThreadId,
+  targetTurnCount: number,
+  timeoutMs = 10_000,
+): Promise<boolean> {
+  const getThread = () => useStore.getState().threads.find((thread) => thread.id === threadId);
+  const thread = getThread();
+
+  if (hasThreadRevertedToTurnCount(thread, targetTurnCount)) {
+    return true;
+  }
+
+  return await new Promise<boolean>((resolve) => {
+    let settled = false;
+    let timeoutId: ReturnType<typeof globalThis.setTimeout> | null = null;
+    const finish = (result: boolean) => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      if (timeoutId !== null) {
+        globalThis.clearTimeout(timeoutId);
+      }
+      unsubscribe();
+      resolve(result);
+    };
+
+    const unsubscribe = useStore.subscribe((state) => {
+      if (
+        !hasThreadRevertedToTurnCount(
+          state.threads.find((thread) => thread.id === threadId),
+          targetTurnCount,
+        )
+      ) {
+        return;
+      }
+      finish(true);
+    });
+
+    if (hasThreadRevertedToTurnCount(getThread(), targetTurnCount)) {
+      finish(true);
+      return;
+    }
+
+    timeoutId = globalThis.setTimeout(() => {
+      finish(false);
+    }, timeoutMs);
+  });
+}
+
 export interface LocalDispatchSnapshot {
   startedAt: string;
   preparingWorktree: boolean;
@@ -468,6 +545,42 @@ export function deriveComposerDispatchStatusCopy(input: {
   return {
     title: `Starting turn${suffix}`,
     description: "Waiting for Pi to acknowledge the new turn.",
+  };
+}
+
+export function deriveComposerProcessingStatusCopy(input: {
+  isRunningTurn: boolean;
+  latestTurnSettled: boolean;
+  nowMs: number;
+  latestWorkEntry:
+    | {
+        label: string;
+        toolTitle?: string;
+        createdAt: string;
+      }
+    | null
+    | undefined;
+}): ComposerDispatchStatusCopy | null {
+  if (!input.isRunningTurn) {
+    return null;
+  }
+
+  const activityLabel = input.latestWorkEntry?.toolTitle ?? input.latestWorkEntry?.label ?? null;
+  const elapsed = formatDispatchElapsed(input.nowMs, input.latestWorkEntry?.createdAt ?? null);
+  const suffix = elapsed ? ` · ${elapsed}` : "";
+
+  if (input.latestTurnSettled) {
+    return {
+      title: activityLabel
+        ? `Still processing ${activityLabel}${suffix}`
+        : `Still processing${suffix}`,
+      description: "New tool or assistant activity arrived after completion. Thread still active.",
+    };
+  }
+
+  return {
+    title: activityLabel ? `Processing ${activityLabel}${suffix}` : `Processing${suffix}`,
+    description: "Provider is still working on this thread.",
   };
 }
 

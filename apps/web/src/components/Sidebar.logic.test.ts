@@ -524,7 +524,7 @@ describe("resolveThreadStatusPill", () => {
           lastVisitedAt: "2026-03-09T10:04:00.000Z",
         },
       }),
-    ).toMatchObject({ label: "Completed", pulse: false });
+    ).toMatchObject({ label: "Done", pulse: false });
   });
 
   it("does not show working for stale running session state after a completed turn without an assistant reply", () => {
@@ -547,7 +547,7 @@ describe("resolveThreadStatusPill", () => {
           },
         },
       }),
-    ).toMatchObject({ label: "Completed", pulse: false });
+    ).toMatchObject({ label: "Done", pulse: false });
   });
 
   it("does not show working when a running session clears the active turn with null", () => {
@@ -570,7 +570,7 @@ describe("resolveThreadStatusPill", () => {
           } as typeof baseThread.session,
         },
       }),
-    ).toMatchObject({ label: "Completed", pulse: false });
+    ).toMatchObject({ label: "Done", pulse: false });
   });
 
   it("prefers completed over working when the thread is manually marked completed", () => {
@@ -588,7 +588,28 @@ describe("resolveThreadStatusPill", () => {
           lastVisitedAt: "2026-03-09T10:04:00.000Z",
         },
       }),
-    ).toMatchObject({ label: "Completed", pulse: false });
+    ).toMatchObject({ label: "Done", pulse: false });
+  });
+
+  it("prefers completed for a manually completed thread even if the same turn looks stuck running", () => {
+    expect(
+      resolveThreadStatusPill({
+        thread: {
+          ...baseThread,
+          interactionMode: "default",
+          isRunningTurn: true,
+          isManuallyCompleted: true,
+          latestTurn: {
+            ...makeLatestTurn({
+              turnId: "turn-1",
+              assistantMessageId: "assistant-1",
+            }),
+            completedAt: null,
+          },
+          lastVisitedAt: "2026-03-09T10:10:00.000Z",
+        },
+      }),
+    ).toMatchObject({ label: "Done", pulse: false });
   });
 
   it("keeps showing working while finalizing after tool work even if the session already left running", () => {
@@ -621,7 +642,7 @@ describe("resolveThreadStatusPill", () => {
           },
         },
       }),
-    ).toMatchObject({ label: "Completed", pulse: false });
+    ).toMatchObject({ label: "Done", pulse: false });
   });
 
   it("shows completed when there is an unseen completion and no active blocker", () => {
@@ -639,7 +660,7 @@ describe("resolveThreadStatusPill", () => {
           },
         },
       }),
-    ).toMatchObject({ label: "Completed", pulse: false });
+    ).toMatchObject({ label: "Done", pulse: false });
   });
 });
 
@@ -676,9 +697,9 @@ describe("resolveProjectStatusIndicator", () => {
     expect(
       resolveProjectStatusIndicator([
         {
-          label: "Completed",
-          colorClass: "text-emerald-600",
-          dotClass: "bg-emerald-500",
+          label: "Done",
+          colorClass: "text-orange-600",
+          dotClass: "bg-orange-500",
           pulse: false,
         },
         {
@@ -701,9 +722,9 @@ describe("resolveProjectStatusIndicator", () => {
     expect(
       resolveProjectStatusIndicator([
         {
-          label: "Completed",
-          colorClass: "text-emerald-600",
-          dotClass: "bg-emerald-500",
+          label: "Done",
+          colorClass: "text-orange-600",
+          dotClass: "bg-orange-500",
           pulse: false,
         },
         {
@@ -752,14 +773,14 @@ describe("resolveSidebarThreadStatus", () => {
     expect(
       resolveSidebarThreadStatus(
         {
-          label: "Completed",
-          colorClass: "text-emerald-600",
-          dotClass: "bg-emerald-500",
+          label: "Done",
+          colorClass: "text-orange-600",
+          dotClass: "bg-orange-500",
           pulse: false,
         },
         true,
       ),
-    ).toMatchObject({ label: "Completed" });
+    ).toMatchObject({ label: "Done" });
   });
 
   it("keeps non-completed statuses in the sidebar for the active thread", () => {
@@ -780,14 +801,14 @@ describe("resolveSidebarThreadStatus", () => {
     expect(
       resolveSidebarThreadStatus(
         {
-          label: "Completed",
-          colorClass: "text-emerald-600",
-          dotClass: "bg-emerald-500",
+          label: "Done",
+          colorClass: "text-orange-600",
+          dotClass: "bg-orange-500",
           pulse: false,
         },
         false,
       ),
-    ).toMatchObject({ label: "Completed" });
+    ).toMatchObject({ label: "Done" });
   });
 });
 

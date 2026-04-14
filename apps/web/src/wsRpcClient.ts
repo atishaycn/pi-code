@@ -107,6 +107,7 @@ export interface WsRpcClient {
     readonly getPiThreadRuntime: RpcUnaryMethod<typeof WS_METHODS.serverGetPiThreadRuntime>;
     readonly updatePiThreadRuntime: RpcUnaryMethod<typeof WS_METHODS.serverUpdatePiThreadRuntime>;
     readonly compactPiThread: RpcUnaryMethod<typeof WS_METHODS.serverCompactPiThread>;
+    readonly appendThreadStatusLog: RpcUnaryMethod<typeof WS_METHODS.serverAppendThreadStatusLog>;
     readonly subscribeConfig: RpcStreamMethod<typeof WS_METHODS.subscribeServerConfig>;
     readonly subscribeLifecycle: RpcStreamMethod<typeof WS_METHODS.subscribeServerLifecycle>;
   };
@@ -245,6 +246,8 @@ export function createWsRpcClient(transport = new WsTransport()): WsRpcClient {
         transport.request((client) => client[WS_METHODS.serverUpdatePiThreadRuntime](input)),
       compactPiThread: (input) =>
         transport.request((client) => client[WS_METHODS.serverCompactPiThread](input)),
+      appendThreadStatusLog: (input) =>
+        transport.request((client) => client[WS_METHODS.serverAppendThreadStatusLog](input)),
       subscribeConfig: (listener, options) =>
         transport.subscribe(
           (client) => client[WS_METHODS.subscribeServerConfig]({}),

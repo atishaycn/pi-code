@@ -65,6 +65,8 @@ import {
 } from "./terminal";
 import {
   ServerConfigStreamEvent,
+  ServerAppendThreadStatusLogInput,
+  ServerAppendThreadStatusLogResult,
   ServerCompactPiThreadInput,
   ServerCompactPiThreadResult,
   ServerConfig,
@@ -81,6 +83,7 @@ import {
   ServerPiRpcError,
   ServerProviderUpdatedPayload,
   ServerRoadmapStatusError,
+  ServerThreadStatusLogError,
   ServerReadPiResourceInput,
   ServerReadPiResourceResult,
   ServerUpdatePiThreadRuntimeInput,
@@ -139,6 +142,7 @@ export const WS_METHODS = {
   serverGetPiThreadRuntime: "server.getPiThreadRuntime",
   serverUpdatePiThreadRuntime: "server.updatePiThreadRuntime",
   serverCompactPiThread: "server.compactPiThread",
+  serverAppendThreadStatusLog: "server.appendThreadStatusLog",
 
   // Streaming subscriptions
   subscribeGitStatus: "subscribeGitStatus",
@@ -232,6 +236,12 @@ export const WsServerCompactPiThreadRpc = Rpc.make(WS_METHODS.serverCompactPiThr
   payload: ServerCompactPiThreadInput,
   success: ServerCompactPiThreadResult,
   error: ServerPiRpcError,
+});
+
+export const WsServerAppendThreadStatusLogRpc = Rpc.make(WS_METHODS.serverAppendThreadStatusLog, {
+  payload: ServerAppendThreadStatusLogInput,
+  success: ServerAppendThreadStatusLogResult,
+  error: ServerThreadStatusLogError,
 });
 
 export const WsProjectsSearchEntriesRpc = Rpc.make(WS_METHODS.projectsSearchEntries, {
@@ -443,6 +453,7 @@ export const WsRpcGroup = RpcGroup.make(
   WsServerGetPiThreadRuntimeRpc,
   WsServerUpdatePiThreadRuntimeRpc,
   WsServerCompactPiThreadRpc,
+  WsServerAppendThreadStatusLogRpc,
   WsProjectsSearchEntriesRpc,
   WsProjectsWriteFileRpc,
   WsShellOpenInEditorRpc,

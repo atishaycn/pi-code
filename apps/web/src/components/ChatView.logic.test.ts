@@ -9,11 +9,13 @@ import {
   buildForkChatThreadTitle,
   createLocalDispatchSnapshot,
   deriveComposerDispatchStatusCopy,
+  deriveComposerProcessingStatusCopy,
   deriveComposerSendState,
   hasServerAcknowledgedLocalDispatch,
   reconcileMountedTerminalThreadIds,
   replaceQueuedEntryWithDraft,
   waitForStartedServerThread,
+  waitForThreadRevert,
 } from "./ChatView.logic";
 import { deriveIsRunningTurn } from "../session-logic";
 
@@ -440,6 +442,128 @@ describe("waitForStartedServerThread", () => {
   });
 });
 
+describe("waitForThreadRevert", () => {
+  it("resolves immediately when the thread is already reverted to the target turn count", async () => {
+    const threadId = ThreadId.makeUnsafe("thread-reverted-now");
+    useStore.setState((state) => ({
+      ...state,
+      threads: [
+        {
+          ...makeThread({ id: threadId }),
+          latestTurn: null,
+          turnDiffSummaries: [],
+        },
+      ],
+    }));
+
+    await expect(waitForThreadRevert(threadId, 0)).resolves.toBe(true);
+  });
+
+  it("waits for the thread checkpoint list to shrink to the requested turn count", async () => {
+    const threadId = ThreadId.makeUnsafe("thread-revert-wait");
+    useStore.setState((state) => ({
+      ...state,
+      threads: [
+        {
+          ...makeThread({ id: threadId }),
+          latestTurn: {
+            turnId: TurnId.makeUnsafe("turn-2"),
+            state: "completed",
+            requestedAt: "2026-03-29T00:00:00.000Z",
+            startedAt: "2026-03-29T00:00:01.000Z",
+            completedAt: "2026-03-29T00:00:05.000Z",
+            assistantMessageId: MessageId.makeUnsafe("assistant-2"),
+          },
+          turnDiffSummaries: [
+            {
+              turnId: TurnId.makeUnsafe("turn-1"),
+              completedAt: "2026-03-29T00:00:05.000Z",
+              checkpointTurnCount: 1,
+              files: [],
+            },
+            {
+              turnId: TurnId.makeUnsafe("turn-2"),
+              completedAt: "2026-03-29T00:01:05.000Z",
+              checkpointTurnCount: 2,
+              files: [],
+            },
+          ],
+        },
+      ],
+    }));
+
+    const promise = waitForThreadRevert(threadId, 1, 500);
+
+    useStore.setState((state) => ({
+      ...state,
+      threads: [
+        {
+          ...state.threads[0]!,
+          latestTurn: {
+            turnId: TurnId.makeUnsafe("turn-1"),
+            state: "completed",
+            requestedAt: "2026-03-29T00:00:00.000Z",
+            startedAt: "2026-03-29T00:00:01.000Z",
+            completedAt: "2026-03-29T00:00:05.000Z",
+            assistantMessageId: MessageId.makeUnsafe("assistant-1"),
+          },
+          turnDiffSummaries: [
+            {
+              turnId: TurnId.makeUnsafe("turn-1"),
+              completedAt: "2026-03-29T00:00:05.000Z",
+              checkpointTurnCount: 1,
+              files: [],
+            },
+          ],
+        },
+      ],
+    }));
+
+    await expect(promise).resolves.toBe(true);
+  });
+
+  it("returns false after the timeout when the thread never rewinds", async () => {
+    vi.useFakeTimers();
+
+    const threadId = ThreadId.makeUnsafe("thread-revert-timeout");
+    useStore.setState((state) => ({
+      ...state,
+      threads: [
+        {
+          ...makeThread({ id: threadId }),
+          latestTurn: {
+            turnId: TurnId.makeUnsafe("turn-2"),
+            state: "completed",
+            requestedAt: "2026-03-29T00:00:00.000Z",
+            startedAt: "2026-03-29T00:00:01.000Z",
+            completedAt: "2026-03-29T00:00:05.000Z",
+            assistantMessageId: MessageId.makeUnsafe("assistant-2"),
+          },
+          turnDiffSummaries: [
+            {
+              turnId: TurnId.makeUnsafe("turn-1"),
+              completedAt: "2026-03-29T00:00:05.000Z",
+              checkpointTurnCount: 1,
+              files: [],
+            },
+            {
+              turnId: TurnId.makeUnsafe("turn-2"),
+              completedAt: "2026-03-29T00:01:05.000Z",
+              checkpointTurnCount: 2,
+              files: [],
+            },
+          ],
+        },
+      ],
+    }));
+
+    const promise = waitForThreadRevert(threadId, 1, 500);
+    await vi.advanceTimersByTimeAsync(500);
+
+    await expect(promise).resolves.toBe(false);
+  });
+});
+
 describe("deriveIsRunningTurn", () => {
   it("keeps the working state while the assistant message is still streaming", () => {
     expect(
@@ -551,6 +675,26 @@ describe("deriveIsRunningTurn", () => {
         hasWorkLogEntry: false,
       }),
     ).toBe(false);
+  });
+
+  it("reopens the working state when fresh continuation activity arrives after completion", () => {
+    expect(
+      deriveIsRunningTurn({
+        activeLatestTurn: {
+          turnId: TurnId.makeUnsafe("turn-continuation"),
+          assistantMessageId: MessageId.makeUnsafe("assistant-continuation"),
+          completedAt: "2026-03-29T00:00:10.000Z",
+        },
+        latestTurnSettled: true,
+        sessionOrchestrationStatus: "ready",
+        sessionActiveTurnId: undefined,
+        hasStreamingAssistantMessage: false,
+        hasAssistantReplyForActiveTurn: true,
+        hasWorkLogEntry: true,
+        postCompletionContinuationSignalAt: "2026-03-29T00:00:18.000Z",
+        nowIso: "2026-03-29T00:00:20.000Z",
+      }),
+    ).toBe(true);
   });
 
   it("keeps the working state while the final assistant reply is visible but the turn is not settled yet", () => {
@@ -800,5 +944,53 @@ describe("hasServerAcknowledgedLocalDispatch", () => {
       title: "Connecting to Pi · 3s elapsed",
       description: "Waiting for the provider session to become ready for this thread.",
     });
+  });
+});
+
+describe("deriveComposerProcessingStatusCopy", () => {
+  it("describes active work before the turn settles", () => {
+    expect(
+      deriveComposerProcessingStatusCopy({
+        isRunningTurn: true,
+        latestTurnSettled: false,
+        nowMs: Date.parse("2026-03-29T00:00:05.000Z"),
+        latestWorkEntry: {
+          label: "Running tool",
+          toolTitle: "bash",
+          createdAt: "2026-03-29T00:00:02.000Z",
+        },
+      }),
+    ).toEqual({
+      title: "Processing bash · 3s elapsed",
+      description: "Provider is still working on this thread.",
+    });
+  });
+
+  it("describes post-completion continuation work", () => {
+    expect(
+      deriveComposerProcessingStatusCopy({
+        isRunningTurn: true,
+        latestTurnSettled: true,
+        nowMs: Date.parse("2026-03-29T00:00:08.000Z"),
+        latestWorkEntry: {
+          label: "Tool resumed",
+          createdAt: "2026-03-29T00:00:05.000Z",
+        },
+      }),
+    ).toEqual({
+      title: "Still processing Tool resumed · 3s elapsed",
+      description: "New tool or assistant activity arrived after completion. Thread still active.",
+    });
+  });
+
+  it("returns null when no processing is happening", () => {
+    expect(
+      deriveComposerProcessingStatusCopy({
+        isRunningTurn: false,
+        latestTurnSettled: true,
+        nowMs: Date.parse("2026-03-29T00:00:08.000Z"),
+        latestWorkEntry: null,
+      }),
+    ).toBeNull();
   });
 });

@@ -21,16 +21,25 @@ type SidebarThreadSortInput = Pick<Thread, "createdAt" | "updatedAt"> & {
 export type ThreadTraversalDirection = "previous" | "next";
 
 export interface ThreadStatusPill {
-  label:
-    | "Working"
-    | "Connecting"
-    | "Completed"
-    | "Pending Approval"
-    | "Awaiting Input"
-    | "Plan Ready";
+  label: "Working" | "Connecting" | "Done" | "Pending Approval" | "Awaiting Input" | "Plan Ready";
   colorClass: string;
   dotClass: string;
   pulse: boolean;
+}
+
+export type ThreadStatusDecisionReason =
+  | "pending-approval"
+  | "pending-user-input"
+  | "manual-complete"
+  | "actively-running"
+  | "connecting"
+  | "plan-ready"
+  | "unseen-completion"
+  | "none";
+
+export interface ThreadStatusDecision {
+  status: ThreadStatusPill | null;
+  reason: ThreadStatusDecisionReason;
 }
 
 const THREAD_STATUS_PRIORITY: Record<ThreadStatusPill["label"], number> = {
@@ -39,7 +48,7 @@ const THREAD_STATUS_PRIORITY: Record<ThreadStatusPill["label"], number> = {
   Working: 3,
   Connecting: 3,
   "Plan Ready": 2,
-  Completed: 1,
+  Done: 1,
 };
 
 type ThreadStatusInput = Pick<
@@ -314,44 +323,68 @@ export function resolveThreadRowClassName(input: {
   return cn(baseClassName, "text-muted-foreground hover:bg-accent hover:text-foreground");
 }
 
-export function resolveThreadStatusPill(input: {
+export function resolveThreadStatusDecision(input: {
   thread: ThreadStatusInput;
-}): ThreadStatusPill | null {
+}): ThreadStatusDecision {
   const { thread } = input;
 
   if (thread.hasPendingApprovals) {
     return {
-      label: "Pending Approval",
-      colorClass: "text-amber-600 dark:text-amber-300/90",
-      dotClass: "bg-amber-500 dark:bg-amber-300/90",
-      pulse: false,
+      status: {
+        label: "Pending Approval",
+        colorClass: "text-amber-600 dark:text-amber-300/90",
+        dotClass: "bg-amber-500 dark:bg-amber-300/90",
+        pulse: false,
+      },
+      reason: "pending-approval",
     };
   }
 
   if (thread.hasPendingUserInput) {
     return {
-      label: "Awaiting Input",
-      colorClass: "text-indigo-600 dark:text-indigo-300/90",
-      dotClass: "bg-indigo-500 dark:bg-indigo-300/90",
-      pulse: false,
+      status: {
+        label: "Awaiting Input",
+        colorClass: "text-indigo-600 dark:text-indigo-300/90",
+        dotClass: "bg-indigo-500 dark:bg-indigo-300/90",
+        pulse: false,
+      },
+      reason: "pending-user-input",
     };
   }
 
-  if (!thread.isManuallyCompleted && isThreadActivelyRunning(thread)) {
+  if (thread.isManuallyCompleted) {
     return {
-      label: "Working",
-      colorClass: "text-sky-600 dark:text-sky-300/80",
-      dotClass: "bg-sky-500 dark:bg-sky-300/80",
-      pulse: true,
+      status: {
+        label: "Done",
+        colorClass: "text-orange-600 dark:text-orange-300/90",
+        dotClass: "bg-orange-500 dark:bg-orange-300/90",
+        pulse: false,
+      },
+      reason: "manual-complete",
+    };
+  }
+
+  if (isThreadActivelyRunning(thread)) {
+    return {
+      status: {
+        label: "Working",
+        colorClass: "text-sky-600 dark:text-sky-300/80",
+        dotClass: "bg-sky-500 dark:bg-sky-300/80",
+        pulse: true,
+      },
+      reason: "actively-running",
     };
   }
 
   if (thread.session?.status === "connecting") {
     return {
-      label: "Connecting",
-      colorClass: "text-sky-600 dark:text-sky-300/80",
-      dotClass: "bg-sky-500 dark:bg-sky-300/80",
-      pulse: true,
+      status: {
+        label: "Connecting",
+        colorClass: "text-sky-600 dark:text-sky-300/80",
+        dotClass: "bg-sky-500 dark:bg-sky-300/80",
+        pulse: true,
+      },
+      reason: "connecting",
     };
   }
 
@@ -362,23 +395,38 @@ export function resolveThreadStatusPill(input: {
     thread.hasActionableProposedPlan;
   if (hasPlanReadyPrompt) {
     return {
-      label: "Plan Ready",
-      colorClass: "text-violet-600 dark:text-violet-300/90",
-      dotClass: "bg-violet-500 dark:bg-violet-300/90",
-      pulse: false,
+      status: {
+        label: "Plan Ready",
+        colorClass: "text-violet-600 dark:text-violet-300/90",
+        dotClass: "bg-violet-500 dark:bg-violet-300/90",
+        pulse: false,
+      },
+      reason: "plan-ready",
     };
   }
 
   if (hasUnseenCompletion(thread)) {
     return {
-      label: "Completed",
-      colorClass: "text-emerald-600 dark:text-emerald-300/90",
-      dotClass: "bg-emerald-500 dark:bg-emerald-300/90",
-      pulse: false,
+      status: {
+        label: "Done",
+        colorClass: "text-orange-600 dark:text-orange-300/90",
+        dotClass: "bg-orange-500 dark:bg-orange-300/90",
+        pulse: false,
+      },
+      reason: "unseen-completion",
     };
   }
 
-  return null;
+  return {
+    status: null,
+    reason: "none",
+  };
+}
+
+export function resolveThreadStatusPill(input: {
+  thread: ThreadStatusInput;
+}): ThreadStatusPill | null {
+  return resolveThreadStatusDecision(input).status;
 }
 
 export function resolveProjectStatusIndicator(

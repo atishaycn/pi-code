@@ -233,6 +233,25 @@ export const ServerCompactPiThreadResult = Schema.Struct({
 });
 export type ServerCompactPiThreadResult = typeof ServerCompactPiThreadResult.Type;
 
+export const ServerAppendThreadStatusLogInput = Schema.Struct({
+  threadId: ThreadId,
+  recordJson: Schema.String,
+});
+export type ServerAppendThreadStatusLogInput = typeof ServerAppendThreadStatusLogInput.Type;
+
+export const ServerAppendThreadStatusLogResult = Schema.Struct({
+  path: TrimmedNonEmptyString,
+});
+export type ServerAppendThreadStatusLogResult = typeof ServerAppendThreadStatusLogResult.Type;
+
+export class ServerThreadStatusLogError extends Schema.TaggedErrorClass<ServerThreadStatusLogError>()(
+  "ServerThreadStatusLogError",
+  {
+    message: TrimmedNonEmptyString,
+    cause: Schema.optional(Schema.Defect),
+  },
+) {}
+
 export const ServerPiResourceKind = Schema.Literals([
   "settings",
   "keybindings",
