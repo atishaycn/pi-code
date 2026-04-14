@@ -122,12 +122,23 @@ const REQUIRED_SNAPSHOT_PROJECTORS = [
   ORCHESTRATION_PROJECTOR_NAMES.threadSessions,
   ORCHESTRATION_PROJECTOR_NAMES.checkpoints,
 ] as const;
+const SNAPSHOT_THREAD_MESSAGE_LIMIT = 200;
+const SNAPSHOT_THREAD_PROPOSED_PLAN_LIMIT = 50;
+const SNAPSHOT_THREAD_ACTIVITY_LIMIT = 100;
+const SNAPSHOT_THREAD_CHECKPOINT_LIMIT = 50;
 
 function maxIso(left: string | null, right: string): string {
   if (left === null) {
     return right;
   }
   return left > right ? left : right;
+}
+
+function limitTrailingItems<Value>(
+  values: ReadonlyArray<Value>,
+  limit: number,
+): ReadonlyArray<Value> {
+  return values.length <= limit ? values : values.slice(-limit);
 }
 
 function computeSnapshotSequence(
@@ -677,10 +688,22 @@ const makeProjectionSnapshotQuery = Effect.gen(function* () {
             updatedAt: row.updatedAt,
             archivedAt: row.archivedAt,
             deletedAt: row.deletedAt,
-            messages: messagesByThread.get(row.threadId) ?? [],
-            proposedPlans: proposedPlansByThread.get(row.threadId) ?? [],
-            activities: activitiesByThread.get(row.threadId) ?? [],
-            checkpoints: checkpointsByThread.get(row.threadId) ?? [],
+            messages: limitTrailingItems(
+              messagesByThread.get(row.threadId) ?? [],
+              SNAPSHOT_THREAD_MESSAGE_LIMIT,
+            ),
+            proposedPlans: limitTrailingItems(
+              proposedPlansByThread.get(row.threadId) ?? [],
+              SNAPSHOT_THREAD_PROPOSED_PLAN_LIMIT,
+            ),
+            activities: limitTrailingItems(
+              activitiesByThread.get(row.threadId) ?? [],
+              SNAPSHOT_THREAD_ACTIVITY_LIMIT,
+            ),
+            checkpoints: limitTrailingItems(
+              checkpointsByThread.get(row.threadId) ?? [],
+              SNAPSHOT_THREAD_CHECKPOINT_LIMIT,
+            ),
             session: sessionsByThread.get(row.threadId) ?? null,
           }));
 
