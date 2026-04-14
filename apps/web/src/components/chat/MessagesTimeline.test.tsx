@@ -43,6 +43,88 @@ beforeAll(() => {
 });
 
 describe("MessagesTimeline", () => {
+  it("renders project-aware empty state copy with orange project name", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        hasMessages={false}
+        isWorking={false}
+        activeTurnInProgress={false}
+        activeTurnStartedAt={null}
+        scrollContainer={null}
+        timelineEntries={[]}
+        completionDividerBeforeEntryId={null}
+        completionSummary={null}
+        turnDiffSummaryByAssistantMessageId={new Map()}
+        nowIso="2026-03-17T19:12:30.000Z"
+        expandedWorkGroups={{}}
+        onToggleWorkGroup={() => {}}
+        onOpenTurnDiff={() => {}}
+        revertTurnCountByUserMessageId={new Map()}
+        onRevertUserMessage={() => {}}
+        onEditUserMessage={() => {}}
+        isRevertingCheckpoint={false}
+        onImageExpand={() => {}}
+        markdownCwd={undefined}
+        resolvedTheme="light"
+        timestampFormat="locale"
+        workspaceRoot={undefined}
+        emptyStateProjectName="Project Alpha"
+      />,
+    );
+
+    expect(markup).toContain("Send a message in ");
+    expect(markup).toContain("Project Alpha");
+    expect(markup).toContain("text-warning");
+  });
+
+  it("renders an edit button beside the copy button for sent user messages", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const messageId = MessageId.makeUnsafe("message-edit-user");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        hasMessages
+        isWorking={false}
+        activeTurnInProgress={false}
+        activeTurnStartedAt={null}
+        scrollContainer={null}
+        timelineEntries={[
+          {
+            id: "entry-edit-user",
+            kind: "message",
+            createdAt: "2026-03-17T19:12:28.000Z",
+            message: {
+              id: messageId,
+              role: "user",
+              text: "Refactor the sidebar layout.",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              streaming: false,
+            },
+          },
+        ]}
+        completionDividerBeforeEntryId={null}
+        completionSummary={null}
+        turnDiffSummaryByAssistantMessageId={new Map()}
+        nowIso="2026-03-17T19:12:30.000Z"
+        expandedWorkGroups={{}}
+        onToggleWorkGroup={() => {}}
+        onOpenTurnDiff={() => {}}
+        revertTurnCountByUserMessageId={new Map([[messageId, 0]])}
+        onRevertUserMessage={() => {}}
+        onEditUserMessage={() => {}}
+        isRevertingCheckpoint={false}
+        onImageExpand={() => {}}
+        markdownCwd={undefined}
+        resolvedTheme="light"
+        timestampFormat="locale"
+        workspaceRoot={undefined}
+      />,
+    );
+
+    expect(markup).toContain("Copy message");
+    expect(markup).toContain("Edit message and start new conversation from here");
+  });
+
   it("renders inline terminal labels with the composer chip UI", async () => {
     const { MessagesTimeline } = await import("./MessagesTimeline");
     const markup = renderToStaticMarkup(
@@ -83,6 +165,7 @@ describe("MessagesTimeline", () => {
         onOpenTurnDiff={() => {}}
         revertTurnCountByUserMessageId={new Map()}
         onRevertUserMessage={() => {}}
+        onEditUserMessage={() => {}}
         isRevertingCheckpoint={false}
         onImageExpand={() => {}}
         markdownCwd={undefined}
@@ -128,6 +211,7 @@ describe("MessagesTimeline", () => {
         onOpenTurnDiff={() => {}}
         revertTurnCountByUserMessageId={new Map()}
         onRevertUserMessage={() => {}}
+        onEditUserMessage={() => {}}
         isRevertingCheckpoint={false}
         onImageExpand={() => {}}
         markdownCwd={undefined}
@@ -141,7 +225,7 @@ describe("MessagesTimeline", () => {
     expect(markup).toContain("Work log");
   });
 
-  it("renders structured tool results with a clean summary and diff block", async () => {
+  it("renders tool entries as terminal-style cards with diff output", async () => {
     const { MessagesTimeline } = await import("./MessagesTimeline");
     const markup = renderToStaticMarkup(
       <MessagesTimeline
@@ -177,6 +261,7 @@ describe("MessagesTimeline", () => {
         onOpenTurnDiff={() => {}}
         revertTurnCountByUserMessageId={new Map()}
         onRevertUserMessage={() => {}}
+        onEditUserMessage={() => {}}
         isRevertingCheckpoint={false}
         onImageExpand={() => {}}
         markdownCwd={undefined}
@@ -186,11 +271,66 @@ describe("MessagesTimeline", () => {
       />,
     );
 
+    expect(markup).toContain('data-tool-work-card-variant="default"');
+    expect(markup).toContain("tool-work-card");
+    expect(markup).toContain("edit");
     expect(markup).toContain(
       "Successfully replaced 1 block(s) in apps/web/src/components/ChatView.tsx.",
     );
     expect(markup).toContain("@@ -1,3 +1,3 @@");
     expect(markup).not.toContain("&quot;content&quot;");
+  });
+
+  it("renders read tool output in tui-style card with json highlighting", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        hasMessages
+        isWorking={false}
+        activeTurnInProgress={false}
+        activeTurnStartedAt={null}
+        scrollContainer={null}
+        timelineEntries={[
+          {
+            id: "entry-read",
+            kind: "work",
+            createdAt: "2026-03-17T19:12:28.000Z",
+            entry: {
+              id: "work-read-1",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              label: "Read",
+              preview: "~/.pi/agent/settings.json",
+              detail: '{\n  "defaultProvider": "openai-codex",\n  "defaultModel": "gpt-5.4"\n}',
+              tone: "tool",
+              requestKind: "file-read",
+              toolTitle: "Read",
+            },
+          },
+        ]}
+        completionDividerBeforeEntryId={null}
+        completionSummary={null}
+        turnDiffSummaryByAssistantMessageId={new Map()}
+        nowIso="2026-03-17T19:12:30.000Z"
+        expandedWorkGroups={{}}
+        onToggleWorkGroup={() => {}}
+        onOpenTurnDiff={() => {}}
+        revertTurnCountByUserMessageId={new Map()}
+        onRevertUserMessage={() => {}}
+        onEditUserMessage={() => {}}
+        isRevertingCheckpoint={false}
+        onImageExpand={() => {}}
+        markdownCwd={undefined}
+        resolvedTheme="light"
+        timestampFormat="locale"
+        workspaceRoot={undefined}
+      />,
+    );
+
+    expect(markup).toContain('data-tool-work-card-variant="default"');
+    expect(markup).toContain("~/.pi/agent/settings.json");
+    expect(markup).toContain("text-sky-200");
+    expect(markup).toContain("text-orange-200");
+    expect(markup).toContain("defaultProvider");
   });
 
   it("renders reasoning progress entries with a titled heading and full body", async () => {
@@ -231,6 +371,7 @@ describe("MessagesTimeline", () => {
         onOpenTurnDiff={() => {}}
         revertTurnCountByUserMessageId={new Map()}
         onRevertUserMessage={() => {}}
+        onEditUserMessage={() => {}}
         isRevertingCheckpoint={false}
         onImageExpand={() => {}}
         markdownCwd={undefined}
@@ -240,6 +381,7 @@ describe("MessagesTimeline", () => {
       />,
     );
 
+    expect(markup).toContain('data-tool-work-card-variant="thinking"');
     expect(markup).toContain("Refining documentation plans");
     expect(markup).toContain("I&#x27;m considering adding a .automation/program.md file");
     expect(markup).toContain("Let&#x27;s get started!");
