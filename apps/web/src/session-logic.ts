@@ -1783,6 +1783,22 @@ export function deriveIsRunningTurn(input: {
     return false;
   }
 
+  const settledCompletedTurnWithoutFreshContinuation =
+    input.activeLatestTurn !== null &&
+    completedAt !== null &&
+    input.latestTurnSettled &&
+    !input.hasStreamingAssistantMessage &&
+    !hasRecentPostCompletionContinuation;
+  const waitingBrieflyForFinalReply =
+    input.allowPostCompletionReplyWait !== false &&
+    input.activeLatestTurn !== null &&
+    input.activeLatestTurn.assistantMessageId !== null &&
+    !input.hasAssistantReplyForActiveTurn &&
+    !finalReplyWaitTimedOut;
+  if (settledCompletedTurnWithoutFreshContinuation && !waitingBrieflyForFinalReply) {
+    return false;
+  }
+
   if (staleRunningTurnTimedOut) {
     return false;
   }

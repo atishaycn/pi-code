@@ -1794,6 +1794,28 @@ describe("deriveIsRunningTurn", () => {
       }),
     ).toBe(false);
   });
+
+  it("stops showing working once a settled turn is done and continuation has gone quiet", () => {
+    expect(
+      deriveIsRunningTurn({
+        activeLatestTurn: {
+          turnId: TurnId.makeUnsafe("turn-sidebar-stuck"),
+          assistantMessageId: MessageId.makeUnsafe("assistant-sidebar-stuck"),
+          startedAt: "2026-04-14T19:32:18.152Z",
+          requestedAt: "2026-04-14T19:32:18.152Z",
+          completedAt: "2026-04-14T19:33:28.233Z",
+        },
+        latestTurnSettled: true,
+        sessionOrchestrationStatus: "ready",
+        sessionActiveTurnId: null,
+        hasStreamingAssistantMessage: false,
+        hasAssistantReplyForActiveTurn: false,
+        hasWorkLogEntry: true,
+        postCompletionContinuationSignalAt: "2026-04-14T19:35:02.929Z",
+        nowIso: "2026-04-14T19:38:00.513Z",
+      }),
+    ).toBe(false);
+  });
 });
 
 describe("PROVIDER_OPTIONS", () => {
