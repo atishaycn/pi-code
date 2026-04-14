@@ -129,8 +129,6 @@ import { Separator } from "./ui/separator";
 import { cn, randomUUID } from "~/lib/utils";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "./ui/tooltip";
 import {
-  LATEST_REASONING_PREVIEW_MAX_HEIGHT_CLASS,
-  LIVE_REASONING_PANEL_MAX_HEIGHT_CLASS,
   PROCESSING_PANEL_SCROLL_BEHAVIOR_CLASS,
   QUEUED_FOLLOWUPS_PANEL_MAX_HEIGHT_CLASS,
 } from "./processingPanelLayout";
@@ -334,7 +332,6 @@ function formatOutgoingPrompt(params: {
 const COMPOSER_PATH_QUERY_DEBOUNCE_MS = 120;
 const SCRIPT_TERMINAL_COLS = 120;
 const SCRIPT_TERMINAL_ROWS = 30;
-const STREAMING_REASONING_LINE_REVEAL_DELAY_MS = 140;
 const ACTIVE_THREAD_COMPLETED_STATUS_DISMISS_MS = 1200;
 
 const extendReplacementRangeForTrailingSpace = (
@@ -381,66 +378,6 @@ interface EditingHistoricalMessageState {
   messageId: MessageId;
   revertTurnCount: number;
   hadAttachments: boolean;
-}
-
-function splitStreamingReasoningLines(text: string): string[] {
-  return text.split(/\r?\n/);
-}
-
-function StreamingReasoningPreview({ text }: { text: string }) {
-  const lines = useMemo(() => splitStreamingReasoningLines(text), [text]);
-  const [visibleLineCount, setVisibleLineCount] = useState(lines.length);
-  const previousLinesRef = useRef(lines);
-
-  useEffect(() => {
-    const previousLines = previousLinesRef.current;
-    previousLinesRef.current = lines;
-
-    const isPureAppend =
-      lines.length > previousLines.length &&
-      previousLines.every((line, index) => line === lines[index]);
-
-    if (!isPureAppend) {
-      setVisibleLineCount(lines.length);
-      return;
-    }
-
-    setVisibleLineCount(previousLines.length);
-    const timer = window.setInterval(() => {
-      setVisibleLineCount((current) => {
-        if (current >= lines.length) {
-          window.clearInterval(timer);
-          return current;
-        }
-        return current + 1;
-      });
-    }, STREAMING_REASONING_LINE_REVEAL_DELAY_MS);
-
-    return () => {
-      window.clearInterval(timer);
-    };
-  }, [lines]);
-
-  return (
-    <div className="mt-1 space-y-1">
-      {(() => {
-        let characterOffset = 0;
-        return lines.slice(0, visibleLineCount).map((line) => {
-          const key = `${characterOffset}:${line}`;
-          characterOffset += line.length + 1;
-
-          return (
-            <p
-              key={key}
-              className="whitespace-pre-wrap break-words text-[11px] leading-5 text-foreground/80"
-            >
-              {line.length > 0 ? line : "\u00a0"}
-            </p>
-          );
-        });
-      })()}
-    </div>
-  );
 }
 
 function useLocalDispatchState(input: {
@@ -1158,11 +1095,6 @@ export default function ChatView({ threadId }: ChatViewProps) {
     () => hasToolActivityForTurn(threadActivities, activeLatestTurn?.turnId),
     [activeLatestTurn?.turnId, threadActivities],
   );
-  const thinkingWorkLogEntries = useMemo(
-    () => currentTurnWorkLogEntries.filter((entry) => entry.tone === "thinking").toReversed(),
-    [currentTurnWorkLogEntries],
-  );
-  const latestThinkingWorkLogEntry = thinkingWorkLogEntries[0] ?? null;
   const pendingApprovals = useMemo(
     () => derivePendingApprovals(threadActivities),
     [threadActivities],
@@ -1278,19 +1210,38 @@ export default function ChatView({ threadId }: ChatViewProps) {
     () => hasAssistantReplyForLatestTurn(activeThread?.messages ?? [], activeLatestTurn),
     [activeLatestTurn, activeThread?.messages],
   );
-  const conversationMessageCount = useMemo(
-    () =>
-      (activeThread?.messages ?? []).filter(
-        (message) => message.role === "user" || message.role === "assistant",
-      ).length,
-    [activeThread?.messages],
-  );
-  const hasPriorConversationHistory =
-    hasAssistantReplyForActiveTurn || conversationMessageCount > 1;
   const isActiveThreadManuallyCompleted = matchesThreadCompletionOverride({
     latestTurn: activeLatestTurn,
     override: activeThreadCompletionOverride,
   });
+  const latestCurrentTurnAssistantSignalAt = useMemo(
+    () =>
+      currentTurnAssistantMessages.reduce<string | null>((latestAt, message) => {
+        const nextAt = message.streaming
+          ? message.createdAt
+          : (message.completedAt ?? message.createdAt);
+        return latestAt === null || nextAt > latestAt ? nextAt : latestAt;
+      }, null),
+    [currentTurnAssistantMessages],
+  );
+  const latestRunningSignalAt = useMemo(
+    () =>
+      [
+        activeThread?.updatedAt ?? null,
+        activeThread?.session?.updatedAt ?? null,
+        currentTurnWorkLogEntries.at(-1)?.createdAt ?? null,
+        latestCurrentTurnAssistantSignalAt,
+      ].reduce<string | null>((latestAt, nextAt) => {
+        if (!nextAt) return latestAt;
+        return latestAt === null || nextAt > latestAt ? nextAt : latestAt;
+      }, null),
+    [
+      activeThread?.session?.updatedAt,
+      activeThread?.updatedAt,
+      currentTurnWorkLogEntries,
+      latestCurrentTurnAssistantSignalAt,
+    ],
+  );
   const postCompletionContinuationSignalAt = derivePostCompletionContinuationSignalAt({
     latestTurn: activeLatestTurn,
     workEntries: workLogEntries,
@@ -1304,6 +1255,7 @@ export default function ChatView({ threadId }: ChatViewProps) {
     hasStreamingAssistantMessage,
     hasAssistantReplyForActiveTurn,
     hasWorkLogEntry: currentTurnWorkLogEntries.length > 0,
+    latestRunningSignalAt,
     postCompletionContinuationSignalAt,
     nowIso,
   });
@@ -1380,12 +1332,6 @@ export default function ChatView({ threadId }: ChatViewProps) {
     serverThread?.id,
     showActiveThreadCompletedStatus,
   ]);
-  const showLiveReasoningPanel =
-    hasPriorConversationHistory &&
-    isRunningTurn &&
-    !latestTurnSettled &&
-    thinkingWorkLogEntries.length > 0 &&
-    (!hasAssistantReplyForActiveTurn || hasStreamingAssistantMessage);
   const isWorking = isRunningTurn || isSendBusy || isConnecting || isRevertingCheckpoint;
   const forkChatDisabledReason = !isServerThread
     ? "Forking is unavailable until this draft thread is created."
@@ -5340,6 +5286,7 @@ export default function ChatView({ threadId }: ChatViewProps) {
                 resolvedTheme={resolvedTheme}
                 timestampFormat={timestampFormat}
                 workspaceRoot={activeWorkspaceRoot}
+                emptyStateProjectName={activeProject?.name ?? null}
               />
             </div>
 
@@ -5470,55 +5417,8 @@ export default function ChatView({ threadId }: ChatViewProps) {
                       </div>
                     ) : null}
 
-                    {showLiveReasoningPanel || queuedFollowUps.length > 0 ? (
+                    {queuedFollowUps.length > 0 ? (
                       <div className="mb-3 space-y-2" data-testid="processing-status-region">
-                        {showLiveReasoningPanel ? (
-                          <div
-                            data-testid="processing-work-log-panel"
-                            className={cn(
-                              LIVE_REASONING_PANEL_MAX_HEIGHT_CLASS,
-                              PROCESSING_PANEL_SCROLL_BEHAVIOR_CLASS,
-                              "rounded-2xl border border-border/70 bg-muted/15 px-3 py-2",
-                            )}
-                          >
-                            <div className="mb-2 flex items-center justify-between gap-2">
-                              <p className="text-[11px] font-medium text-foreground/85">
-                                Live reasoning ({thinkingWorkLogEntries.length})
-                              </p>
-                              <p className="text-[10px] text-muted-foreground/70">Current turn</p>
-                            </div>
-                            {latestThinkingWorkLogEntry ? (
-                              <div
-                                data-testid="processing-latest-reasoning"
-                                className={cn(
-                                  "mb-2 rounded-xl border border-blue-500/15 bg-blue-500/5 px-2.5 py-2",
-                                  LATEST_REASONING_PREVIEW_MAX_HEIGHT_CLASS,
-                                  PROCESSING_PANEL_SCROLL_BEHAVIOR_CLASS,
-                                )}
-                              >
-                                <div className="flex items-center justify-between gap-2">
-                                  <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-blue-900/70 dark:text-blue-100/70">
-                                    Latest reasoning
-                                  </p>
-                                  <p className="text-[10px] text-muted-foreground/70">
-                                    Newest first
-                                  </p>
-                                </div>
-                                <StreamingReasoningPreview
-                                  text={
-                                    latestThinkingWorkLogEntry.detail ??
-                                    latestThinkingWorkLogEntry.label
-                                  }
-                                />
-                              </div>
-                            ) : null}
-                            <div className="rounded-xl border border-border/60 bg-background/55 px-2.5 py-2">
-                              <p className="text-[11px] text-muted-foreground/70">
-                                Showing only the latest reasoning while this response is running.
-                              </p>
-                            </div>
-                          </div>
-                        ) : null}
                         {queuedFollowUps.length > 0 ? (
                           <div
                             data-testid="queued-followups-panel"

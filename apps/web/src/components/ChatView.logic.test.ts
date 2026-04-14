@@ -571,6 +571,8 @@ describe("deriveIsRunningTurn", () => {
         activeLatestTurn: {
           turnId: TurnId.makeUnsafe("turn-1"),
           assistantMessageId: MessageId.makeUnsafe("assistant-1"),
+          startedAt: "2026-03-29T00:00:00.000Z",
+          requestedAt: "2026-03-29T00:00:00.000Z",
           completedAt: "2026-03-29T00:00:10.000Z",
         },
         latestTurnSettled: true,
@@ -589,6 +591,8 @@ describe("deriveIsRunningTurn", () => {
         activeLatestTurn: {
           turnId: TurnId.makeUnsafe("turn-1"),
           assistantMessageId: MessageId.makeUnsafe("assistant-1"),
+          startedAt: "2026-03-29T00:00:00.000Z",
+          requestedAt: "2026-03-29T00:00:00.000Z",
           completedAt: "2026-03-29T00:00:10.000Z",
         },
         latestTurnSettled: true,
@@ -608,6 +612,8 @@ describe("deriveIsRunningTurn", () => {
         activeLatestTurn: {
           turnId: TurnId.makeUnsafe("turn-1"),
           assistantMessageId: MessageId.makeUnsafe("assistant-1"),
+          startedAt: "2026-03-29T00:00:00.000Z",
+          requestedAt: "2026-03-29T00:00:00.000Z",
           completedAt: "2026-03-29T00:00:10.000Z",
         },
         latestTurnSettled: true,
@@ -627,6 +633,8 @@ describe("deriveIsRunningTurn", () => {
         activeLatestTurn: {
           turnId: TurnId.makeUnsafe("turn-1"),
           assistantMessageId: MessageId.makeUnsafe("assistant-1"),
+          startedAt: "2026-03-29T00:00:00.000Z",
+          requestedAt: "2026-03-29T00:00:00.000Z",
           completedAt: "2026-03-29T00:00:10.000Z",
         },
         latestTurnSettled: true,
@@ -646,6 +654,8 @@ describe("deriveIsRunningTurn", () => {
         activeLatestTurn: {
           turnId: TurnId.makeUnsafe("turn-1"),
           assistantMessageId: MessageId.makeUnsafe("assistant-1"),
+          startedAt: "2026-03-29T00:00:00.000Z",
+          requestedAt: "2026-03-29T00:00:00.000Z",
           completedAt: "2026-03-29T00:00:10.000Z",
         },
         latestTurnSettled: false,
@@ -665,6 +675,8 @@ describe("deriveIsRunningTurn", () => {
         activeLatestTurn: {
           turnId: TurnId.makeUnsafe("turn-1"),
           assistantMessageId: MessageId.makeUnsafe("assistant-1"),
+          startedAt: "2026-03-29T00:00:00.000Z",
+          requestedAt: "2026-03-29T00:00:00.000Z",
           completedAt: "2026-03-29T00:00:10.000Z",
         },
         latestTurnSettled: true,
@@ -683,6 +695,8 @@ describe("deriveIsRunningTurn", () => {
         activeLatestTurn: {
           turnId: TurnId.makeUnsafe("turn-continuation"),
           assistantMessageId: MessageId.makeUnsafe("assistant-continuation"),
+          startedAt: "2026-03-29T00:00:00.000Z",
+          requestedAt: "2026-03-29T00:00:00.000Z",
           completedAt: "2026-03-29T00:00:10.000Z",
         },
         latestTurnSettled: true,
@@ -703,6 +717,8 @@ describe("deriveIsRunningTurn", () => {
         activeLatestTurn: {
           turnId: TurnId.makeUnsafe("turn-finalizing"),
           assistantMessageId: "assistant-1" as never,
+          startedAt: "2026-03-29T00:00:00.000Z",
+          requestedAt: "2026-03-29T00:00:00.000Z",
           completedAt: null,
         },
         latestTurnSettled: false,
@@ -721,6 +737,8 @@ describe("deriveIsRunningTurn", () => {
         activeLatestTurn: {
           turnId: TurnId.makeUnsafe("turn-stale"),
           assistantMessageId: "assistant-1" as never,
+          startedAt: "2026-03-29T00:00:00.000Z",
+          requestedAt: "2026-03-29T00:00:00.000Z",
           completedAt: "2026-03-29T00:00:10.000Z",
         },
         latestTurnSettled: false,
@@ -739,6 +757,8 @@ describe("deriveIsRunningTurn", () => {
         activeLatestTurn: {
           turnId: TurnId.makeUnsafe("turn-stale-completed"),
           assistantMessageId: "assistant-2" as never,
+          startedAt: "2026-03-29T00:00:00.000Z",
+          requestedAt: "2026-03-29T00:00:00.000Z",
           completedAt: "2026-03-29T00:00:10.000Z",
         },
         latestTurnSettled: false,
@@ -757,6 +777,8 @@ describe("deriveIsRunningTurn", () => {
         activeLatestTurn: {
           turnId: TurnId.makeUnsafe("turn-tool-only"),
           assistantMessageId: null,
+          startedAt: "2026-03-29T00:00:00.000Z",
+          requestedAt: "2026-03-29T00:00:00.000Z",
           completedAt: "2026-03-29T00:00:10.000Z",
         },
         latestTurnSettled: false,
@@ -765,6 +787,27 @@ describe("deriveIsRunningTurn", () => {
         hasStreamingAssistantMessage: false,
         hasAssistantReplyForActiveTurn: false,
         hasWorkLogEntry: true,
+      }),
+    ).toBe(false);
+  });
+  it("drops zombie working state after the turn stops emitting signals", () => {
+    expect(
+      deriveIsRunningTurn({
+        activeLatestTurn: {
+          turnId: TurnId.makeUnsafe("turn-zombie"),
+          assistantMessageId: null,
+          startedAt: "2026-03-29T00:00:00.000Z",
+          requestedAt: "2026-03-29T00:00:00.000Z",
+          completedAt: null,
+        },
+        latestTurnSettled: false,
+        sessionOrchestrationStatus: "ready",
+        sessionActiveTurnId: null,
+        hasStreamingAssistantMessage: false,
+        hasAssistantReplyForActiveTurn: false,
+        hasWorkLogEntry: false,
+        latestRunningSignalAt: "2026-03-29T00:00:05.000Z",
+        nowIso: "2026-03-29T00:01:10.000Z",
       }),
     ).toBe(false);
   });

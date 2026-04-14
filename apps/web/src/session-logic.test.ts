@@ -1758,6 +1758,8 @@ describe("deriveIsRunningTurn", () => {
         activeLatestTurn: {
           turnId: TurnId.makeUnsafe("turn-1"),
           assistantMessageId: null,
+          startedAt: "2026-03-29T00:00:00.000Z",
+          requestedAt: "2026-03-29T00:00:00.000Z",
           completedAt: "2026-03-29T00:00:10.000Z",
         },
         latestTurnSettled: true,
@@ -1767,6 +1769,28 @@ describe("deriveIsRunningTurn", () => {
         hasAssistantReplyForActiveTurn: false,
         hasWorkLogEntry: true,
         nowIso: "2026-03-29T00:00:20.000Z",
+      }),
+    ).toBe(false);
+  });
+
+  it("drops stale zombie turns that stopped emitting any running signal", () => {
+    expect(
+      deriveIsRunningTurn({
+        activeLatestTurn: {
+          turnId: TurnId.makeUnsafe("turn-zombie"),
+          assistantMessageId: null,
+          startedAt: "2026-03-29T00:00:00.000Z",
+          requestedAt: "2026-03-29T00:00:00.000Z",
+          completedAt: null,
+        },
+        latestTurnSettled: false,
+        sessionOrchestrationStatus: "ready",
+        sessionActiveTurnId: null,
+        hasStreamingAssistantMessage: false,
+        hasAssistantReplyForActiveTurn: false,
+        hasWorkLogEntry: false,
+        latestRunningSignalAt: "2026-03-29T00:00:05.000Z",
+        nowIso: "2026-03-29T00:01:10.000Z",
       }),
     ).toBe(false);
   });

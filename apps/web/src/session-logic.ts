@@ -52,6 +52,12 @@ export interface WorkLogEntry {
     | "command_output"
     | "file_change_output";
   sourceItemId?: string;
+  timeoutMs?: number;
+  durationMs?: number;
+  exitCode?: number;
+  truncated?: boolean;
+  cancelled?: boolean;
+  fullOutputPath?: string;
   subagent?: SubagentInvocation;
 }
 
@@ -578,6 +584,7 @@ function toDerivedWorkLogEntry(activity: OrchestrationThreadActivity): DerivedWo
     parsedDetail.changedFiles?.length ? parsedDetail.changedFiles : undefined,
   );
   const sourceItemId = asTrimmedString(payload?.itemId);
+  const executionMeta = extractWorkLogExecutionMeta(payload);
   const subagent = deriveSubagentInvocationFromPayload(payload);
   const entry: DerivedWorkLogEntry = {
     id: activity.id,
@@ -616,6 +623,24 @@ function toDerivedWorkLogEntry(activity: OrchestrationThreadActivity): DerivedWo
   }
   if (sourceItemId) {
     entry.sourceItemId = sourceItemId;
+  }
+  if (executionMeta.timeoutMs !== undefined) {
+    entry.timeoutMs = executionMeta.timeoutMs;
+  }
+  if (executionMeta.durationMs !== undefined) {
+    entry.durationMs = executionMeta.durationMs;
+  }
+  if (executionMeta.exitCode !== undefined) {
+    entry.exitCode = executionMeta.exitCode;
+  }
+  if (executionMeta.truncated !== undefined) {
+    entry.truncated = executionMeta.truncated;
+  }
+  if (executionMeta.cancelled !== undefined) {
+    entry.cancelled = executionMeta.cancelled;
+  }
+  if (executionMeta.fullOutputPath !== undefined) {
+    entry.fullOutputPath = executionMeta.fullOutputPath;
   }
   const collapseKey = deriveToolLifecycleCollapseKey(entry);
   if (collapseKey) {
@@ -756,6 +781,12 @@ function mergeDerivedWorkLogEntries(
   const collapseKey = next.collapseKey ?? previous.collapseKey;
   const streamKind = next.streamKind ?? previous.streamKind;
   const sourceItemId = next.sourceItemId ?? previous.sourceItemId;
+  const timeoutMs = next.timeoutMs ?? previous.timeoutMs;
+  const durationMs = next.durationMs ?? previous.durationMs;
+  const exitCode = next.exitCode ?? previous.exitCode;
+  const truncated = next.truncated ?? previous.truncated;
+  const cancelled = next.cancelled ?? previous.cancelled;
+  const fullOutputPath = next.fullOutputPath ?? previous.fullOutputPath;
   const subagent = next.subagent ?? previous.subagent;
   return {
     ...previous,
@@ -772,6 +803,12 @@ function mergeDerivedWorkLogEntries(
     ...(requestKind ? { requestKind } : {}),
     ...(streamKind ? { streamKind } : {}),
     ...(sourceItemId ? { sourceItemId } : {}),
+    ...(timeoutMs !== undefined ? { timeoutMs } : {}),
+    ...(durationMs !== undefined ? { durationMs } : {}),
+    ...(exitCode !== undefined ? { exitCode } : {}),
+    ...(truncated !== undefined ? { truncated } : {}),
+    ...(cancelled !== undefined ? { cancelled } : {}),
+    ...(fullOutputPath ? { fullOutputPath } : {}),
     ...(subagent ? { subagent } : {}),
     ...(collapseKey ? { collapseKey } : {}),
     ...(next.activityKind !== "thinking.delta" && next.activityKind !== "tool.output.delta"
@@ -1072,6 +1109,115 @@ function extractToolCommand(
 
 function extractToolTitle(payload: Record<string, unknown> | null): string | null {
   return asTrimmedString(payload?.title);
+}
+
+function asFiniteNumber(value: unknown): number | null {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return null;
+  }
+  return value;
+}
+
+function normalizeDurationMs(value: unknown): number | null {
+  const durationMs = asFiniteNumber(value);
+  if (durationMs === null || durationMs < 0) {
+    return null;
+  }
+  return Math.round(durationMs);
+}
+
+function normalizeElapsedSeconds(value: unknown): number | null {
+  const elapsedSeconds = asFiniteNumber(value);
+  if (elapsedSeconds === null || elapsedSeconds < 0) {
+    return null;
+  }
+  return Math.round(elapsedSeconds * 1_000);
+}
+
+function normalizeTimeoutMs(
+  value: unknown,
+  unit: "seconds" | "milliseconds" | "auto",
+): number | null {
+  const timeout = asFiniteNumber(value);
+  if (timeout === null || timeout < 0) {
+    return null;
+  }
+  if (unit === "milliseconds") {
+    return Math.round(timeout);
+  }
+  if (unit === "seconds") {
+    return Math.round(timeout * 1_000);
+  }
+  return Math.round(timeout >= 10_000 ? timeout : timeout * 1_000);
+}
+
+function extractWorkLogExecutionMeta(payload: Record<string, unknown> | null): {
+  timeoutMs?: number;
+  durationMs?: number;
+  exitCode?: number;
+  truncated?: boolean;
+  cancelled?: boolean;
+  fullOutputPath?: string;
+} {
+  const data = asRecord(payload?.data);
+  const item = asRecord(data?.item);
+  const itemResult = asRecord(item?.result);
+  const itemInput = asRecord(item?.input);
+  const candidates = [itemResult, itemInput, item, data, payload];
+
+  let timeoutMs: number | undefined;
+  let durationMs: number | undefined;
+  let exitCode: number | undefined;
+  let truncated: boolean | undefined;
+  let cancelled: boolean | undefined;
+  let fullOutputPath: string | undefined;
+
+  for (const candidate of candidates) {
+    if (!candidate) {
+      continue;
+    }
+    timeoutMs ??=
+      normalizeTimeoutMs(candidate.timeoutMs, "milliseconds") ??
+      normalizeTimeoutMs(candidate.timeout_ms, "milliseconds") ??
+      normalizeTimeoutMs(candidate.timeoutSeconds, "seconds") ??
+      normalizeTimeoutMs(candidate.timeout_seconds, "seconds") ??
+      normalizeTimeoutMs(candidate.timeout, "auto") ??
+      undefined;
+    durationMs ??=
+      normalizeDurationMs(candidate.durationMs) ??
+      normalizeDurationMs(candidate.duration_ms) ??
+      normalizeDurationMs(candidate.elapsedMs) ??
+      normalizeDurationMs(candidate.elapsed_ms) ??
+      normalizeElapsedSeconds(candidate.elapsedSeconds) ??
+      normalizeElapsedSeconds(candidate.elapsed_seconds) ??
+      undefined;
+    if (exitCode === undefined) {
+      const nextExitCode = candidate.exitCode ?? candidate.exit_code;
+      if (typeof nextExitCode === "number" && Number.isInteger(nextExitCode)) {
+        exitCode = nextExitCode;
+      }
+    }
+    truncated ??= typeof candidate.truncated === "boolean" ? candidate.truncated : undefined;
+    cancelled ??=
+      typeof candidate.cancelled === "boolean"
+        ? candidate.cancelled
+        : typeof candidate.canceled === "boolean"
+          ? candidate.canceled
+          : undefined;
+    fullOutputPath ??=
+      asTrimmedString(candidate.fullOutputPath) ??
+      asTrimmedString(candidate.full_output_path) ??
+      undefined;
+  }
+
+  return {
+    ...(timeoutMs !== undefined ? { timeoutMs } : {}),
+    ...(durationMs !== undefined ? { durationMs } : {}),
+    ...(exitCode !== undefined ? { exitCode } : {}),
+    ...(truncated !== undefined ? { truncated } : {}),
+    ...(cancelled !== undefined ? { cancelled } : {}),
+    ...(fullOutputPath !== undefined ? { fullOutputPath } : {}),
+  };
 }
 
 interface ParsedWorkLogDetail {
@@ -1507,6 +1653,7 @@ export function hasAssistantReplyForLatestTurn(
 
 const MAX_WAIT_FOR_ASSISTANT_REPLY_AFTER_COMPLETION_MS = 5_000;
 const POST_COMPLETION_CONTINUATION_WINDOW_MS = 15_000;
+const STALE_RUNNING_TURN_TIMEOUT_MS = 60_000;
 
 export function derivePostCompletionContinuationSignalAt(input: {
   latestTurn: Pick<NonNullable<Thread["latestTurn"]>, "completedAt"> | null;
@@ -1548,16 +1695,19 @@ export function derivePostCompletionContinuationSignalAt(input: {
 }
 
 export function deriveIsRunningTurn(input: {
-  activeLatestTurn: Pick<
-    NonNullable<Thread["latestTurn"]>,
-    "turnId" | "assistantMessageId" | "completedAt"
-  > | null;
+  activeLatestTurn:
+    | (Pick<NonNullable<Thread["latestTurn"]>, "turnId" | "assistantMessageId" | "completedAt"> & {
+        startedAt?: string | null;
+        requestedAt?: string | null;
+      })
+    | null;
   latestTurnSettled: boolean;
   sessionOrchestrationStatus: ThreadSession["orchestrationStatus"] | null | undefined;
   sessionActiveTurnId: ThreadSession["activeTurnId"] | null | undefined;
   hasStreamingAssistantMessage: boolean;
   hasAssistantReplyForActiveTurn: boolean;
   hasWorkLogEntry: boolean;
+  latestRunningSignalAt?: string | null;
   postCompletionContinuationSignalAt?: string | null;
   nowIso?: string | null;
   allowPostCompletionReplyWait?: boolean;
@@ -1576,6 +1726,25 @@ export function deriveIsRunningTurn(input: {
     continuationSignalAtMs > completedAtMs &&
     (Number.isNaN(nowMs) ||
       nowMs - continuationSignalAtMs <= POST_COMPLETION_CONTINUATION_WINDOW_MS);
+
+  const latestRunningSignalAtMs = input.latestRunningSignalAt
+    ? Date.parse(input.latestRunningSignalAt)
+    : Number.NaN;
+  const latestTurnAnchorAt =
+    input.activeLatestTurn?.startedAt ?? input.activeLatestTurn?.requestedAt;
+  const latestTurnAnchorAtMs = latestTurnAnchorAt ? Date.parse(latestTurnAnchorAt) : Number.NaN;
+  const latestObservedRunningSignalAtMs = Math.max(
+    Number.isNaN(latestRunningSignalAtMs) ? Number.NEGATIVE_INFINITY : latestRunningSignalAtMs,
+    Number.isNaN(latestTurnAnchorAtMs) ? Number.NEGATIVE_INFINITY : latestTurnAnchorAtMs,
+  );
+  const staleRunningTurnTimedOut =
+    input.activeLatestTurn !== null &&
+    input.activeLatestTurn.completedAt === null &&
+    !input.hasStreamingAssistantMessage &&
+    !input.hasAssistantReplyForActiveTurn &&
+    !Number.isNaN(nowMs) &&
+    Number.isFinite(latestObservedRunningSignalAtMs) &&
+    nowMs - latestObservedRunningSignalAtMs > STALE_RUNNING_TURN_TIMEOUT_MS;
 
   const hasCompletedAssistantReplyForActiveTurn =
     input.hasAssistantReplyForActiveTurn &&
@@ -1611,6 +1780,10 @@ export function deriveIsRunningTurn(input: {
     !input.hasStreamingAssistantMessage &&
     !input.hasAssistantReplyForActiveTurn;
   if (skipPostCompletionReplyWait) {
+    return false;
+  }
+
+  if (staleRunningTurnTimedOut) {
     return false;
   }
 
