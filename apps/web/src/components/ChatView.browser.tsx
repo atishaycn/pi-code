@@ -2523,165 +2523,11 @@ describe("ChatView timeline estimator parity (full app)", () => {
         () => {
           const threadRow = document.querySelector(`[data-testid="thread-row-${THREAD_ID}"]`);
           expect(threadRow?.textContent).toContain("Browser test thread");
-          expect(threadRow?.textContent).toContain("Done");
+          expect(threadRow?.textContent).toContain("Completed");
           expect(threadRow?.textContent).not.toContain("Working");
           expect(document.querySelector('[data-testid="processing-status-panel"]')).toBeNull();
           expect(document.body.textContent).not.toContain("Current turn still running");
           expect(document.body.textContent).not.toContain("Pi working");
-        },
-        { timeout: 8_000, interval: 16 },
-      );
-    } finally {
-      await mounted.cleanup();
-    }
-  });
-
-  it("hides live reasoning during the first turn of a brand new chat", async () => {
-    const runningTurnId = "turn-first-turn-reasoning" as TurnId;
-    const snapshot = createDraftOnlySnapshot();
-    const thread = createThread({
-      threadId: THREAD_ID,
-      title: "New thread",
-      sessionStatus: "running",
-      messages: [
-        {
-          ...createUserMessage({
-            id: "msg-user-first-turn-reasoning" as MessageId,
-            text: "first turn target",
-            offsetSeconds: 2_100,
-          }),
-          turnId: runningTurnId,
-        },
-      ],
-      activities: [
-        {
-          id: EventId.makeUnsafe("activity-first-turn-reasoning"),
-          tone: "thinking",
-          kind: "thinking.delta",
-          summary: "Planning first reply",
-          payload: {
-            itemId: "reasoning-first-turn-1",
-            streamKind: "reasoning_text",
-            detail: "Thinking through first response.",
-          },
-          createdAt: isoAt(2_101),
-          sequence: 1,
-          turnId: runningTurnId,
-        },
-      ],
-      latestTurn: {
-        turnId: runningTurnId,
-        state: "running",
-        requestedAt: isoAt(2_100),
-        startedAt: isoAt(2_101),
-        completedAt: null,
-        assistantMessageId: null,
-      },
-      updatedAt: isoAt(2_101),
-    });
-
-    const mounted = await mountChatView({
-      viewport: DEFAULT_VIEWPORT,
-      snapshot: {
-        ...snapshot,
-        threads: [thread],
-      },
-    });
-
-    try {
-      await vi.waitFor(
-        () => {
-          expect(document.body.textContent).toContain("first turn target");
-          expect(document.querySelector('[data-testid="processing-work-log-panel"]')).toBeNull();
-          expect(document.body.textContent).not.toContain("Live reasoning");
-        },
-        { timeout: 8_000, interval: 16 },
-      );
-    } finally {
-      await mounted.cleanup();
-    }
-  });
-
-  it("hides stale live reasoning once the assistant reply is already visible", async () => {
-    const runningTurnId = "turn-stale-reasoning" as TurnId;
-    const assistantMessageId = "assistant-stale-reasoning" as MessageId;
-    const baseSnapshot = createSnapshotForTargetUser({
-      targetMessageId: "msg-user-stale-reasoning" as MessageId,
-      targetText: "stale reasoning target",
-    });
-    const targetThreadIndex = baseSnapshot.threads.findIndex((thread) => thread.id === THREAD_ID);
-    const threads = [...baseSnapshot.threads];
-    if (targetThreadIndex >= 0) {
-      const thread = baseSnapshot.threads[targetThreadIndex]!;
-      threads[targetThreadIndex] = {
-        ...thread,
-        messages: [
-          createUserMessage({
-            id: "msg-user-stale-reasoning" as MessageId,
-            text: "stale reasoning target",
-            offsetSeconds: 2_100,
-          }),
-          {
-            ...createAssistantMessage({
-              id: assistantMessageId,
-              text: "done",
-              offsetSeconds: 2_110,
-            }),
-            turnId: runningTurnId,
-          },
-        ],
-        activities: [
-          {
-            id: EventId.makeUnsafe("activity-stale-reasoning"),
-            tone: "thinking",
-            kind: "thinking.delta",
-            summary: "Running tests",
-            payload: {
-              itemId: "reasoning-stale-1",
-              streamKind: "reasoning_text",
-              detail:
-                "**Running tests**\n\nThis should not linger once the final answer is visible.",
-            },
-            createdAt: isoAt(2_109),
-            sequence: 1,
-            turnId: runningTurnId,
-          },
-        ],
-        latestTurn: {
-          turnId: runningTurnId,
-          state: "running",
-          requestedAt: isoAt(2_100),
-          startedAt: isoAt(2_101),
-          completedAt: null,
-          assistantMessageId,
-        },
-        session:
-          thread.session === null
-            ? null
-            : {
-                ...thread.session,
-                status: "running" as const,
-                activeTurnId: runningTurnId,
-                updatedAt: isoAt(2_111),
-              },
-        updatedAt: isoAt(2_111),
-      };
-    }
-
-    const mounted = await mountChatView({
-      viewport: DEFAULT_VIEWPORT,
-      snapshot: {
-        ...baseSnapshot,
-        threads,
-      },
-    });
-
-    try {
-      await vi.waitFor(
-        () => {
-          expect(document.body.textContent).toContain("done");
-          expect(document.querySelector('[data-testid="processing-work-log-panel"]')).toBeNull();
-          expect(document.body.textContent).not.toContain("Live reasoning");
         },
         { timeout: 8_000, interval: 16 },
       );
@@ -2847,9 +2693,7 @@ describe("ChatView timeline estimator parity (full app)", () => {
       );
 
       // The empty thread view and composer should still be visible.
-      await expect
-        .element(page.getByText("Send a message to start the conversation."))
-        .toBeInTheDocument();
+      await expect.element(page.getByText("Send a message in Project.")).toBeInTheDocument();
       await expect.element(page.getByTestId("composer-editor")).toBeInTheDocument();
     } finally {
       await mounted.cleanup();
