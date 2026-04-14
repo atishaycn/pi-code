@@ -62,6 +62,7 @@ import {
   findLatestProposedPlan,
   deriveWorkLogEntries,
   derivePostCompletionContinuationSignalAt,
+  deriveLatestRunningSignalAt,
   hasActionableProposedPlan,
   hasToolActivityForTurn,
   hasAssistantReplyForLatestTurn,
@@ -1214,32 +1215,21 @@ export default function ChatView({ threadId }: ChatViewProps) {
     latestTurn: activeLatestTurn,
     override: activeThreadCompletionOverride,
   });
-  const latestCurrentTurnAssistantSignalAt = useMemo(
-    () =>
-      currentTurnAssistantMessages.reduce<string | null>((latestAt, message) => {
-        const nextAt = message.streaming
-          ? message.createdAt
-          : (message.completedAt ?? message.createdAt);
-        return latestAt === null || nextAt > latestAt ? nextAt : latestAt;
-      }, null),
-    [currentTurnAssistantMessages],
-  );
   const latestRunningSignalAt = useMemo(
     () =>
-      [
-        activeThread?.updatedAt ?? null,
-        activeThread?.session?.updatedAt ?? null,
-        currentTurnWorkLogEntries.at(-1)?.createdAt ?? null,
-        latestCurrentTurnAssistantSignalAt,
-      ].reduce<string | null>((latestAt, nextAt) => {
-        if (!nextAt) return latestAt;
-        return latestAt === null || nextAt > latestAt ? nextAt : latestAt;
-      }, null),
+      deriveLatestRunningSignalAt({
+        latestTurn: activeLatestTurn,
+        currentTurnWorkEntries: currentTurnWorkLogEntries,
+        currentTurnAssistantMessages,
+        threadUpdatedAt: activeThread?.updatedAt ?? null,
+        session: activeThread?.session,
+      }),
     [
-      activeThread?.session?.updatedAt,
+      activeLatestTurn,
+      activeThread?.session,
       activeThread?.updatedAt,
+      currentTurnAssistantMessages,
       currentTurnWorkLogEntries,
-      latestCurrentTurnAssistantSignalAt,
     ],
   );
   const postCompletionContinuationSignalAt = derivePostCompletionContinuationSignalAt({

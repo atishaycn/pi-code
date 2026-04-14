@@ -20,6 +20,7 @@ import {
   derivePendingApprovals,
   derivePendingUserInputs,
   derivePostCompletionContinuationSignalAt,
+  deriveLatestRunningSignalAt,
   deriveWorkLogEntries,
   deriveIsRunningTurn,
   hasAssistantReplyForLatestTurn,
@@ -241,24 +242,13 @@ function buildSidebarThreadSummary(thread: Thread): SidebarThreadSummary {
     { includeAllTurns: true },
   );
   const hasWorkLogEntry = currentTurnWorkLogEntries.length > 0;
-  const latestCurrentTurnAssistantSignalAt = [...latestTurnAssistantMessages].reduce<string | null>(
-    (latestAt, message) => {
-      const nextAt = message.streaming
-        ? message.createdAt
-        : (message.completedAt ?? message.createdAt);
-      return latestAt === null || nextAt > latestAt ? nextAt : latestAt;
-    },
-    null,
-  );
-  const latestRunningSignalAt = [
-    thread.updatedAt,
-    thread.session?.updatedAt ?? null,
-    currentTurnWorkLogEntries.at(-1)?.createdAt ?? null,
-    latestCurrentTurnAssistantSignalAt,
-  ].reduce<string | null>((latestAt, nextAt) => {
-    if (!nextAt) return latestAt;
-    return latestAt === null || nextAt > latestAt ? nextAt : latestAt;
-  }, null);
+  const latestRunningSignalAt = deriveLatestRunningSignalAt({
+    latestTurn,
+    currentTurnWorkEntries: currentTurnWorkLogEntries,
+    currentTurnAssistantMessages: latestTurnAssistantMessages,
+    threadUpdatedAt: thread.updatedAt,
+    session: thread.session,
+  });
   const postCompletionContinuationSignalAt = derivePostCompletionContinuationSignalAt({
     latestTurn,
     workEntries: allTurnWorkLogEntries,

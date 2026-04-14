@@ -16,6 +16,7 @@ import {
   derivePendingApprovals,
   derivePendingUserInputs,
   deriveTimelineEntries,
+  deriveLatestRunningSignalAt,
   deriveWorkLogEntries,
   findLatestProposedPlan,
   findSidebarProposedPlan,
@@ -1748,6 +1749,44 @@ describe("deriveActiveWorkStartedAt", () => {
         "2026-02-27T21:11:00.000Z",
       ),
     ).toBe("2026-02-27T21:11:00.000Z");
+  });
+});
+
+describe("deriveLatestRunningSignalAt", () => {
+  it("ignores ready-session timestamp refreshes for stale zombie turns", () => {
+    expect(
+      deriveLatestRunningSignalAt({
+        latestTurn: {
+          turnId: TurnId.makeUnsafe("turn-zombie"),
+        },
+        currentTurnWorkEntries: [],
+        currentTurnAssistantMessages: [],
+        threadUpdatedAt: "2026-04-14T19:47:34.834Z",
+        session: {
+          orchestrationStatus: "ready",
+          activeTurnId: undefined,
+          updatedAt: "2026-04-14T19:47:34.834Z",
+        },
+      }),
+    ).toBe(null);
+  });
+
+  it("keeps running-session timestamps for the actively running latest turn", () => {
+    expect(
+      deriveLatestRunningSignalAt({
+        latestTurn: {
+          turnId: TurnId.makeUnsafe("turn-live"),
+        },
+        currentTurnWorkEntries: [],
+        currentTurnAssistantMessages: [],
+        threadUpdatedAt: "2026-04-14T19:47:34.834Z",
+        session: {
+          orchestrationStatus: "running",
+          activeTurnId: TurnId.makeUnsafe("turn-live"),
+          updatedAt: "2026-04-14T19:47:34.833Z",
+        },
+      }),
+    ).toBe("2026-04-14T19:47:34.834Z");
   });
 });
 

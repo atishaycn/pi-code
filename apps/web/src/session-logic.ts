@@ -1694,6 +1694,44 @@ export function derivePostCompletionContinuationSignalAt(input: {
   return latestSignalAt;
 }
 
+export function deriveLatestRunningSignalAt(input: {
+  latestTurn: Pick<NonNullable<Thread["latestTurn"]>, "turnId"> | null;
+  currentTurnWorkEntries: ReadonlyArray<Pick<WorkLogEntry, "createdAt">>;
+  currentTurnAssistantMessages: ReadonlyArray<
+    Pick<ChatMessage, "createdAt" | "completedAt" | "streaming">
+  >;
+  threadUpdatedAt?: string | null | undefined;
+  session?:
+    | (Pick<NonNullable<Thread["session"]>, "updatedAt" | "orchestrationStatus"> & {
+        activeTurnId?: TurnId | null | undefined;
+      })
+    | null
+    | undefined;
+}): string | null {
+  const latestCurrentTurnAssistantSignalAt = input.currentTurnAssistantMessages.reduce<
+    string | null
+  >((latestAt, message) => {
+    const nextAt = message.streaming
+      ? message.createdAt
+      : (message.completedAt ?? message.createdAt);
+    return latestAt === null || nextAt > latestAt ? nextAt : latestAt;
+  }, null);
+  const hasActiveRunningSessionForLatestTurn =
+    input.latestTurn !== null &&
+    input.session?.orchestrationStatus === "running" &&
+    input.session.activeTurnId === input.latestTurn.turnId;
+
+  return [
+    input.currentTurnWorkEntries.at(-1)?.createdAt ?? null,
+    latestCurrentTurnAssistantSignalAt,
+    hasActiveRunningSessionForLatestTurn ? (input.session?.updatedAt ?? null) : null,
+    hasActiveRunningSessionForLatestTurn ? (input.threadUpdatedAt ?? null) : null,
+  ].reduce<string | null>((latestAt, nextAt) => {
+    if (!nextAt) return latestAt;
+    return latestAt === null || nextAt > latestAt ? nextAt : latestAt;
+  }, null);
+}
+
 export function deriveIsRunningTurn(input: {
   activeLatestTurn:
     | (Pick<NonNullable<Thread["latestTurn"]>, "turnId" | "assistantMessageId" | "completedAt"> & {
