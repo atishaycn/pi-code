@@ -1,0 +1,37 @@
+[
+  {
+    "type": "warning",
+    "text": "%cElectron Security Warning (Insecure Content-Security-Policy) font-weight: bold; This renderer process has either no Content Security\n  Policy set or a policy with \"unsafe-eval\" enabled. This exposes users of\n  this app to unnecessary security risks.\n\nFor more information and help, consult\nhttps://electronjs.org/docs/tutorial/security.\nThis warning will not show up\nonce the app is packaged.",
+    "at": "2026-04-12T07:15:31.557Z"
+  },
+  {
+    "type": "error",
+    "text": "WebSocket connection to 'ws://127.0.0.1:61561/ws?token=2e3107e18d67e22b6c31c848d6d7f8fa998601148fb5267c' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+    "at": "2026-04-12T07:15:31.571Z"
+  },
+  {
+    "type": "error",
+    "text": "WebSocket connection to 'ws://127.0.0.1:61561/ws?token=2e3107e18d67e22b6c31c848d6d7f8fa998601148fb5267c' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+    "at": "2026-04-12T07:15:32.578Z"
+  },
+  {
+    "type": "error",
+    "text": "WebSocket connection to 'ws://127.0.0.1:61561/ws?token=2e3107e18d67e22b6c31c848d6d7f8fa998601148fb5267c' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+    "at": "2026-04-12T07:15:34.588Z"
+  },
+  {
+    "type": "error",
+    "text": "WebSocket connection to 'ws://127.0.0.1:61561/ws?token=2e3107e18d67e22b6c31c848d6d7f8fa998601148fb5267c' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+    "at": "2026-04-12T07:15:38.586Z"
+  },
+  {
+    "type": "error",
+    "text": "WebSocket connection to 'ws://127.0.0.1:61561/ws?token=2e3107e18d67e22b6c31c848d6d7f8fa998601148fb5267c' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+    "at": "2026-04-12T07:15:46.590Z"
+  },
+  {
+    "type": "error",
+    "text": "WebSocket connection to 'ws://127.0.0.1:61561/ws?token=2e3107e18d67e22b6c31c848d6d7f8fa998601148fb5267c' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+    "at": "2026-04-12T07:16:02.599Z"
+  }
+]

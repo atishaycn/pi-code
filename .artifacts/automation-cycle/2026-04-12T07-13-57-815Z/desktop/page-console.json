@@ -1,0 +1,32 @@
+[
+  {
+    "type": "warning",
+    "text": "%cElectron Security Warning (Insecure Content-Security-Policy) font-weight: bold; This renderer process has either no Content Security\n  Policy set or a policy with \"unsafe-eval\" enabled. This exposes users of\n  this app to unnecessary security risks.\n\nFor more information and help, consult\nhttps://electronjs.org/docs/tutorial/security.\nThis warning will not show up\nonce the app is packaged.",
+    "at": "2026-04-12T07:14:00.219Z"
+  },
+  {
+    "type": "error",
+    "text": "WebSocket connection to 'ws://127.0.0.1:61511/ws?token=dc41c97446a4648cc3fa830c25bbba8712210c1c5999ed2e' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+    "at": "2026-04-12T07:14:00.232Z"
+  },
+  {
+    "type": "error",
+    "text": "WebSocket connection to 'ws://127.0.0.1:61511/ws?token=dc41c97446a4648cc3fa830c25bbba8712210c1c5999ed2e' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+    "at": "2026-04-12T07:14:01.250Z"
+  },
+  {
+    "type": "error",
+    "text": "WebSocket connection to 'ws://127.0.0.1:61511/ws?token=dc41c97446a4648cc3fa830c25bbba8712210c1c5999ed2e' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+    "at": "2026-04-12T07:14:03.236Z"
+  },
+  {
+    "type": "error",
+    "text": "WebSocket connection to 'ws://127.0.0.1:61511/ws?token=dc41c97446a4648cc3fa830c25bbba8712210c1c5999ed2e' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+    "at": "2026-04-12T07:14:07.241Z"
+  },
+  {
+    "type": "error",
+    "text": "WebSocket connection to 'ws://127.0.0.1:61511/ws?token=dc41c97446a4648cc3fa830c25bbba8712210c1c5999ed2e' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+    "at": "2026-04-12T07:14:15.246Z"
+  }
+]

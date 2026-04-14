@@ -1,0 +1,2 @@
+Synced autoresearch inputs into /tmp/autoresearch/runs/t3code-automation/latest.
+No AUTORESEARCH_AGENT_COMMAND configured; sync-only mode.

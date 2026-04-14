@@ -1,0 +1,35 @@
+Code
+ALPHA
+PROJECTS
+t3code-pi
+Inspect this repo and summarize where Pi runtime i...
+just now
+Settings
+Inspect this repo and summarize where Pi runtime i...
+t3code-pi
+Add action
+Open
+Commit
+Provider adapter request failed (codex) for sendTurn: Agent is already processing. Specify streamingBehavior ('steer' or 'followUp') to queue the message.
+Inspect this repo and summarize where Pi runtime integration and processing-state UI live. Use repo tools if needed.
+
+12:40:57 AM
+
+Inspect this repo and summarize where Pi runtime integration and processing-state UI live. Use repo tools if needed. Queue this for later.
+
+12:41:12 AM
+
+WORK LOG (1)
+
+Runtime error
+
+
+
+
+Ask anything, @tag files/folders, or use / to show available commands
+Default (pi)
+High
+Build
+Full access
+Local
+main

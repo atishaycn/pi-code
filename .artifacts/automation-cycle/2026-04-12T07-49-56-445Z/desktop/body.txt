@@ -1,0 +1,57 @@
+Code
+ALPHA
+PROJECTS
+t3code-pi
+Working
+Inspect this repo and summarize where Pi runtime i...
+just now
+Settings
+Inspect this repo and summarize where Pi runtime i...
+t3code-pi
+working · 3.0s • 1 queued
+Add action
+Open
+Commit
+Inspect this repo and summarize where Pi runtime integration and processing-state UI live. Use repo tools if needed.
+
+12:50:19 AM
+
+Actually focus on ChatView processing states and queued follow-up behavior. Use repo tools if needed.
+
+12:50:27 AM
+
+Pi working for 3.0s
+
+1 follow-up is queued. Use Steer now to redirect current turn, Queue follow-up to wait, or Stop to interrupt.
+
+Pi working for 3.0s
+
+1 follow-up is queued. Use Steer now to redirect current turn, Queue follow-up to wait, or Stop to interrupt.
+
+Queued follow-ups (1)
+
+Sent in order after current turn
+
+1
+
+Inspect this repo and summarize where Pi runtime integration and processing-state UI live. Use r...
+
+No images
+
+
+
+
+Ask anything, @tag files/folders, or use / to show available commands
+Default (pi)
+High
+Build
+Full access
+Local
+main
+Steering Pi now
+
+Pi got follow-up instructions for current turn.
+
+Queued follow-up
+
+Pi will send it automatically after current turn finishes.

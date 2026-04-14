@@ -1,0 +1,20 @@
+[
+  {
+    "action": "prompt-entered",
+    "observedAt": "2026-04-12T07:45:09.288Z",
+    "detail": "Inspect this repo and summarize where Pi runtime integration and processing-state UI live. Use repo tools if needed."
+  },
+  {
+    "action": "send-clicked",
+    "observedAt": "2026-04-12T07:45:09.643Z"
+  },
+  {
+    "action": "queue-followup-clicked",
+    "observedAt": "2026-04-12T07:45:15.831Z"
+  },
+  {
+    "action": "steer-now-clicked",
+    "observedAt": "2026-04-12T07:45:18.272Z",
+    "detail": "Actually focus on ChatView processing states and queued follow-up behavior. Use repo tools if needed."
+  }
+]

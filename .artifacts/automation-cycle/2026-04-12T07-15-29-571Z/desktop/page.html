@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,300..800&amp;display=swap"
+      rel="stylesheet"
+    />
+    <title>Pi Code (Alpha)</title>
+    <script type="module" crossorigin="" src="/assets/index-Ds1xy6h_.js"></script>
+    <link rel="stylesheet" crossorigin="" href="/assets/index-BnpMaknG.css" />
+  </head>
+  <body>
+    <div id="root">
+      <div
+        class="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-10 text-foreground sm:px-6"
+      >
+        <div class="pointer-events-none absolute inset-0 opacity-90">
+          <div
+            class="absolute inset-x-0 top-0 h-56 bg-[radial-gradient(48rem_18rem_at_top,color-mix(in_srgb,var(--color-amber-500)_16%,transparent),transparent)]"
+          ></div>
+          <div
+            class="absolute inset-0 bg-[linear-gradient(145deg,color-mix(in_srgb,var(--background)_92%,var(--color-black))_0%,var(--background)_56%)]"
+          ></div>
+        </div>
+        <section
+          class="relative w-full max-w-xl rounded-[1.75rem] border border-border/80 bg-card/92 p-6 shadow-2xl shadow-black/20 backdrop-blur-md sm:p-8"
+        >
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p
+                class="text-[11px] font-semibold tracking-[0.18em] text-muted-foreground uppercase"
+              >
+                Connection Error
+              </p>
+              <h1 class="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
+                Cannot reach the T3 server
+              </h1>
+            </div>
+            <div
+              class="rounded-2xl border border-border/70 bg-background/80 p-3 text-foreground shadow-sm"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-triangle-alert size-5"
+                aria-hidden="true"
+              >
+                <path
+                  d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"
+                ></path>
+                <path d="M12 9v4"></path>
+                <path d="M12 17h.01"></path>
+              </svg>
+            </div>
+          </div>
+          <p class="mt-3 text-sm leading-relaxed text-muted-foreground">
+            Unable to connect to the T3 server WebSocket. Verify that the T3 server is running and
+            reachable, then reload the app if needed.
+          </p>
+          <div
+            class="mt-5 grid gap-3 rounded-2xl border border-border/70 bg-background/60 p-4 text-sm sm:grid-cols-2"
+          >
+            <div>
+              <p
+                class="text-[11px] font-semibold tracking-[0.16em] text-muted-foreground uppercase"
+              >
+                Connection
+              </p>
+              <p class="mt-1 font-medium text-foreground">Retrying server connection</p>
+            </div>
+            <div>
+              <p
+                class="text-[11px] font-semibold tracking-[0.16em] text-muted-foreground uppercase"
+              >
+                Latest Event
+              </p>
+              <p class="mt-1 font-medium text-foreground">Apr 12, 12:15:31 AM</p>
+            </div>
+          </div>
+          <div class="mt-5 flex flex-wrap gap-2">
+            <button
+              type="button"
+              class="[&amp;_svg]:-mx-0.5 relative inline-flex shrink-0 cursor-pointer items-center justify-center whitespace-nowrap rounded-lg border font-medium text-base outline-none transition-shadow before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-64 sm:text-sm [&amp;_svg:not([class*='opacity-'])]:opacity-80 [&amp;_svg:not([class*='size-'])]:size-4.5 sm:[&amp;_svg:not([class*='size-'])]:size-4 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 h-8 gap-1.5 px-[calc(--spacing(2.5)-1px)] sm:h-7 not-disabled:inset-shadow-[0_1px_--theme(--color-white/16%)] border-primary bg-primary text-primary-foreground shadow-primary/24 shadow-xs [:active,[data-pressed]]:inset-shadow-[0_1px_--theme(--color-black/8%)] [:disabled,:active,[data-pressed]]:shadow-none [:hover,[data-pressed]]:bg-primary/90"
+              data-slot="button"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-rotate-cw"
+                aria-hidden="true"
+              >
+                <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path>
+                <path d="M21 3v5h-5"></path></svg
+              >Reload app
+            </button>
+          </div>
+          <details
+            class="group mt-5 overflow-hidden rounded-lg border border-border/70 bg-background/55"
+          >
+            <summary
+              class="cursor-pointer list-none px-3 py-2 text-xs font-medium text-muted-foreground"
+            >
+              <span class="group-open:hidden">Show connection details</span
+              ><span class="hidden group-open:inline">Hide connection details</span>
+            </summary>
+            <pre
+              class="max-h-56 overflow-auto border-t border-border/70 bg-background/80 px-3 py-2 text-xs text-foreground/85"
+            >
+state: error
+online: yes
+attempts: 6
+socket: ws://127.0.0.1:61561/ws?token=2e3107e18d67e22b6c31c848d6d7f8fa998601148fb5267c
+disconnectedAt: 2026-04-12T07:15:31.572Z
+lastErrorAt: 2026-04-12T07:16:02.597Z
+lastError: Unable to connect to the T3 server WebSocket.
+closeCode: 1006</pre
+            >
+          </details>
+        </section>
+      </div>
+    </div>
+
+    <div id="_r_0_" data-base-ui-portal="" data-slot="toast-portal-anchored">
+      <div
+        tabindex="-1"
+        role="region"
+        aria-live="polite"
+        aria-atomic="false"
+        aria-relevant="additions text"
+        aria-label="Notifications"
+        data-slot="toast-viewport-anchored"
+        class="outline-none"
+      ></div>
+    </div>
+    <div id="_r_1_" data-base-ui-portal="" data-slot="toast-portal">
+      <div
+        tabindex="-1"
+        role="region"
+        aria-live="polite"
+        aria-atomic="false"
+        aria-relevant="additions text"
+        aria-label="Notifications"
+        data-position="top-right"
+        data-slot="toast-viewport"
+        class="fixed z-50 mx-auto flex w-[calc(100%-var(--toast-inset)*2)] max-w-90 [--toast-header-offset:52px] [--toast-inset:--spacing(4)] sm:[--toast-inset:--spacing(8)] data-[position*=top]:top-[calc(var(--toast-inset)+var(--toast-header-offset))] data-[position*=bottom]:bottom-(--toast-inset) data-[position*=left]:left-(--toast-inset) data-[position*=right]:right-(--toast-inset) data-[position*=center]:-translate-x-1/2 data-[position*=center]:left-1/2"
+        style="--toast-frontmost-height: 0px"
+      ></div>
+    </div>
+  </body>
+</html>

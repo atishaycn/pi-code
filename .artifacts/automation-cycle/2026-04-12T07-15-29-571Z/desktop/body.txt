@@ -1,0 +1,16 @@
+CONNECTION ERROR
+
+Cannot reach the T3 server
+
+Unable to connect to the T3 server WebSocket. Verify that the T3 server is running and reachable, then reload the app if needed.
+
+CONNECTION
+
+Retrying server connection
+
+LATEST EVENT
+
+Apr 12, 12:15:31 AM
+
+Reload app
+Show connection details

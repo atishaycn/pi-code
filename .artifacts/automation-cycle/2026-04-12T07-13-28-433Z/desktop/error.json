@@ -1,0 +1,4 @@
+{
+  "message": "Cannot find module 'electron'\nRequire stack:\n- /Users/suns/Developer/t3code-pi/scripts/desktop-automation.ts",
+  "at": "2026-04-12T07:13:29.164Z"
+}

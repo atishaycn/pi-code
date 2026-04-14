@@ -1,0 +1,22 @@
+[
+  {
+    "type": "warning",
+    "text": "%cElectron Security Warning (Insecure Content-Security-Policy) font-weight: bold; This renderer process has either no Content Security\n  Policy set or a policy with \"unsafe-eval\" enabled. This exposes users of\n  this app to unnecessary security risks.\n\nFor more information and help, consult\nhttps://electronjs.org/docs/tutorial/security.\nThis warning will not show up\nonce the app is packaged.",
+    "at": "2026-04-12T07:29:52.011Z"
+  },
+  {
+    "type": "error",
+    "text": "WebSocket connection to 'ws://127.0.0.1:61878/ws?token=673f25cc14caa07ca34ef35fb68dd4ea8d4b9bb263917f4e' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+    "at": "2026-04-12T07:29:52.014Z"
+  },
+  {
+    "type": "warning",
+    "text": "WebSocket connection to 'ws://127.0.0.1:61878/ws?token=673f25cc14caa07ca34ef35fb68dd4ea8d4b9bb263917f4e' failed: WebSocket is closed before the connection is established.",
+    "at": "2026-04-12T07:30:02.933Z"
+  },
+  {
+    "type": "info",
+    "text": "[orchestration-recovery] Snapshot recovery requested. {reason: bootstrap, skipped: false, state: Object}",
+    "at": "2026-04-12T07:30:04.951Z"
+  }
+]

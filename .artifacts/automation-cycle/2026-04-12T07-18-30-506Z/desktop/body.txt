@@ -1,0 +1,42 @@
+Code
+ALPHA
+PROJECTS
+t3code-pi
+Inspect this repo and summarize where Pi runtime i...
+just now
+Settings
+Inspect this repo and summarize where Pi runtime i...
+t3code-pi
+Add action
+Open
+Commit
+Inspect this repo and summarize where Pi runtime integration and processing-state UI live. Use repo tools if needed.
+
+12:18:49 AM
+
+WORK LOG (19)
+
+SHOW 13 MORE
+
+Bash - rg -n "\bpi\b|Pi|processing state|processingState|isProcessing|loading|busy|runtime integration|provider" apps packages --glob '!**/dist/**' --glob '!**/node_modules/**'
+
+Bash - rg -n "\bpi\b|Pi|processing state|processingState|isProcessing|loading|busy|runtime integration|provider" apps packages --glob '!**/dist/**' --glob '!**/node_modules/**'
+
+Bash - rg -n "\bpi\b|Pi|processing state|processingState|isProcessing|loading|busy|runtime integration|provider" apps packages --glob '!**/dist/**' --glob '!**/node_modules/**'
+
+Bash - { "content": [ { "type": "text", "text": "apps/server/src/provider/Layers/ProviderService.test.ts:292: getByProvider: (provider) =>\napps/server/src/provi...
+
+Bash - { "content": [ { "type": "text", "text": "apps/web/dist/assets/mojo-1Omp2pIo.js\napps/web/dist/assets/rose-pine-dawn-BLcEeBoh.js.map\napps/web/dist/assets/shel...
+
+Checkpoint capture failed - Checkpoint captured, but turn diff summary is unavailable: Git command failed in CheckpointStore.diffCheckpoints: git diff --patch --minimal --no-color 6fb7f293494ed9a6fd02fac971a326d95f677366 df0c8f57c6cef47e8cb5de524577a871070f1549 (/Users/suns/Developer/t3code-pi) - git diff --patch --minimal --no-color 6fb7f293494ed9a6fd02fac971a326d95f677366 df0c8f57c6cef47e8cb5de524577a871070f1549 output exceeded 1000000 bytes and was truncated.
+
+
+
+
+Ask anything, @tag files/folders, or use / to show available commands
+Default (pi)
+High
+Build
+Full access
+Local
+main

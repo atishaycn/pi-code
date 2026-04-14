@@ -1,0 +1,411 @@
+Code
+ALPHA
+PROJECTS
+t3code-pi
+Inspect this repo and summarize where Pi runtime i...
+just now
+Settings
+Inspect this repo and summarize where Pi runtime i...
+t3code-pi
+finalizing response • 1 queued
+Add action
+Open
+Commit
+Inspect this repo and summarize where Pi runtime integration and processing-state UI live. Use repo tools if needed.
+
+12:45:09 AM
+
+Actually focus on ChatView processing states and queued follow-up behavior. Use repo tools if needed.
+
+12:45:18 AM
+
+WORK LOG (19)
+
+SHOW 13 MORE
+
+Bash - rg -n "\bPi\b|pi runtime|processing state|isProcessing|processing-state|orchestration\.domainEvent|provider session|codex app-server|app-server|NativeApi|runtime" apps packages --glob '!**/dist/**' --glob '!**/build/**'
+
+Bash - rg -n "\bPi\b|pi runtime|processing state|isProcessing|processing-state|orchestration\.domainEvent|provider session|codex app-server|app-server|NativeApi|runtime" apps packages --glob '!**/dist/**' --glob '!**/build/**'
+
+Bash - rg -n "\bPi\b|pi runtime|processing state|isProcessing|processing-state|orchestration\.domainEvent|provider session|codex app-server|app-server|NativeApi|runtime" apps packages --glob '!**/dist/**' --glob '!**/build/**'
+
+Bash - { "content": [ { "type": "text", "text": "apps/server/src/provider/Layers/ClaudeAdapter.test.ts:2443: runtimeMode: \"full-access\",\napps/server/src/pro...
+
+Bash - { "content": [ { "type": "text", "text": "apps/desktop/.electron-runtime/metadata.json\napps/desktop/.gitignore\napps/desktop/.turbo/turbo-build.log\napps/desk...
+
+Checkpoint capture failed - Checkpoint captured, but turn diff summary is unavailable: Git command failed in CheckpointStore.diffCheckpoints: git diff --patch --minimal --no-color c1b577fadf6546e920d662da4725c4b613dccfc3 20c50a2d6b77eb931ab369d6f2063dc7d7d12d90 (/Users/suns/Developer/t3code-pi) - git diff --patch --minimal --no-color c1b577fadf6546e920d662da4725c4b613dccfc3 20c50a2d6b77eb931ab369d6f2063dc7d7d12d90 output exceeded 1000000 bytes and was truncated.
+
+RESPONSE • WORKED FOR 4.3S
+
+Here’s the focused map for ChatView processing states and queued follow-up behavior.
+
+Main location
+apps/web/src/components/ChatView.tsx
+
+This is the center of both features.
+
+Processing-state logic
+1) State is derived inside ChatView
+
+Relevant area:
+
+apps/web/src/components/ChatView.tsx:1132
+apps/web/src/components/ChatView.tsx:1227
+apps/web/src/components/ChatView.tsx:1252
+
+ChatView computes processing status from:
+
+phase = derivePhase(activeThread?.session ?? null)
+thread activities → deriveWorkLogEntries(...)
+latest turn state
+local optimistic send state (isSendBusy, isPreparingWorktree)
+connection state (isConnecting)
+queued follow-up count
+
+It builds a processingStatus object with:
+
+headerLabel
+title
+detail
+
+The processing cases are:
+
+Preparing worktree
+Running turn
+including tool/work-log-based summaries
+special “Pi finalizing response” state after tool work ends but before assistant reply arrives
+Connecting / starting turn / sending queued follow-up
+Queued only when nothing is actively running but queued drafts exist
+2) Processing labels are formatted in ChatView
+
+Helpers:
+
+apps/web/src/components/ChatView.tsx:424 formatProcessingHeaderLabel(...)
+apps/web/src/components/ChatView.tsx:432 processingStatusSlug(...)
+apps/web/src/components/ChatView.tsx:352 summarizeProcessingFromWorkLogEntry(...)
+
+These convert work-log/activity data into user-facing copy like:
+
+“Preparing worktree”
+“Pi working”
+“Pi finalizing response”
+“Sending queued follow-up”
+3) Local optimistic “send in progress” handling
+
+Relevant area:
+
+apps/web/src/components/ChatView.tsx:447 useLocalDispatchState(...)
+
+This hook tracks a local dispatch snapshot so the UI can show processing immediately before the server has fully acknowledged a turn start.
+
+It exposes:
+
+beginLocalDispatch(...)
+resetLocalDispatch()
+localDispatchStartedAt
+isPreparingWorktree
+isSendBusy
+
+That logic is backed by:
+
+apps/web/src/components/ChatView.logic.ts
+
+Relevant functions:
+
+apps/web/src/components/ChatView.logic.ts:256 createLocalDispatchSnapshot(...)
+apps/web/src/components/ChatView.logic.ts:274 hasServerAcknowledgedLocalDispatch(...)
+
+This is the bridge between:
+
+optimistic local UI state
+actual server/session/turn updates
+4) Timing and running-state helpers
+apps/web/src/session-logic.ts
+
+Relevant functions:
+
+apps/web/src/session-logic.ts:119 formatElapsed(...)
+apps/web/src/session-logic.ts:143 deriveActiveWorkStartedAt(...)
+apps/web/src/session-logic.ts:458 deriveWorkLogEntries(...)
+apps/web/src/session-logic.ts:1062 hasToolActivityForTurn(...)
+apps/web/src/session-logic.ts:1158 derivePhase(...)
+
+This is where ChatView gets the underlying timing/phase/work-log derivation it uses to build processing copy.
+
+Where processing UI renders
+1) Header badge
+apps/web/src/components/chat/ChatHeader.tsx
+
+Relevant area:
+
+apps/web/src/components/chat/ChatHeader.tsx:22
+apps/web/src/components/chat/ChatHeader.tsx:92
+
+ChatView passes:
+
+isProcessing
+processingLabel
+processingTitle
+processingDetail
+
+to ChatHeader, which renders the animated processing badge in the top bar.
+
+Source wiring:
+
+apps/web/src/components/ChatView.tsx:4604
+2) Inline processing panel near composer
+apps/web/src/components/ChatView.tsx
+
+Relevant area:
+
+apps/web/src/components/ChatView.tsx:4773
+
+This renders the visible “processing status” card:
+
+data-testid="processing-status-region"
+data-testid="processing-status-panel"
+3) Timeline working row
+apps/web/src/components/chat/MessagesTimeline.tsx
+
+and
+
+apps/web/src/components/chat/MessagesTimeline.logic.ts
+
+ChatView passes:
+
+isWorking
+activeTurnInProgress
+activeTurnStartedAt
+workingStatusTitle
+workingStatusDetail
+
+Source wiring:
+
+apps/web/src/components/ChatView.tsx:4664
+
+Timeline insertion:
+
+apps/web/src/components/chat/MessagesTimeline.logic.ts:129
+
+So processing state appears in:
+
+top header badge
+inline composer/status panel
+messages timeline “working” row
+Queued follow-up behavior
+Queue state lives in ChatView.tsx
+Local queue storage
+
+Relevant area:
+
+apps/web/src/components/ChatView.tsx:344 QueuedFollowUpDraft
+apps/web/src/components/ChatView.tsx:793 queuedFollowUps
+apps/web/src/components/ChatView.tsx:794 queuedFollowUpsRef
+apps/web/src/components/ChatView.tsx:827 queuedFollowUpDispatchInFlightRef
+
+A queued follow-up stores:
+
+prompt
+images
+terminal contexts
+createdAt
+Queue operations
+
+Relevant area:
+
+apps/web/src/components/ChatView.tsx:1851
+
+Handlers:
+
+queueFollowUpDraft(...)
+restoreQueuedFollowUpDraft(...)
+revokeQueuedFollowUpDraft(...)
+removeQueuedFollowUpDraft(...)
+prioritizeQueuedFollowUpDraft(...)
+
+These manage the in-memory queue and preview-URL cleanup.
+
+How a follow-up gets queued
+Inside onSend
+
+Relevant area:
+
+apps/web/src/components/ChatView.tsx:3150
+
+If the user presses send while a turn is already running:
+
+ChatView does not start a new turn immediately
+it packages the current composer content into a QueuedFollowUpDraft
+clears the composer
+shows a success toast like:
+“Queued follow-up”
+or “Queued follow-up (N)”
+
+So the “queue” behavior is handled directly in onSend.
+
+How queued follow-ups are actually sent
+sendQueuedFollowUpDraft(...)
+
+Relevant area:
+
+apps/web/src/components/ChatView.tsx:3616
+
+This function sends the queued draft by dispatching:
+
+api.orchestration.dispatchCommand({ type: "thread.turn.start", ... })
+
+It also:
+
+creates optimistic user message UI
+uploads images as data URLs
+persists thread settings for next turn
+marks local send/dispatch refs
+restores the draft on failure
+Auto-dispatch effect
+
+Relevant area:
+
+apps/web/src/components/ChatView.tsx:3753
+
+A useEffect watches queue + runtime conditions and automatically sends the first queued draft when all blockers are clear.
+
+It will not send if any of these are true:
+
+current turn still running
+send already busy
+connecting
+dispatch already in flight
+pending approval exists
+pending user input exists
+
+When eligible:
+
+it takes queuedFollowUps[0]
+sends it
+removes it from queue on success
+currently also shifts it out on failure after restoring it to composer state
+
+So queued follow-ups are strict FIFO by default, with a manual “send next” reorder control.
+
+Steer-now vs queue-follow-up
+
+This distinction is important.
+
+sendStreamingComposerDraft(...)
+
+Relevant area:
+
+apps/web/src/components/ChatView.tsx:3451
+
+This is used for Steer now while a turn is running.
+
+It sends through:
+
+api.orchestration.sendStreamingMessage(...)
+
+with:
+
+streamingBehavior: "steer" or "followUp"
+
+In the current ChatView wiring:
+
+the Steer now button calls sendStreamingComposerDraft("steer")
+apps/web/src/components/ChatView.tsx:5185
+
+By contrast:
+
+normal submit during a running turn uses the local queue path from onSend
+
+So behavior splits like this:
+
+Steer now = inject follow-up into the active running turn via streaming API
+Queue follow-up = hold a draft locally and send a new turn automatically after the current turn settles
+Queue-related UI
+Composer primary buttons
+apps/web/src/components/chat/ComposerPrimaryActions.tsx
+
+Relevant area:
+
+apps/web/src/components/chat/ComposerPrimaryActions.tsx:19
+apps/web/src/components/chat/ComposerPrimaryActions.tsx:50
+apps/web/src/components/chat/ComposerPrimaryActions.tsx:127
+
+When isRunning:
+
+shows Steer now
+shows Queue follow-up / Queue next (N)
+shows Stop
+Wiring from ChatView
+
+Relevant area:
+
+apps/web/src/components/ChatView.tsx:5174
+
+ChatView passes:
+
+isRunning={isRunningTurn}
+queuedCount={queuedFollowUps.length}
+onSteerNow={() => void sendStreamingComposerDraft("steer")}
+
+The queue submit path still happens through the main form onSend.
+
+Queued follow-ups panel
+apps/web/src/components/ChatView.tsx
+
+Relevant area:
+
+apps/web/src/components/ChatView.tsx:4803
+
+This renders:
+
+queue count
+per-item preview
+image/context metadata
+Send next button for non-first items
+Remove button
+
+So the queue is not hidden state; it has explicit UI for reorder/remove.
+
+Short summary
+
+If you want the fastest mental model:
+
+Processing-state source of truth: apps/web/src/components/ChatView.tsx
+Optimistic local send-state glue: apps/web/src/components/ChatView.logic.ts
+Phase/timing/work-log derivation: apps/web/src/session-logic.ts
+Processing UI surfaces: ChatHeader.tsx, processing panel in ChatView.tsx, and MessagesTimeline
+Queued follow-up state + orchestration: entirely in apps/web/src/components/ChatView.tsx
+Queue/steer buttons UI: apps/web/src/components/chat/ComposerPrimaryActions.tsx
+
+If you want, I can next turn this into a tighter “data flow” diagram from composer submit → queue/steer → orchestration API → processing badge updates.
+
+12:47:11 AM • 2m 34s
+
+Pi finalizing response
+
+Last tool: Checkpoint capture failed. Tool work finished. Waiting for assistant reply now. 1 follow-up is queued.
+
+Pi finalizing response
+
+Last tool: Checkpoint capture failed. Tool work finished. Waiting for assistant reply now. 1 follow-up is queued.
+
+Queued follow-ups (1)
+
+Sent in order after current turn
+
+1
+
+Inspect this repo and summarize where Pi runtime integration and processing-state UI live. Use r...
+
+No images
+
+
+
+
+Ask anything, @tag files/folders, or use / to show available commands
+Default (pi)
+High
+Build
+Full access
+Local
+main

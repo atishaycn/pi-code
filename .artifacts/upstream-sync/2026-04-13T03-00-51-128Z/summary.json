@@ -1,0 +1,30 @@
+{
+  "generatedAt": "2026-04-13T03:00:52.154Z",
+  "sourceMode": "auto",
+  "manifestPath": "/Users/suns/Developer/t3code-pi/.upstream-sync/manifest.json",
+  "artifactDir": "/Users/suns/Developer/t3code-pi/.artifacts/upstream-sync/2026-04-13T03-00-51-128Z",
+  "sources": {
+    "t3code": {
+      "commit": "c6f57a106493e893233a38b3b1132978c942c88e",
+      "ref": "main"
+    },
+    "pi-mono": {
+      "commit": "2a355b66e80ac6b71557d6a0961a1218c092b787",
+      "ref": "main"
+    }
+  },
+  "totals": {
+    "trackedFiles": 623,
+    "safeUpdates": 0,
+    "conflicts": 0,
+    "localOnlyDrift": 0,
+    "sourceMissing": 0,
+    "targetMissing": 0,
+    "unchanged": 623
+  },
+  "safeUpdates": [],
+  "conflicts": [],
+  "localOnlyDrift": [],
+  "sourceMissing": [],
+  "targetMissing": []
+}

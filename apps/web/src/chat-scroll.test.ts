@@ -1,0 +1,126 @@
+import { describe, expect, it } from "vitest";
+
+import {
+  AUTO_SCROLL_BOTTOM_THRESHOLD_PX,
+  AUTO_SCROLL_TOP_THRESHOLD_PX,
+  isScrollContainerNearBottom,
+  isScrollContainerNearTop,
+} from "./chat-scroll";
+
+describe("isScrollContainerNearBottom", () => {
+  it("returns true when already at bottom", () => {
+    expect(
+      isScrollContainerNearBottom({
+        scrollTop: 600,
+        clientHeight: 400,
+        scrollHeight: 1_000,
+      }),
+    ).toBe(true);
+  });
+
+  it("returns true when within the auto-scroll threshold", () => {
+    expect(
+      isScrollContainerNearBottom({
+        scrollTop: 540,
+        clientHeight: 400,
+        scrollHeight: 1_000,
+      }),
+    ).toBe(true);
+  });
+
+  it("returns false when the user is meaningfully above the bottom", () => {
+    expect(
+      isScrollContainerNearBottom({
+        scrollTop: 520,
+        clientHeight: 400,
+        scrollHeight: 1_000,
+      }),
+    ).toBe(false);
+  });
+
+  it("clamps negative thresholds to zero", () => {
+    expect(
+      isScrollContainerNearBottom(
+        {
+          scrollTop: 539,
+          clientHeight: 400,
+          scrollHeight: 1_000,
+        },
+        -1,
+      ),
+    ).toBe(false);
+  });
+
+  it("falls back to the default threshold for non-finite values", () => {
+    expect(
+      isScrollContainerNearBottom(
+        {
+          scrollTop: 540,
+          clientHeight: 400,
+          scrollHeight: 1_000,
+        },
+        Number.NaN,
+      ),
+    ).toBe(true);
+    expect(AUTO_SCROLL_BOTTOM_THRESHOLD_PX).toBe(64);
+  });
+});
+
+describe("isScrollContainerNearTop", () => {
+  it("returns true when already at the top", () => {
+    expect(
+      isScrollContainerNearTop({
+        scrollTop: 0,
+        clientHeight: 400,
+        scrollHeight: 1_000,
+      }),
+    ).toBe(true);
+  });
+
+  it("returns true when within the top threshold", () => {
+    expect(
+      isScrollContainerNearTop({
+        scrollTop: 40,
+        clientHeight: 400,
+        scrollHeight: 1_000,
+      }),
+    ).toBe(true);
+  });
+
+  it("returns false when meaningfully below the top", () => {
+    expect(
+      isScrollContainerNearTop({
+        scrollTop: 80,
+        clientHeight: 400,
+        scrollHeight: 1_000,
+      }),
+    ).toBe(false);
+  });
+
+  it("clamps negative thresholds to zero", () => {
+    expect(
+      isScrollContainerNearTop(
+        {
+          scrollTop: 1,
+          clientHeight: 400,
+          scrollHeight: 1_000,
+        },
+        -1,
+      ),
+    ).toBe(false);
+  });
+
+  it("falls back to the default threshold for non-finite values", () => {
+    expect(
+      isScrollContainerNearTop(
+        {
+          scrollTop: 40,
+          clientHeight: 400,
+          scrollHeight: 1_000,
+        },
+        Number.NaN,
+      ),
+    ).toBe(true);
+    expect(AUTO_SCROLL_TOP_THRESHOLD_PX).toBe(64);
+  });
+});

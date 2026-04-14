@@ -1,0 +1,222 @@
+import {
+  type EditorId,
+  type ProjectScript,
+  type ResolvedKeybindingsConfig,
+  type ThreadId,
+} from "@t3tools/contracts";
+import { memo } from "react";
+import GitActionsControl from "../GitActionsControl";
+import { CheckCheckIcon, DiffIcon, GitForkIcon, TerminalSquareIcon } from "lucide-react";
+import { Badge } from "../ui/badge";
+import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
+import ProjectScriptsControl, { type NewProjectScriptInput } from "../ProjectScriptsControl";
+import { Toggle } from "../ui/toggle";
+import { SidebarTrigger } from "../ui/sidebar";
+import { Button } from "../ui/button";
+import { OpenInPicker } from "./OpenInPicker";
+
+interface ChatHeaderProps {
+  activeThreadId: ThreadId;
+  activeThreadTitle: string;
+  activeProjectName: string | undefined;
+  isGitRepo: boolean;
+  openInCwd: string | null;
+  activeProjectScripts: ProjectScript[] | undefined;
+  preferredScriptId: string | null;
+  keybindings: ResolvedKeybindingsConfig;
+  availableEditors: ReadonlyArray<EditorId>;
+  terminalAvailable: boolean;
+  terminalOpen: boolean;
+  terminalToggleShortcutLabel: string | null;
+  diffToggleShortcutLabel: string | null;
+  gitCwd: string | null;
+  diffOpen: boolean;
+  onRunProjectScript: (script: ProjectScript) => void;
+  onAddProjectScript: (input: NewProjectScriptInput) => Promise<void>;
+  onUpdateProjectScript: (scriptId: string, input: NewProjectScriptInput) => Promise<void>;
+  onDeleteProjectScript: (scriptId: string) => Promise<void>;
+  forkDisabled: boolean;
+  forkDisabledReason: string;
+  onForkChat: () => void;
+  showCompletedStatus: boolean;
+  canMarkCompleted: boolean;
+  markCompletedLabel: string;
+  markCompletedTitle: string;
+  onMarkCompleted: () => void;
+  onToggleTerminal: () => void;
+  onToggleDiff: () => void;
+}
+
+export const ChatHeader = memo(function ChatHeader({
+  activeThreadId,
+  activeThreadTitle,
+  activeProjectName,
+  isGitRepo,
+  openInCwd,
+  activeProjectScripts,
+  preferredScriptId,
+  keybindings,
+  availableEditors,
+  terminalAvailable,
+  terminalOpen,
+  terminalToggleShortcutLabel,
+  diffToggleShortcutLabel,
+  gitCwd,
+  diffOpen,
+  onRunProjectScript,
+  onAddProjectScript,
+  onUpdateProjectScript,
+  onDeleteProjectScript,
+  forkDisabled,
+  forkDisabledReason,
+  onForkChat,
+  showCompletedStatus,
+  canMarkCompleted,
+  markCompletedLabel,
+  markCompletedTitle,
+  onMarkCompleted,
+  onToggleTerminal,
+  onToggleDiff,
+}: ChatHeaderProps) {
+  return (
+    <div className="@container/header-actions flex min-w-0 flex-1 items-center gap-2">
+      <div className="flex min-w-0 flex-1 items-center gap-2 overflow-hidden sm:gap-3">
+        <SidebarTrigger className="size-7 shrink-0" />
+        <h2
+          className="min-w-0 shrink truncate text-sm font-medium text-foreground"
+          title={activeThreadTitle}
+        >
+          {activeThreadTitle}
+        </h2>
+        {activeProjectName && (
+          <Badge variant="outline" className="min-w-0 shrink overflow-hidden">
+            <span className="min-w-0 truncate">{activeProjectName}</span>
+          </Badge>
+        )}
+        {showCompletedStatus && (
+          <Badge
+            variant="outline"
+            className="shrink-0 border-emerald-500/35 text-[10px] font-medium text-emerald-700 dark:border-emerald-300/30 dark:text-emerald-300"
+          >
+            <span className="mr-1.5 size-1.5 rounded-full bg-emerald-500 dark:bg-emerald-300" />
+            Completed
+          </Badge>
+        )}
+        {activeProjectName && !isGitRepo && (
+          <Badge variant="outline" className="shrink-0 text-[10px] text-amber-700">
+            No Git
+          </Badge>
+        )}
+      </div>
+      <div className="flex shrink-0 items-center justify-end gap-2 @3xl/header-actions:gap-3">
+        {activeProjectScripts && (
+          <ProjectScriptsControl
+            scripts={activeProjectScripts}
+            keybindings={keybindings}
+            preferredScriptId={preferredScriptId}
+            onRunScript={onRunProjectScript}
+            onAddScript={onAddProjectScript}
+            onUpdateScript={onUpdateProjectScript}
+            onDeleteScript={onDeleteProjectScript}
+          />
+        )}
+        {activeProjectName && (
+          <OpenInPicker
+            keybindings={keybindings}
+            availableEditors={availableEditors}
+            openInCwd={openInCwd}
+          />
+        )}
+        {activeProjectName && <GitActionsControl gitCwd={gitCwd} activeThreadId={activeThreadId} />}
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Button
+                type="button"
+                variant="outline"
+                size="xs"
+                className="shrink-0"
+                aria-label={markCompletedLabel}
+                title={markCompletedTitle}
+                disabled={!canMarkCompleted}
+                onClick={onMarkCompleted}
+              >
+                <CheckCheckIcon className="size-3.5" />
+                <span className="hidden @4xl/header-actions:inline">{markCompletedLabel}</span>
+              </Button>
+            }
+          />
+          <TooltipPopup side="bottom">{markCompletedTitle}</TooltipPopup>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Toggle
+                className="shrink-0"
+                pressed={false}
+                onPressedChange={() => onForkChat()}
+                aria-label="Fork chat"
+                variant="outline"
+                size="xs"
+                disabled={forkDisabled}
+              >
+                <GitForkIcon className="size-3" />
+              </Toggle>
+            }
+          />
+          <TooltipPopup side="bottom">
+            {forkDisabled ? forkDisabledReason : "Fork chat"}
+          </TooltipPopup>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Toggle
+                className="shrink-0"
+                pressed={terminalOpen}
+                onPressedChange={onToggleTerminal}
+                aria-label="Toggle terminal drawer"
+                variant="outline"
+                size="xs"
+                disabled={!terminalAvailable}
+              >
+                <TerminalSquareIcon className="size-3" />
+              </Toggle>
+            }
+          />
+          <TooltipPopup side="bottom">
+            {!terminalAvailable
+              ? "Terminal is unavailable until this thread has an active project."
+              : terminalToggleShortcutLabel
+                ? `Toggle terminal drawer (${terminalToggleShortcutLabel})`
+                : "Toggle terminal drawer"}
+          </TooltipPopup>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Toggle
+                className="shrink-0"
+                pressed={diffOpen}
+                onPressedChange={onToggleDiff}
+                aria-label="Toggle diff panel"
+                variant="outline"
+                size="xs"
+                disabled={!isGitRepo}
+              >
+                <DiffIcon className="size-3" />
+              </Toggle>
+            }
+          />
+          <TooltipPopup side="bottom">
+            {!isGitRepo
+              ? "Diff panel is unavailable because this project is not a git repository."
+              : diffToggleShortcutLabel
+                ? `Toggle diff panel (${diffToggleShortcutLabel})`
+                : "Toggle diff panel"}
+          </TooltipPopup>
+        </Tooltip>
+      </div>
+    </div>
+  );
+});

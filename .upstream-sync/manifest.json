@@ -1,0 +1,3132 @@
+{
+  "version": 1,
+  "generatedAt": "2026-04-13T02:57:34.887Z",
+  "generatedFromMode": "local",
+  "sources": {
+    "t3code": {
+      "commit": "c6f57a106493e893233a38b3b1132978c942c88e",
+      "ref": "main"
+    },
+    "pi-mono": {
+      "commit": "2a355b66e80ac6b71557d6a0961a1218c092b787",
+      "ref": "main"
+    }
+  },
+  "files": [
+    {
+      "path": ".docs/architecture.md",
+      "owner": "t3code",
+      "baselineHash": "9d106389c136ed15abaec7b2f9b33112ca4edfbfa6a3ce6dac82c9befae4afc2"
+    },
+    {
+      "path": ".docs/ci.md",
+      "owner": "t3code",
+      "baselineHash": "603b8772778c13c9dd099279b07a4b5203f551711eb1a19b774bab619c74f361"
+    },
+    {
+      "path": ".docs/codex-prerequisites.md",
+      "owner": "t3code",
+      "baselineHash": "48fd5b31f15c38bab3e3873f693012b6573e16e2240f690cdd7d2753ba8eea3e"
+    },
+    {
+      "path": ".docs/encyclopedia.md",
+      "owner": "t3code",
+      "baselineHash": "6497140b8125ab1b91b2635845e5752326b260682bdde5905d33f0ec218fb6ef"
+    },
+    {
+      "path": ".docs/provider-architecture.md",
+      "owner": "t3code",
+      "baselineHash": "15126b5276a3a062bf73d71b95767393590d71f862d0e65594427c2175b15c3d"
+    },
+    {
+      "path": ".docs/quick-start.md",
+      "owner": "t3code",
+      "baselineHash": "afe5eb36b8df63b5f1019e085d9db422d7effb40794ac8162d4b10e12245d243"
+    },
+    {
+      "path": ".docs/runtime-modes.md",
+      "owner": "t3code",
+      "baselineHash": "33421daf45286c547a5706dc507117f6760b2068edcbbddaa283ad6b4eab97ff"
+    },
+    {
+      "path": ".docs/scripts.md",
+      "owner": "t3code",
+      "baselineHash": "d849970c81c281edf0179b60c03df2621c12cd959de76095bbfa98e8534a1963"
+    },
+    {
+      "path": ".docs/workspace-layout.md",
+      "owner": "t3code",
+      "baselineHash": "c395e6b204a5a744c6507afe6a3eef18e905d966970885c342b885a418217546"
+    },
+    {
+      "path": ".gitattributes",
+      "owner": "t3code",
+      "baselineHash": "fd2aaf9ae98fe3fcb6ca1369c73ef11a3d09ed4086bedc21cd8d65a00dea8562"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
+      "owner": "t3code",
+      "baselineHash": "c70eccc9ba2a72a7e014cce66996c4b0b81e8b4649fe84e6453a613c47e8cfe6"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature_request.yml",
+      "owner": "t3code",
+      "baselineHash": "86060925f469291bcbcc287669d5f78a150e5b2c7c1e62b0051bd6103a8180ea"
+    },
+    {
+      "path": ".github/pull_request_template.md",
+      "owner": "t3code",
+      "baselineHash": "25b94ad3275035f643bc101c04d6b47e7f2d5a731882d836539244f358628045"
+    },
+    {
+      "path": ".github/VOUCHED.td",
+      "owner": "t3code",
+      "baselineHash": "f0b9e675225ced63fa6c78242b6f83c62bcc7381c2e510d336f823f984bc9d9e"
+    },
+    {
+      "path": ".github/workflows/issue-labels.yml",
+      "owner": "t3code",
+      "baselineHash": "da015735d691b10cdff627d9257aa5e5a677be38aa00dd62593ea61f61c08893"
+    },
+    {
+      "path": ".github/workflows/pr-size.yml",
+      "owner": "t3code",
+      "baselineHash": "e61065d11c6c58dbb55f09fbae793aed2a23b6e2f64748e0a40f51d90335fafb"
+    },
+    {
+      "path": ".github/workflows/pr-vouch.yml",
+      "owner": "t3code",
+      "baselineHash": "7de2a8e657c15c1b341f6a7739a2e05c0343b599437e0ce19aa23002eae613f1"
+    },
+    {
+      "path": ".gitignore",
+      "owner": "t3code",
+      "baselineHash": "90784c337de652d892ff82f3ca591f99977033c2dcaee87b1773d8c11e71b415"
+    },
+    {
+      "path": ".mise.toml",
+      "owner": "t3code",
+      "baselineHash": "95bf942a5645a320ecb0af04f79339e766b452ab2e358a4f15bb665c6e48048c"
+    },
+    {
+      "path": ".oxfmtrc.json",
+      "owner": "t3code",
+      "baselineHash": "63a5186a5f6078bde0de180b91b0643f5c7694fc6ab95c64a0fc1cac790ce148"
+    },
+    {
+      "path": ".oxlintrc.json",
+      "owner": "t3code",
+      "baselineHash": "abec01bf04577b13d4aa4f56c5df0eb12e91688764f142def8de2b4e591cb681"
+    },
+    {
+      "path": ".plans/01-shared-model-normalization.md",
+      "owner": "t3code",
+      "baselineHash": "88c3afb1ffcd14d410735ed9dfa154ba1304a9f03fec8f79fef05c2a204e312c"
+    },
+    {
+      "path": ".plans/02-typed-ipc-boundaries.md",
+      "owner": "t3code",
+      "baselineHash": "617f9860accd10bba18e90d4172ba04e1fad0d2330516de49be019f1ca2a4018"
+    },
+    {
+      "path": ".plans/03-split-codex-app-server-manager.md",
+      "owner": "t3code",
+      "baselineHash": "03c6131edc2660c1ee7f57abfe410ae056a4db4f1b6fa5c54c21978ee011bd37"
+    },
+    {
+      "path": ".plans/04-split-chatview-component.md",
+      "owner": "t3code",
+      "baselineHash": "537d1c48174da7db6b383b9d1fa72c50ceb93ab1336fdb2c55c780e2b4c61318"
+    },
+    {
+      "path": ".plans/05-zod-persisted-state-validation.md",
+      "owner": "t3code",
+      "baselineHash": "630c067bcf762880761cd94fb4be4e4b5d5b4451a8c8830e9e5ce9858f9223b2"
+    },
+    {
+      "path": ".plans/06-provider-logstream-lifecycle.md",
+      "owner": "t3code",
+      "baselineHash": "b0c049ea888e89f8b1fd015e9e40aa18af0c658190739982d7d5e7410ba5dc72"
+    },
+    {
+      "path": ".plans/07-ci-quality-gates.md",
+      "owner": "t3code",
+      "baselineHash": "cb4cc0cba93d57a1b1c21b4cba74cbcf0b28e8510e4d3ffeacc55ddead3cd86e"
+    },
+    {
+      "path": ".plans/08-precommit-format-and-lint.md",
+      "owner": "t3code",
+      "baselineHash": "0e8531766c73cb2f360fb977c10923cf2880928b0d2402c901380a2f9015dc60"
+    },
+    {
+      "path": ".plans/09-event-state-test-expansion.md",
+      "owner": "t3code",
+      "baselineHash": "6481e6ecbfd27d7a2663e3b3464c1ce71200d4d18ead4fe3c2d3ec946dbb16ae"
+    },
+    {
+      "path": ".plans/10-unify-process-session-abstraction.md",
+      "owner": "t3code",
+      "baselineHash": "5a7dad52664406e49156c65f0f1546cc7faf7e33eab0d1c9f7548dfa98319a14"
+    },
+    {
+      "path": ".plans/11-effect.md",
+      "owner": "t3code",
+      "baselineHash": "057afcfcc94a455784d54ab4cddec5557d3f9f46e097ca5def12f094856b8a9b"
+    },
+    {
+      "path": ".plans/12-effect-new.md",
+      "owner": "t3code",
+      "baselineHash": "19501fa143324edf29b65d0071dd277e1aaea61606dd7eaa269ccea2410fdf97"
+    },
+    {
+      "path": ".plans/13-provider-service-integration-tests.md",
+      "owner": "t3code",
+      "baselineHash": "2fc9048ac10bff58a81ef491fa7e7a0d6470587a30a166ba2df509154ad71bfd"
+    },
+    {
+      "path": ".plans/14-server-authoritative-event-sourcing-cleanup.md",
+      "owner": "t3code",
+      "baselineHash": "61a5228dc822ccb9426a66b6bd2da191350dadea251e9fdace9b56eae8539b87"
+    },
+    {
+      "path": ".plans/15-effect-server.md",
+      "owner": "t3code",
+      "baselineHash": "6936fda33602c1f88dc518ee8bfa885b10134a65439949d2c2ff347f39cf134d"
+    },
+    {
+      "path": ".plans/16-pr89-review-remediation-phases.md",
+      "owner": "t3code",
+      "baselineHash": "e78f4c04f1c45b829409f2dba01f6eee1eb3049ba1e1c218b11796bf1b989bb0"
+    },
+    {
+      "path": ".plans/16c-pr89-remediation-checklist.md",
+      "owner": "t3code",
+      "baselineHash": "031502b6916a1b4a73ea436bdc840d7b1d6d05d3cea0ace898e8c6468f17782e"
+    },
+    {
+      "path": ".plans/17-claude-agent.md",
+      "owner": "t3code",
+      "baselineHash": "7557867652b050af8a6bb4d2418ccf75a46831ba52f295045c1e00ceeefae75a"
+    },
+    {
+      "path": ".plans/17-provider-neutral-runtime-determinism.md",
+      "owner": "t3code",
+      "baselineHash": "5eb5994599a6fbc4f800249e36b6e90d5156aed3960ede41ef10dc3ea37b5c33"
+    },
+    {
+      "path": ".plans/branch-environment-picker-in-chatview-input.md",
+      "owner": "t3code",
+      "baselineHash": "fd17ceefb626a434760abecb78e144516ac74908143ab44c0674d32f898b6fa2"
+    },
+    {
+      "path": ".plans/effect-atom.md",
+      "owner": "t3code",
+      "baselineHash": "58666825eb0ad284efa585f5fdd087ca5b8fab3a05c49a633324bb58e28c4101"
+    },
+    {
+      "path": ".plans/git-flows-integration-tests.md",
+      "owner": "t3code",
+      "baselineHash": "f249238235499c23c039cb1b1432683bffb367b7101c58bdbb342d5647ae3a6c"
+    },
+    {
+      "path": ".plans/git-flows-test-plan.md",
+      "owner": "t3code",
+      "baselineHash": "58f75bdc74a52bd1df7b7f19f701726003fefb448d30a4d735eaec1547d772e7"
+    },
+    {
+      "path": ".plans/git-integration-branch-picker-worktrees.md",
+      "owner": "t3code",
+      "baselineHash": "96c0b1e6c2332ff04a7d117f007e8961c84f33f4e929cf70269bdbab4244be55"
+    },
+    {
+      "path": ".plans/README.md",
+      "owner": "t3code",
+      "baselineHash": "d77b9b5adbf8521429b7505fa5d1bd54e4714c17a27c6e036f3c6c1ae4af4586"
+    },
+    {
+      "path": ".plans/spec-1-1-cutover-plan.md",
+      "owner": "t3code",
+      "baselineHash": "09db3cf4e1e3f82cd408db65edc556951dfced76f52071d8f01cdd18c29f0bda"
+    },
+    {
+      "path": ".plans/spec-contract-matrix.md",
+      "owner": "t3code",
+      "baselineHash": "147e3deaa78b459ed9cbb7b2617d711f81aefa46b5412e1ae4f5a478e514b7ea"
+    },
+    {
+      "path": ".vscode/extensions.json",
+      "owner": "t3code",
+      "baselineHash": "e569e464c6a5ec053b998ebffeb39cf2ce9657dce54b269092cbf5109b482813"
+    },
+    {
+      "path": ".vscode/settings.json",
+      "owner": "t3code",
+      "baselineHash": "af02718bc9e029f79caad6949883177df11a4513e83a270f8fde728db61279c4"
+    },
+    {
+      "path": "AGENTS.md",
+      "owner": "t3code",
+      "baselineHash": "0d71ab803e2fa1d29eef3a5afa96497d2ef3400a6ca81e94fb3db3a9a2af634c"
+    },
+    {
+      "path": "apps/desktop/.gitignore",
+      "owner": "t3code",
+      "baselineHash": "91476fd0cd30caca45baea4933235c9a39f5b2c645515b0dc6e126127739da57"
+    },
+    {
+      "path": "apps/desktop/resources/icon.icns",
+      "owner": "t3code",
+      "baselineHash": "c5df7e184dd39fda45fe82837760db6352120b679efbd5bf6cf4a2bcc33586cc"
+    },
+    {
+      "path": "apps/desktop/resources/icon.ico",
+      "owner": "t3code",
+      "baselineHash": "b4d4190b3bf4d31728a480ced010b83e88e65447d0b5f5b6d788c758b5c5b2b6"
+    },
+    {
+      "path": "apps/desktop/resources/icon.png",
+      "owner": "t3code",
+      "baselineHash": "d5b6b3b6034f06a6401d5957f39e76bfa24f70e0faf625835e43820d20090627"
+    },
+    {
+      "path": "apps/desktop/scripts/dev-electron.mjs",
+      "owner": "t3code",
+      "baselineHash": "90d2d906db20a57c3b2844f8dce123cb14b4e52d851c27e61860062768966f94"
+    },
+    {
+      "path": "apps/desktop/scripts/smoke-test.mjs",
+      "owner": "t3code",
+      "baselineHash": "757e968caeb9a27bb2e554a9e04e5dd7e52aa4d15e73a0f10721578428a6afb0"
+    },
+    {
+      "path": "apps/desktop/scripts/wait-for-resources.mjs",
+      "owner": "t3code",
+      "baselineHash": "7490e44cf5e009327ccb1d21cf81d328e1b6eca76d0d49496c9404c4919fc425"
+    },
+    {
+      "path": "apps/desktop/src/confirmDialog.test.ts",
+      "owner": "t3code",
+      "baselineHash": "1a914ab71b496eb272175204ead2b70de1a13ec53da93c7ebe41b9d5d2efaa8c"
+    },
+    {
+      "path": "apps/desktop/src/confirmDialog.ts",
+      "owner": "t3code",
+      "baselineHash": "2287afc0f351f50a8d3a9df05868bd27d327650f2d235224884a8e0ef3a960fd"
+    },
+    {
+      "path": "apps/desktop/src/preload.ts",
+      "owner": "t3code",
+      "baselineHash": "415db68a99b8c1c71f80644f57aa5c1781091169af5c0c7b585725654831e732"
+    },
+    {
+      "path": "apps/desktop/src/rotatingFileSink.test.ts",
+      "owner": "t3code",
+      "baselineHash": "eced2b9f262146ee3560530a06c06500cfd0408448f3c7a07fa22a3e767d2469"
+    },
+    {
+      "path": "apps/desktop/src/runtimeArch.test.ts",
+      "owner": "t3code",
+      "baselineHash": "3953e2408423291ab8895ca171aa08d0e9278f03f741f741ff91e74464f83f18"
+    },
+    {
+      "path": "apps/desktop/src/runtimeArch.ts",
+      "owner": "t3code",
+      "baselineHash": "85a98250ac956fda8247f6ecd9b72a5dacfd4b4af1b3db0dd2ef82c21ff82c63"
+    },
+    {
+      "path": "apps/desktop/src/syncShellEnvironment.test.ts",
+      "owner": "t3code",
+      "baselineHash": "6c7c4482c03e8284ff00ed23638b9d388a6821c83ac9ef9514267dbad8754591"
+    },
+    {
+      "path": "apps/desktop/src/syncShellEnvironment.ts",
+      "owner": "t3code",
+      "baselineHash": "91d6cf78d9549272b4e30dd336faabc0e4b7d231e3e268ac285d19827384d7fc"
+    },
+    {
+      "path": "apps/desktop/src/updateMachine.test.ts",
+      "owner": "t3code",
+      "baselineHash": "9d1b2461e2a78af73af65eacbc01cd98398c8d47b3270c26a2bbcb8e94ff6d6f"
+    },
+    {
+      "path": "apps/desktop/src/updateMachine.ts",
+      "owner": "t3code",
+      "baselineHash": "b8552100e9bf0129f857444e192a2722b144e654e3ff43e63cec536d4aa87e58"
+    },
+    {
+      "path": "apps/desktop/src/updateState.test.ts",
+      "owner": "t3code",
+      "baselineHash": "9bafc36ca2aca37480e44443a6bc7f8dbbf75935529ea59701e4137e7df3467c"
+    },
+    {
+      "path": "apps/desktop/src/updateState.ts",
+      "owner": "t3code",
+      "baselineHash": "66bad0dc431f0ebace9fee87110c6358ec490d0bfacab04e4f72a0c4c49e2833"
+    },
+    {
+      "path": "apps/desktop/tsconfig.json",
+      "owner": "t3code",
+      "baselineHash": "6cf76d586c8394267927f272e7c647931b1e008d47b65289f66fdf3e15e91c40"
+    },
+    {
+      "path": "apps/desktop/turbo.jsonc",
+      "owner": "t3code",
+      "baselineHash": "1feeaa2cb03084298bd81378f92eeb48d742eda862ac0fe5939abe5841745e10"
+    },
+    {
+      "path": "apps/marketing/astro.config.mjs",
+      "owner": "t3code",
+      "baselineHash": "7ab448878803f107d7cf981ae88a114677dc31e4a28431ed5fd9fd0030eae7b4"
+    },
+    {
+      "path": "apps/marketing/package.json",
+      "owner": "t3code",
+      "baselineHash": "a13d017d79b6614252a82afc8a325cf831fcf253caa6884bd8f564bd6fbe82a4"
+    },
+    {
+      "path": "apps/marketing/public/apple-touch-icon.png",
+      "owner": "t3code",
+      "baselineHash": "94ed3ca45cec1ca02ec7c7f9cd65f1dabb880e29833e934aaf04ec6176ffcdf7"
+    },
+    {
+      "path": "apps/marketing/public/favicon-16x16.png",
+      "owner": "t3code",
+      "baselineHash": "43f2b40fffc8ec753b6fa91f1e10c3114781fc10675f910e2e35ecbcfce3dc19"
+    },
+    {
+      "path": "apps/marketing/public/favicon-32x32.png",
+      "owner": "t3code",
+      "baselineHash": "6246d5830fdaaeead0be523dfdd7439661e4303e8e8584ced58d942624a88bbd"
+    },
+    {
+      "path": "apps/marketing/public/favicon.ico",
+      "owner": "t3code",
+      "baselineHash": "cd1bbc6cfd45a7198f9b71ee3a4515a1e355748b6249ab698f10eab53e361592"
+    },
+    {
+      "path": "apps/marketing/public/icon.png",
+      "owner": "t3code",
+      "baselineHash": "222ca0543e5a0bd065c15ac883ec1250d2d93d42451c359da5cb2788a8498afa"
+    },
+    {
+      "path": "apps/marketing/public/screenshot.jpeg",
+      "owner": "t3code",
+      "baselineHash": "a23533d73d0b54af27cebfafd7c1031ce2ad2b37dba7321b68d569940a98e7e2"
+    },
+    {
+      "path": "apps/marketing/tsconfig.json",
+      "owner": "t3code",
+      "baselineHash": "974b0a3b37e52f3649d9df63e72e374794e9e797c8ae61eca4812f844406f7ef"
+    },
+    {
+      "path": "apps/server/integration/fixtures/providerRuntime.ts",
+      "owner": "t3code",
+      "baselineHash": "dcb04ef331582a1775b09f27338fe233a0cb6353b70a4dae825e841b69ac2419"
+    },
+    {
+      "path": "apps/server/integration/orchestrationEngine.integration.test.ts",
+      "owner": "t3code",
+      "baselineHash": "1505434a7d4cb085a2667b2ba8e3786bad8b1a9ff0848a43a0b0b6524faa8728"
+    },
+    {
+      "path": "apps/server/integration/OrchestrationEngineHarness.integration.ts",
+      "owner": "t3code",
+      "baselineHash": "92ff188f4cda9bee91c08cf86c0791a27fcc8f26bc13a4004ac62f9622c15f11"
+    },
+    {
+      "path": "apps/server/integration/providerService.integration.test.ts",
+      "owner": "t3code",
+      "baselineHash": "2fa4b286b8fbc36305b7f6ca3b7fa57f0dd0757b5a335cbff4d35da9ad7b1e6d"
+    },
+    {
+      "path": "apps/server/integration/TestProviderAdapter.integration.ts",
+      "owner": "t3code",
+      "baselineHash": "4227f06b01abb8892f4d6b90854dea101a5834011a7f500a56c4c184190b628f"
+    },
+    {
+      "path": "apps/server/scripts/cli.ts",
+      "owner": "t3code",
+      "baselineHash": "1574bafa97dc1ffa101122e5ee6a0e608d466d76a9581065aae9b3621f6f4992"
+    },
+    {
+      "path": "apps/server/src/attachmentPaths.ts",
+      "owner": "t3code",
+      "baselineHash": "899565e18a84876ea4c4c643dd8be29017c0a9bca584ab902b9e2312833e55be"
+    },
+    {
+      "path": "apps/server/src/attachmentStore.test.ts",
+      "owner": "t3code",
+      "baselineHash": "28fa24a585dffc6eec8daa00167f35e0dca0c95af23564909e2d93426147db10"
+    },
+    {
+      "path": "apps/server/src/attachmentStore.ts",
+      "owner": "t3code",
+      "baselineHash": "dd243a79dac75b8abf37881702ff44100f4ee8985a5f33276ca93e62652b49db"
+    },
+    {
+      "path": "apps/server/src/bin.ts",
+      "owner": "t3code",
+      "baselineHash": "6baa70d3a8ca42daa1340056f3e20b4a166711d7e5f69b52203c94eba4164985"
+    },
+    {
+      "path": "apps/server/src/bootstrap.test.ts",
+      "owner": "t3code",
+      "baselineHash": "c66cc4b62e202dbe516479fa189e41aea38ea54aba30c3bf803ecf897eadef6e"
+    },
+    {
+      "path": "apps/server/src/bootstrap.ts",
+      "owner": "t3code",
+      "baselineHash": "54887832d4eac36cd4a0d66bfd2c5fac78f35bac1518198ec5c8d1f89657d3e4"
+    },
+    {
+      "path": "apps/server/src/checkpointing/Diffs.test.ts",
+      "owner": "t3code",
+      "baselineHash": "234aab2fddecf3a1127aa7d4ff71ec2603204486974ce04e3b3fef86d735d377"
+    },
+    {
+      "path": "apps/server/src/checkpointing/Diffs.ts",
+      "owner": "t3code",
+      "baselineHash": "fdf22230368d8ff01a7b5ea41dc73e39f147c3472a998eda603ecb22d081769f"
+    },
+    {
+      "path": "apps/server/src/checkpointing/Errors.ts",
+      "owner": "t3code",
+      "baselineHash": "2c916e21b7260ccf2bfd17fb5ea0b188254169a7655d0bea067e72e8b26d67f2"
+    },
+    {
+      "path": "apps/server/src/checkpointing/Layers/CheckpointDiffQuery.test.ts",
+      "owner": "t3code",
+      "baselineHash": "fa251dc8445ee2f3f449b1d514fd50c097ac9d4235648afc0f833564a61afbc9"
+    },
+    {
+      "path": "apps/server/src/checkpointing/Layers/CheckpointDiffQuery.ts",
+      "owner": "t3code",
+      "baselineHash": "be1d0721c96991e091910289e4611045f5321198586d739f8c2140f75c8b8e6d"
+    },
+    {
+      "path": "apps/server/src/checkpointing/Layers/CheckpointStore.test.ts",
+      "owner": "t3code",
+      "baselineHash": "81c821d7947f4f1f703521f83926e075d404eeabba325d0678dfba63b7d6ce01"
+    },
+    {
+      "path": "apps/server/src/checkpointing/Layers/CheckpointStore.ts",
+      "owner": "t3code",
+      "baselineHash": "12a41f542febf35cdf6d696ef046dfe0e0a75410ad2b738dec79922933655554"
+    },
+    {
+      "path": "apps/server/src/checkpointing/Services/CheckpointDiffQuery.ts",
+      "owner": "t3code",
+      "baselineHash": "9e1407ff9bd574507efb42e59a75f8ff34b60a361f83d501120e5e911c4c338d"
+    },
+    {
+      "path": "apps/server/src/checkpointing/Services/CheckpointStore.ts",
+      "owner": "t3code",
+      "baselineHash": "b6075fd3f3612c7c4fbe0bb48c1f9914fb965c0f7a0550387fae37e56dddc3d9"
+    },
+    {
+      "path": "apps/server/src/checkpointing/Utils.ts",
+      "owner": "t3code",
+      "baselineHash": "934ca5ff4f8c5f4db1bbaeb10c67bf39b88ffaf1d342b48c99b9cd2d93cdf336"
+    },
+    {
+      "path": "apps/server/src/cli-config.test.ts",
+      "owner": "t3code",
+      "baselineHash": "2b8069583ea330aa713f2790294797056fc9d84b48797e88d10b50c4d0b5220e"
+    },
+    {
+      "path": "apps/server/src/cli.test.ts",
+      "owner": "t3code",
+      "baselineHash": "d1106490eced75f4c500160f831272ba4515a3301bc90b3fa6918ae90171d155"
+    },
+    {
+      "path": "apps/server/src/cli.ts",
+      "owner": "t3code",
+      "baselineHash": "952919cdc96c607c8236913dcc3b07ef7411ed5e458a72173b94cd896b72b2f9"
+    },
+    {
+      "path": "apps/server/src/codexAppServerManager.test.ts",
+      "owner": "t3code",
+      "baselineHash": "3d2dcc9565e1fd7498799f54797b6a6733c127e0cbcda17a18273c254de1a7d5"
+    },
+    {
+      "path": "apps/server/src/codexAppServerManager.ts",
+      "owner": "t3code",
+      "baselineHash": "25e2e1457efae357c5a751b27767db8145f0bb6cdf5435adc30db81b16ee06c3"
+    },
+    {
+      "path": "apps/server/src/config.ts",
+      "owner": "t3code",
+      "baselineHash": "4ba314d5ae4f9ca957805d2e960e795d147202959bdd3d28fd29e33ad5a98a32"
+    },
+    {
+      "path": "apps/server/src/git/Layers/ClaudeTextGeneration.test.ts",
+      "owner": "t3code",
+      "baselineHash": "57f2c970e3504a53cb73357e565992db99ee3cbd3a47858fc150d2283080b5e3"
+    },
+    {
+      "path": "apps/server/src/git/Layers/ClaudeTextGeneration.ts",
+      "owner": "t3code",
+      "baselineHash": "aeb4b22a2f05518bdfe860cb1067a8a613a0ae7575dd3847c241105d9bb27c0f"
+    },
+    {
+      "path": "apps/server/src/git/Layers/CodexTextGeneration.test.ts",
+      "owner": "t3code",
+      "baselineHash": "28ba4097ae1351779621fc775b21f0cd6233dc2a9a74b75099f4c8642615a932"
+    },
+    {
+      "path": "apps/server/src/git/Layers/CodexTextGeneration.ts",
+      "owner": "t3code",
+      "baselineHash": "528b776d60c4a50cbdabd67e73d886b1e524001a55594ce323a4ad306597b586"
+    },
+    {
+      "path": "apps/server/src/git/Layers/GitCore.test.ts",
+      "owner": "t3code",
+      "baselineHash": "36a4f9b7b2124f1cda0fc37eae56a6063b9cd90e06266f34d7543f4e464aa3ca"
+    },
+    {
+      "path": "apps/server/src/git/Layers/GitCore.ts",
+      "owner": "t3code",
+      "baselineHash": "7dd3392c53d47c55bfafd86a456bd0b1256fa462858f80d0437364e8e31e1dec"
+    },
+    {
+      "path": "apps/server/src/git/Layers/GitHubCli.test.ts",
+      "owner": "t3code",
+      "baselineHash": "41325d9f93eb5b0ef5f4b7f6a7470ab74b8cb2f9ce4e98f47f416a2cf59bdd50"
+    },
+    {
+      "path": "apps/server/src/git/Layers/GitHubCli.ts",
+      "owner": "t3code",
+      "baselineHash": "d0d3dbc68b87a065994f8f5fbcf03277fb4545af27b3ca1f90b134e8a757774b"
+    },
+    {
+      "path": "apps/server/src/git/Layers/GitManager.test.ts",
+      "owner": "t3code",
+      "baselineHash": "53e6e52e2d9e885a713985863502a617adc3e0200067d238f1fdbf06ea9c202f"
+    },
+    {
+      "path": "apps/server/src/git/Layers/GitManager.ts",
+      "owner": "t3code",
+      "baselineHash": "999ea0814ea06591f564d3e6e0a3f92e48df445fc3c120c30230b26f0cd02748"
+    },
+    {
+      "path": "apps/server/src/git/Layers/GitStatusBroadcaster.test.ts",
+      "owner": "t3code",
+      "baselineHash": "b7893d6b190cb71e7f9c2c45ee69335485f048f3c9f7fc39afba8da977ce4231"
+    },
+    {
+      "path": "apps/server/src/git/Layers/GitStatusBroadcaster.ts",
+      "owner": "t3code",
+      "baselineHash": "4a832fc5e267450b733c1877641f3988b4b96416fd8d59b7267cc7d463a931f3"
+    },
+    {
+      "path": "apps/server/src/git/Layers/RoutingTextGeneration.ts",
+      "owner": "t3code",
+      "baselineHash": "1fcc9e629729427114ad9e16f6a4ee614bcc3231018773750b635ca35a3e3181"
+    },
+    {
+      "path": "apps/server/src/git/Prompts.test.ts",
+      "owner": "t3code",
+      "baselineHash": "f4b99b5225d5a2fb78a1372080689110253dc602c0e9fc827cf3e483804e8f5b"
+    },
+    {
+      "path": "apps/server/src/git/Prompts.ts",
+      "owner": "t3code",
+      "baselineHash": "27acc4bcca99606d07fbb9acae86e5a3ab405fdff0f1ae78560ca71a7f924aab"
+    },
+    {
+      "path": "apps/server/src/git/remoteRefs.ts",
+      "owner": "t3code",
+      "baselineHash": "1187c7a36903f01555fb0e4b8f3fb15b9b8545af4dfb8714f648720c63207605"
+    },
+    {
+      "path": "apps/server/src/git/Services/GitCore.ts",
+      "owner": "t3code",
+      "baselineHash": "97629dcb0024237ea948cde435c2c6fcaf943943449a7ab2a65d647941a75824"
+    },
+    {
+      "path": "apps/server/src/git/Services/GitHubCli.ts",
+      "owner": "t3code",
+      "baselineHash": "06450f4d110577cf3f5e809322926c1be198d028479825892c79028682af8314"
+    },
+    {
+      "path": "apps/server/src/git/Services/GitManager.ts",
+      "owner": "t3code",
+      "baselineHash": "6acf76819e235d5f83724002ad697f13422aeebb72f46001b4d9d64b438aff93"
+    },
+    {
+      "path": "apps/server/src/git/Services/GitStatusBroadcaster.ts",
+      "owner": "t3code",
+      "baselineHash": "50d15f8eb650d625ffe6cb577c6a54f50e702783743e507dab73f74477579eac"
+    },
+    {
+      "path": "apps/server/src/git/Services/TextGeneration.ts",
+      "owner": "t3code",
+      "baselineHash": "c3146af6bd336f65a63c38c70dbd31d0478b8cc40f7d83cc2352a1081539fcdf"
+    },
+    {
+      "path": "apps/server/src/git/Utils.ts",
+      "owner": "t3code",
+      "baselineHash": "8b8058b668f399f578e8906f1ac33c5cd1b2939c0facafec815d9d7b0448b6cd"
+    },
+    {
+      "path": "apps/server/src/http.ts",
+      "owner": "t3code",
+      "baselineHash": "25d984ac111d750c5efd8e20815dd80b6e5a3d5c3fa719be2a470212280493cf"
+    },
+    {
+      "path": "apps/server/src/imageMime.test.ts",
+      "owner": "t3code",
+      "baselineHash": "32e59addaf8e40977127b3f739288076009bf0eb313aef18b82ab543776c3918"
+    },
+    {
+      "path": "apps/server/src/imageMime.ts",
+      "owner": "t3code",
+      "baselineHash": "95d9255306a923b05409932e03bc5f29749c3da8b60a9615f6e67b2b526ac69f"
+    },
+    {
+      "path": "apps/server/src/keybindings.test.ts",
+      "owner": "t3code",
+      "baselineHash": "8a55edbbdb4b905ac7ac395bbf64d95761febb33cd979d2244f28254b1fb1556"
+    },
+    {
+      "path": "apps/server/src/keybindings.ts",
+      "owner": "t3code",
+      "baselineHash": "e03aecc914394606c7d01e024385fd1011bb17b09e03e4b4cff649954648f49b"
+    },
+    {
+      "path": "apps/server/src/observability/Attributes.test.ts",
+      "owner": "t3code",
+      "baselineHash": "ca5c8c2e76cabe2a4d4363292a9cd18f92d3539c11258bb231466a9af8fc61ea"
+    },
+    {
+      "path": "apps/server/src/observability/Attributes.ts",
+      "owner": "t3code",
+      "baselineHash": "a0094623fa107084a5fd87a752a6f6c518f419c749f08c8c2223c297744b57ab"
+    },
+    {
+      "path": "apps/server/src/observability/Layers/Observability.ts",
+      "owner": "t3code",
+      "baselineHash": "81a4688cf0672d5d38da128e85f00b0f2cc78a64b41e3b32062b29a561fc5a49"
+    },
+    {
+      "path": "apps/server/src/observability/LocalFileTracer.test.ts",
+      "owner": "t3code",
+      "baselineHash": "0ecc4da558d354b288ad47c638619cded3bf7260dce69713f16c06b140b2fd0b"
+    },
+    {
+      "path": "apps/server/src/observability/LocalFileTracer.ts",
+      "owner": "t3code",
+      "baselineHash": "325129e7a04852ed9ac38146cf4f8307d68490186b78e733f54b4bf430b3a473"
+    },
+    {
+      "path": "apps/server/src/observability/Metrics.test.ts",
+      "owner": "t3code",
+      "baselineHash": "1baf9e752dec2d838f388ac295c58555b5c255f17428640dcc9142b08a5ea152"
+    },
+    {
+      "path": "apps/server/src/observability/Metrics.ts",
+      "owner": "t3code",
+      "baselineHash": "1b686cf4e026fb92896993c62f53fc3cef288bde8e79d90d993efec27cb3b549"
+    },
+    {
+      "path": "apps/server/src/observability/RpcInstrumentation.test.ts",
+      "owner": "t3code",
+      "baselineHash": "f255768d7c5d58e8ab67c10f8e19db146b3065bed6307b3845449da8da537450"
+    },
+    {
+      "path": "apps/server/src/observability/RpcInstrumentation.ts",
+      "owner": "t3code",
+      "baselineHash": "37a95ab4b9c8c79c54c92e19501f2e69b15599dcc916033a145453228d5259d7"
+    },
+    {
+      "path": "apps/server/src/observability/Services/BrowserTraceCollector.ts",
+      "owner": "t3code",
+      "baselineHash": "f9d1022a265cf24fe9026f2b3f2850afcd8e1bdc3f896985b8d18b0484600dd0"
+    },
+    {
+      "path": "apps/server/src/observability/TraceRecord.ts",
+      "owner": "t3code",
+      "baselineHash": "f6f82a74a368559845a49ae5e92313ac3681b57546f4e4063730f380dc0dd146"
+    },
+    {
+      "path": "apps/server/src/observability/TraceSink.test.ts",
+      "owner": "t3code",
+      "baselineHash": "dd447de5e363d64e3691700f1a7b887d9095075d746f95c9fedf8288ca38b5ff"
+    },
+    {
+      "path": "apps/server/src/observability/TraceSink.ts",
+      "owner": "t3code",
+      "baselineHash": "f9228e24a0dee46b326dcefe7a21d092040ee9517701c47cf630a8cdf7bb6beb"
+    },
+    {
+      "path": "apps/server/src/open.test.ts",
+      "owner": "t3code",
+      "baselineHash": "f4644d5cfec46d1b39a1e57ec50ea5437e09d62fd85a26c67252d78bc68e9e87"
+    },
+    {
+      "path": "apps/server/src/open.ts",
+      "owner": "t3code",
+      "baselineHash": "5cd7fa4f47d94123070657faaa69195478cc8905a54e26d698de540447f4ca26"
+    },
+    {
+      "path": "apps/server/src/orchestration/commandInvariants.test.ts",
+      "owner": "t3code",
+      "baselineHash": "5e06774df49b59c00ef7bb7dce68fbd476d2cc113ae385dcde1f546d82883713"
+    },
+    {
+      "path": "apps/server/src/orchestration/commandInvariants.ts",
+      "owner": "t3code",
+      "baselineHash": "b4406f23fcd696086e5cd474ab868d91b64d935fe9a04cf6f13f553c22886a85"
+    },
+    {
+      "path": "apps/server/src/orchestration/decider.projectScripts.test.ts",
+      "owner": "t3code",
+      "baselineHash": "1ea3dc44bdba79e14db6ea60a5ebf67b9b6df2bb61dd89b5590a05616ba0e004"
+    },
+    {
+      "path": "apps/server/src/orchestration/decider.ts",
+      "owner": "t3code",
+      "baselineHash": "21018f6dad390d34efe2e65ab046f12107e64cd9bf8387a5012653b9bda7b5e3"
+    },
+    {
+      "path": "apps/server/src/orchestration/Errors.ts",
+      "owner": "t3code",
+      "baselineHash": "b523ed0cb3394cd2f202de48a509bfea5b69f64aacdf0b19653b56081e7f7d26"
+    },
+    {
+      "path": "apps/server/src/orchestration/Layers/CheckpointReactor.test.ts",
+      "owner": "t3code",
+      "baselineHash": "e3a69a4eb5c1fd76d48de1337673282b7b81b1653ece09d089ea0bf2cb08abf8"
+    },
+    {
+      "path": "apps/server/src/orchestration/Layers/CheckpointReactor.ts",
+      "owner": "t3code",
+      "baselineHash": "c07653357afcd998703a863d3fdb28a7dd2e08e4b3da7c7cffa0e7cc57ca8c0b"
+    },
+    {
+      "path": "apps/server/src/orchestration/Layers/OrchestrationEngine.test.ts",
+      "owner": "t3code",
+      "baselineHash": "a983a76e82022770568df946ccbfef4c71168cd0de0855b1db7dcf8d4466ec68"
+    },
+    {
+      "path": "apps/server/src/orchestration/Layers/OrchestrationEngine.ts",
+      "owner": "t3code",
+      "baselineHash": "354567a7e3081e02c9395970408ed6d548758ee355f3d67a668bbc80e06b0beb"
+    },
+    {
+      "path": "apps/server/src/orchestration/Layers/OrchestrationReactor.test.ts",
+      "owner": "t3code",
+      "baselineHash": "bf6adbcc0e7757d90bdbfcb92470063934aa25db212adc4c18d4e15918413648"
+    },
+    {
+      "path": "apps/server/src/orchestration/Layers/OrchestrationReactor.ts",
+      "owner": "t3code",
+      "baselineHash": "0e1165de7edfdf1a96794925d54a4889a0cf75baa3c9533cbbca1842d616c64c"
+    },
+    {
+      "path": "apps/server/src/orchestration/Layers/ProjectionPipeline.test.ts",
+      "owner": "t3code",
+      "baselineHash": "8d43225cac4cbd6df181da2500b9f67a1b439fe85023f43ac7842604d7d20f93"
+    },
+    {
+      "path": "apps/server/src/orchestration/Layers/ProjectionPipeline.ts",
+      "owner": "t3code",
+      "baselineHash": "87c1cc4d29de5d3ac3a22bc238b804c7be6b9509a097b1a9e8dd6d4385809786"
+    },
+    {
+      "path": "apps/server/src/orchestration/Layers/ProjectionSnapshotQuery.test.ts",
+      "owner": "t3code",
+      "baselineHash": "b6d861f804af427bf204c1365e82bb187a9fb47a9c9c4421e72124a1bb20b525"
+    },
+    {
+      "path": "apps/server/src/orchestration/Layers/ProjectionSnapshotQuery.ts",
+      "owner": "t3code",
+      "baselineHash": "d7efbc21a49780dca14e23938ab49577c7c19735349d5e2eedb466f72f2c5f6b"
+    },
+    {
+      "path": "apps/server/src/orchestration/Layers/ProviderCommandReactor.test.ts",
+      "owner": "t3code",
+      "baselineHash": "be0d131779cdbe56cc71526cdab27639e5d06e09c99294361ef013bedfabfd88"
+    },
+    {
+      "path": "apps/server/src/orchestration/Layers/ProviderCommandReactor.ts",
+      "owner": "t3code",
+      "baselineHash": "f20658f5318c0ca3b36eee2d7e7d5244bf426c145819ce2f4bb2e0d905332feb"
+    },
+    {
+      "path": "apps/server/src/orchestration/Layers/RuntimeReceiptBus.ts",
+      "owner": "t3code",
+      "baselineHash": "78252c03df5c7e0e04d9b066847b23c1b2c6fb4d189dfafa1dfe456678207e39"
+    },
+    {
+      "path": "apps/server/src/orchestration/projector.test.ts",
+      "owner": "t3code",
+      "baselineHash": "78ea6ca6a04946ede1656b287c0067f8b555435ef5b54e2341072daf47fd8966"
+    },
+    {
+      "path": "apps/server/src/orchestration/projector.ts",
+      "owner": "t3code",
+      "baselineHash": "87c39e5d1a39198e3cdbc6cc4f3872a980c43f6df1a787bd4770e20ccb7c7998"
+    },
+    {
+      "path": "apps/server/src/orchestration/Schemas.ts",
+      "owner": "t3code",
+      "baselineHash": "5b429f011d75303233a0f85634cb5b8d33098e21fb35760fc293a9ca66b01a40"
+    },
+    {
+      "path": "apps/server/src/orchestration/Services/CheckpointReactor.ts",
+      "owner": "t3code",
+      "baselineHash": "741244c8cb6feb1a0acefd594d4d7f4e9be261e8a7a15c5d973ae44fd2bde574"
+    },
+    {
+      "path": "apps/server/src/orchestration/Services/OrchestrationEngine.ts",
+      "owner": "t3code",
+      "baselineHash": "886c048e6880096d8427562588f6a8b25b70dbd6a32f4987a23bdd5ae539778a"
+    },
+    {
+      "path": "apps/server/src/orchestration/Services/OrchestrationReactor.ts",
+      "owner": "t3code",
+      "baselineHash": "7323bf4c13cd7d924a72ffb32c3e53e8fff35e9c1b97d6f7c89e0e865ef28e08"
+    },
+    {
+      "path": "apps/server/src/orchestration/Services/ProjectionPipeline.ts",
+      "owner": "t3code",
+      "baselineHash": "5d52b5eaf774158b28e795673df7d2301fbc76e9aa77891130ebeb9c62e95c4e"
+    },
+    {
+      "path": "apps/server/src/orchestration/Services/ProjectionSnapshotQuery.ts",
+      "owner": "t3code",
+      "baselineHash": "a737ef7582bac0e1994d6527599a5989dd1ef2f69d2643416ae734b1e145abac"
+    },
+    {
+      "path": "apps/server/src/orchestration/Services/ProviderCommandReactor.ts",
+      "owner": "t3code",
+      "baselineHash": "38434b2702f4243e7056c75dce1368ff5c99079dfb313bf5bab4aa61f618dc6e"
+    },
+    {
+      "path": "apps/server/src/orchestration/Services/ProviderRuntimeIngestion.ts",
+      "owner": "t3code",
+      "baselineHash": "4c3b698b7242b51daa6d1d8bf2df7d7777e619832ca572f7f11f9d206d56392c"
+    },
+    {
+      "path": "apps/server/src/orchestration/Services/RuntimeReceiptBus.ts",
+      "owner": "t3code",
+      "baselineHash": "80bc247b79c82e8a8699e69ec823bb68a7a11f17bbb72b10755eedeb64af1956"
+    },
+    {
+      "path": "apps/server/src/os-jank.test.ts",
+      "owner": "t3code",
+      "baselineHash": "fd259a8db6e7edb798ba9bdea187469dd551dbcd6133d8304da93de2faf34c7d"
+    },
+    {
+      "path": "apps/server/src/persistence/Errors.ts",
+      "owner": "t3code",
+      "baselineHash": "16ad60b6f74e0f2d121b4583eb262794cb028eaa97d2ef215db56eb6aa658e7a"
+    },
+    {
+      "path": "apps/server/src/persistence/Layers/OrchestrationCommandReceipts.ts",
+      "owner": "t3code",
+      "baselineHash": "d4bbafde8bf9027991dd476505c5b7b4de566d83c25ffcea394590a004fadfc7"
+    },
+    {
+      "path": "apps/server/src/persistence/Layers/OrchestrationEventStore.test.ts",
+      "owner": "t3code",
+      "baselineHash": "abce5e22e98c1b7386b79da6b5a5a97b98cd090360aa2a08de267942b3a918b9"
+    },
+    {
+      "path": "apps/server/src/persistence/Layers/OrchestrationEventStore.ts",
+      "owner": "t3code",
+      "baselineHash": "eebe6682ee27cb4079e3173e6d6380503b6fa44ece1c97166c7d3b1e51d7eae2"
+    },
+    {
+      "path": "apps/server/src/persistence/Layers/ProjectionCheckpoints.ts",
+      "owner": "t3code",
+      "baselineHash": "eb15a8277d20a2b8f50e035d4e3435595e4fcddb46436b1641cefb95fe20ea1d"
+    },
+    {
+      "path": "apps/server/src/persistence/Layers/ProjectionPendingApprovals.ts",
+      "owner": "t3code",
+      "baselineHash": "2a33e0864c985096c449739c0c3bb82b017ce5eb6a383eea47ca20282c27c3a9"
+    },
+    {
+      "path": "apps/server/src/persistence/Layers/ProjectionProjects.ts",
+      "owner": "t3code",
+      "baselineHash": "c69a45d94482cf4094cba807d8ba9ce4b73788f2786ad4d717b9d7fa6f17f38d"
+    },
+    {
+      "path": "apps/server/src/persistence/Layers/ProjectionRepositories.test.ts",
+      "owner": "t3code",
+      "baselineHash": "82797ed2aacbafee3d3b45c61680f750f46126b8bdf2073bf55e75c9e3a80e6a"
+    },
+    {
+      "path": "apps/server/src/persistence/Layers/ProjectionState.ts",
+      "owner": "t3code",
+      "baselineHash": "b3fc5ffd78aa42f1201ccda3be4d8af4a30e790315d2c1fa10ae06bf1675a137"
+    },
+    {
+      "path": "apps/server/src/persistence/Layers/ProjectionThreadActivities.ts",
+      "owner": "t3code",
+      "baselineHash": "a538162568339c6fa24e3047660933e28bc9f506f0801b21f35899a50ecb4274"
+    },
+    {
+      "path": "apps/server/src/persistence/Layers/ProjectionThreadMessages.test.ts",
+      "owner": "t3code",
+      "baselineHash": "f0f3206d888adc4bfea1e1ad6b42df828a840eab278342aa4be8d50d9d868207"
+    },
+    {
+      "path": "apps/server/src/persistence/Layers/ProjectionThreadMessages.ts",
+      "owner": "t3code",
+      "baselineHash": "0eea627bd7733553a6007c78425139e65c2ab9a874af36f148980f77eed2b185"
+    },
+    {
+      "path": "apps/server/src/persistence/Layers/ProjectionThreadProposedPlans.ts",
+      "owner": "t3code",
+      "baselineHash": "e8f1cebae8101eaf7fa85c0890d3fe54e4396a651a48286338a9e6674dad87bf"
+    },
+    {
+      "path": "apps/server/src/persistence/Layers/ProjectionThreads.ts",
+      "owner": "t3code",
+      "baselineHash": "a658ee2e8c43ede80c2d00d42c8395c18a256c1678f8089fc70ac27bc983c8a3"
+    },
+    {
+      "path": "apps/server/src/persistence/Layers/ProjectionThreadSessions.ts",
+      "owner": "t3code",
+      "baselineHash": "c687dc3cdf74204436ca21b5b0cf88e31c39da6273f9d4ca56a093200694c59b"
+    },
+    {
+      "path": "apps/server/src/persistence/Layers/ProjectionTurns.ts",
+      "owner": "t3code",
+      "baselineHash": "e916ac66055d27dcc6a0fa24acbf4cbdfc66908a1ea0db810ce3d628553876bd"
+    },
+    {
+      "path": "apps/server/src/persistence/Layers/ProviderSessionRuntime.ts",
+      "owner": "t3code",
+      "baselineHash": "724cfbd9378f0eea7e4408b1ad960d4e39dfbe3f34c128a6476c09306b25cd8c"
+    },
+    {
+      "path": "apps/server/src/persistence/Layers/Sqlite.ts",
+      "owner": "t3code",
+      "baselineHash": "6442b5fe59b0f781b0f3b5a8385c29c3d4c6d737432cc7d3ed684385a18c5d48"
+    },
+    {
+      "path": "apps/server/src/persistence/Migrations.ts",
+      "owner": "t3code",
+      "baselineHash": "4a31081c0a9fd8fcbb2c97faaff49c468e089a0bf77fea01f05aeb6085b495a0"
+    },
+    {
+      "path": "apps/server/src/persistence/Migrations/001_OrchestrationEvents.ts",
+      "owner": "t3code",
+      "baselineHash": "a16e23b67f93ffb158c3e69f0660bc13150b82a121e74029dd5f39203b889bfe"
+    },
+    {
+      "path": "apps/server/src/persistence/Migrations/002_OrchestrationCommandReceipts.ts",
+      "owner": "t3code",
+      "baselineHash": "3fb5ac84681f192144729b2c13d9826ee43a0d6329a42162922305bc784bcd21"
+    },
+    {
+      "path": "apps/server/src/persistence/Migrations/003_CheckpointDiffBlobs.ts",
+      "owner": "t3code",
+      "baselineHash": "8d7ae95b77bb0d4c32970553e80af663b47568196cf12c45c69f7ecabba3c469"
+    },
+    {
+      "path": "apps/server/src/persistence/Migrations/004_ProviderSessionRuntime.ts",
+      "owner": "t3code",
+      "baselineHash": "481a1f88c6b369d4a472a3ff42e38b319e82c88b91196480b9d240eab566ea4c"
+    },
+    {
+      "path": "apps/server/src/persistence/Migrations/005_Projections.ts",
+      "owner": "t3code",
+      "baselineHash": "a05f48508910a4890f3adb49c16823d94085fc2770817b49c370eecafe26c920"
+    },
+    {
+      "path": "apps/server/src/persistence/Migrations/006_ProjectionThreadSessionRuntimeModeColumns.ts",
+      "owner": "t3code",
+      "baselineHash": "306869b3ce7c77171fcff34c3005a64893aa4e1273da5f0dbfb92be3248fc8c4"
+    },
+    {
+      "path": "apps/server/src/persistence/Migrations/007_ProjectionThreadMessageAttachments.ts",
+      "owner": "t3code",
+      "baselineHash": "70d9cf23829a0dc6907f729e4dc5750c4f8ee4b48c5785d8231342101c2aebdd"
+    },
+    {
+      "path": "apps/server/src/persistence/Migrations/008_ProjectionThreadActivitySequence.ts",
+      "owner": "t3code",
+      "baselineHash": "b9d86b20b2f4664ca4b2afc4ff899eac3e252be095f2e54f7ffeff9079593bd8"
+    },
+    {
+      "path": "apps/server/src/persistence/Migrations/009_ProviderSessionRuntimeMode.ts",
+      "owner": "t3code",
+      "baselineHash": "45016011b0731df2f67ae35ef160fd09b333153f0402ab8e86bed3fca5ea3c17"
+    },
+    {
+      "path": "apps/server/src/persistence/Migrations/010_ProjectionThreadsRuntimeMode.ts",
+      "owner": "t3code",
+      "baselineHash": "5fd32e890fc33d8709471d7e1d43ad76e322f4f58eaa0c57db6500887abb09d7"
+    },
+    {
+      "path": "apps/server/src/persistence/Migrations/011_OrchestrationThreadCreatedRuntimeMode.ts",
+      "owner": "t3code",
+      "baselineHash": "ab6307dc6e461d9c1a7669d2256a6cfd5f746facf05f8d5d9fb32054856c15a3"
+    },
+    {
+      "path": "apps/server/src/persistence/Migrations/012_ProjectionThreadsInteractionMode.ts",
+      "owner": "t3code",
+      "baselineHash": "dd3be859c649d6f0d26805a192ac6bed39ccb40da350c25490eeaec0fa93c0b2"
+    },
+    {
+      "path": "apps/server/src/persistence/Migrations/013_ProjectionThreadProposedPlans.ts",
+      "owner": "t3code",
+      "baselineHash": "ab8ff8fca03a370497eaca34ba79b0a98519b31921077b61c19fe0192668dfb6"
+    },
+    {
+      "path": "apps/server/src/persistence/Migrations/014_ProjectionThreadProposedPlanImplementation.ts",
+      "owner": "t3code",
+      "baselineHash": "1f0549094e208cd9910e2fd00f01672203682d5848f3e1b4152129cecb1a103d"
+    },
+    {
+      "path": "apps/server/src/persistence/Migrations/015_ProjectionTurnsSourceProposedPlan.ts",
+      "owner": "t3code",
+      "baselineHash": "24c271f2bbbe6a482519504d8108e174f624e022a2c72b68f5a729a96eb8af17"
+    },
+    {
+      "path": "apps/server/src/persistence/Migrations/016_CanonicalizeModelSelections.test.ts",
+      "owner": "t3code",
+      "baselineHash": "1a3c9a839979fb63c70aa6d4ca8a67f2ea2c32fb8dd4d2edf6f2cbf3b83f49e9"
+    },
+    {
+      "path": "apps/server/src/persistence/Migrations/016_CanonicalizeModelSelections.ts",
+      "owner": "t3code",
+      "baselineHash": "88e8a5b6c4ef2d703f1b10435c6b47ca59f0999c3cbe7bb29e56a049094e6cd8"
+    },
+    {
+      "path": "apps/server/src/persistence/Migrations/017_ProjectionThreadsArchivedAt.ts",
+      "owner": "t3code",
+      "baselineHash": "a3d9b050499f5fd7653e6cad4e3e8f0080585cb2d2df904ec4616d4e857b34c4"
+    },
+    {
+      "path": "apps/server/src/persistence/Migrations/018_ProjectionThreadsArchivedAtIndex.ts",
+      "owner": "t3code",
+      "baselineHash": "030b249ea2efdf3445385a77f744961810098a5887900c2975033c90c51062d7"
+    },
+    {
+      "path": "apps/server/src/persistence/Migrations/019_ProjectionSnapshotLookupIndexes.test.ts",
+      "owner": "t3code",
+      "baselineHash": "06819ca95c2c612e722ff01748b4c0a298b58797bb08252313a4a5dbb1f7ffdf"
+    },
+    {
+      "path": "apps/server/src/persistence/Migrations/019_ProjectionSnapshotLookupIndexes.ts",
+      "owner": "t3code",
+      "baselineHash": "38957074db08f788eb01ab5b61b228394d51fc145c53663a9f774f7cdf392a5f"
+    },
+    {
+      "path": "apps/server/src/persistence/NodeSqliteClient.test.ts",
+      "owner": "t3code",
+      "baselineHash": "0f9ac08d59bf40181276b81f6731bb5f6510daceb53ce1b9fff6575123d796f7"
+    },
+    {
+      "path": "apps/server/src/persistence/NodeSqliteClient.ts",
+      "owner": "t3code",
+      "baselineHash": "39354eea99e658b99a2af6de65f5d17fcbce1990ea07878963f61e58b5e19fc7"
+    },
+    {
+      "path": "apps/server/src/persistence/Services/OrchestrationCommandReceipts.ts",
+      "owner": "t3code",
+      "baselineHash": "9f2950d48bf31d505dccc08fc6b974f5173c33fb7005d26a60648fdf06e9a9e1"
+    },
+    {
+      "path": "apps/server/src/persistence/Services/OrchestrationEventStore.ts",
+      "owner": "t3code",
+      "baselineHash": "513db023d13253ab93307bacde779f75d2f22f7c20ccfddc4390bc75ef52d0ac"
+    },
+    {
+      "path": "apps/server/src/persistence/Services/ProjectionCheckpoints.ts",
+      "owner": "t3code",
+      "baselineHash": "7d4055f2e5ac8f6b89f15e3b231005f5d39ef6fb64dcce243d4ad8075b581213"
+    },
+    {
+      "path": "apps/server/src/persistence/Services/ProjectionPendingApprovals.ts",
+      "owner": "t3code",
+      "baselineHash": "1f22f39015c8d4b2b74a463b463a3b44a764473ace422fa5a8f4d75c26e135e3"
+    },
+    {
+      "path": "apps/server/src/persistence/Services/ProjectionProjects.ts",
+      "owner": "t3code",
+      "baselineHash": "bf163c98e8270229b3fc07a0081f1417c746496e9a978d9116ddd7aba585eafb"
+    },
+    {
+      "path": "apps/server/src/persistence/Services/ProjectionState.ts",
+      "owner": "t3code",
+      "baselineHash": "789c4713dbcbc530a1296ce8e71e990e082d33697700c79b19cea6c0241f5634"
+    },
+    {
+      "path": "apps/server/src/persistence/Services/ProjectionThreadActivities.ts",
+      "owner": "t3code",
+      "baselineHash": "b1d84d3753662c7c5c6a7db09275e0dde158ababfb0be8d053f785fc13a50687"
+    },
+    {
+      "path": "apps/server/src/persistence/Services/ProjectionThreadMessages.ts",
+      "owner": "t3code",
+      "baselineHash": "6eb35419615ea982532fd5351a4b6beb3e13d79141a2a508a3885ca8b451beed"
+    },
+    {
+      "path": "apps/server/src/persistence/Services/ProjectionThreadProposedPlans.ts",
+      "owner": "t3code",
+      "baselineHash": "eac7b03d9e829ee6c14ef918d23125df67427f002cd84983e1bdb66e618d8952"
+    },
+    {
+      "path": "apps/server/src/persistence/Services/ProjectionThreads.ts",
+      "owner": "t3code",
+      "baselineHash": "b547e1cef92cbdec08c817f50d3f4b83dbd817a3290d87ca3fdc516c874282f5"
+    },
+    {
+      "path": "apps/server/src/persistence/Services/ProjectionThreadSessions.ts",
+      "owner": "t3code",
+      "baselineHash": "504ae224cff92ba0e1ea94429fb36d102d9f350e890d197adbaacb27f63a90f3"
+    },
+    {
+      "path": "apps/server/src/persistence/Services/ProjectionTurns.ts",
+      "owner": "t3code",
+      "baselineHash": "b8c6481efb97509b408983599223365a85b118257aedbbbc75472bfe72b952f1"
+    },
+    {
+      "path": "apps/server/src/persistence/Services/ProviderSessionRuntime.ts",
+      "owner": "t3code",
+      "baselineHash": "2c760fa204688bcfdcbf2da30d755b49847e488cc820435334995ce8ac54a5bc"
+    },
+    {
+      "path": "apps/server/src/processRunner.test.ts",
+      "owner": "t3code",
+      "baselineHash": "14c64817a7a43fffef01f74bba9345cb5f0a3bca63a3ca7be714fd6c35b822c0"
+    },
+    {
+      "path": "apps/server/src/processRunner.ts",
+      "owner": "t3code",
+      "baselineHash": "d57bdc97915d7bc598acaddb0e54ccd8c9788a36e8660fdeccf0078448c8211a"
+    },
+    {
+      "path": "apps/server/src/project/Layers/ProjectFaviconResolver.test.ts",
+      "owner": "t3code",
+      "baselineHash": "b42242852b546bd4f83ee0bdf06aba31c5b7ea71b1c77b20383d054336df1752"
+    },
+    {
+      "path": "apps/server/src/project/Layers/ProjectFaviconResolver.ts",
+      "owner": "t3code",
+      "baselineHash": "d1b84d487fcc65c7286e3041cfc833ac96fedea134fc0c3f5cd7e46137e7c759"
+    },
+    {
+      "path": "apps/server/src/project/Layers/ProjectSetupScriptRunner.test.ts",
+      "owner": "t3code",
+      "baselineHash": "5e1e143a6202a81d4e00c9d8c8876c9142bd4d9a27fe0d2487367ce472d25922"
+    },
+    {
+      "path": "apps/server/src/project/Layers/ProjectSetupScriptRunner.ts",
+      "owner": "t3code",
+      "baselineHash": "bc3375bdf2c498c5b488c65c7fcac1157610a74fbbe9564953724fc3830c6e7a"
+    },
+    {
+      "path": "apps/server/src/project/Services/ProjectFaviconResolver.ts",
+      "owner": "t3code",
+      "baselineHash": "075d11ba3bccec370e5accb1e5a3f6d9c4b62d29d711ea6bdd0cf7adcd920c2b"
+    },
+    {
+      "path": "apps/server/src/project/Services/ProjectSetupScriptRunner.ts",
+      "owner": "t3code",
+      "baselineHash": "305cbfcbd8f91ff1197231899238ebd54cbc690addfbedf5445ea64108026b65"
+    },
+    {
+      "path": "apps/server/src/provider/codexAccount.ts",
+      "owner": "t3code",
+      "baselineHash": "639dae493a1466c6bcf095c7de36c3b29eb19ee44c4177dfcd92b8585f8eb5fa"
+    },
+    {
+      "path": "apps/server/src/provider/codexAppServer.ts",
+      "owner": "t3code",
+      "baselineHash": "57ac4faa749c680c9a26a83b5d96fb538c06694cb49b226c85c929b6ff2afae9"
+    },
+    {
+      "path": "apps/server/src/provider/codexCliVersion.ts",
+      "owner": "t3code",
+      "baselineHash": "fa1b650bf64f5c190f8506af65b3aa00371b1ede5422f4dcd8502ada5e504571"
+    },
+    {
+      "path": "apps/server/src/provider/Errors.ts",
+      "owner": "t3code",
+      "baselineHash": "345c1e0686aa7bc5a38b750c299d351337cfb306d24790564937290e4a871078"
+    },
+    {
+      "path": "apps/server/src/provider/Layers/ClaudeAdapter.test.ts",
+      "owner": "t3code",
+      "baselineHash": "d3b0f315b7b652ce93dfdcc109660e56fdc94a72636e6322b128689cc8471747"
+    },
+    {
+      "path": "apps/server/src/provider/Layers/ClaudeAdapter.ts",
+      "owner": "t3code",
+      "baselineHash": "4c46797dbf798e099875f36e6d69e401cd3320e8c39d4e1950c2682f589d0189"
+    },
+    {
+      "path": "apps/server/src/provider/Layers/ClaudeProvider.ts",
+      "owner": "t3code",
+      "baselineHash": "04ce5dc2fb27e89807205b0da6df505fc9b55c2192dbebd87ae34f6f9574a5eb"
+    },
+    {
+      "path": "apps/server/src/provider/Layers/CodexAdapter.test.ts",
+      "owner": "t3code",
+      "baselineHash": "183f85a98b5214e11293052132d7029d64fe7650c04ee75f5234d335bebb775b"
+    },
+    {
+      "path": "apps/server/src/provider/Layers/CodexAdapter.ts",
+      "owner": "t3code",
+      "baselineHash": "5a7316ba5251889152237806e3507978bb980164ece9f202fd339963dd179931"
+    },
+    {
+      "path": "apps/server/src/provider/Layers/CodexProvider.ts",
+      "owner": "t3code",
+      "baselineHash": "c3d84e0bb9ea8eb32499faf92abf0f3df2ddb9d818643c0c17fa73892ec97c48"
+    },
+    {
+      "path": "apps/server/src/provider/Layers/EventNdjsonLogger.test.ts",
+      "owner": "t3code",
+      "baselineHash": "ff786503a9aa0ca63cfe27ec9eb4560f33fefb8591c0b75b774d259f4ed18e6b"
+    },
+    {
+      "path": "apps/server/src/provider/Layers/EventNdjsonLogger.ts",
+      "owner": "t3code",
+      "baselineHash": "47762078437ade7072992438b0ea86d9653b1c5aba338487a2e8f56ebaf74123"
+    },
+    {
+      "path": "apps/server/src/provider/Layers/ProviderAdapterRegistry.test.ts",
+      "owner": "t3code",
+      "baselineHash": "9ebd46c7edd498aa9771852ab521fe726874060a86a52ad2c913cc7f5cb5d67f"
+    },
+    {
+      "path": "apps/server/src/provider/Layers/ProviderAdapterRegistry.ts",
+      "owner": "t3code",
+      "baselineHash": "8fce9bc4000524312b6d3b7ca4f54216c1039040e5142b61b49b254139fbeb21"
+    },
+    {
+      "path": "apps/server/src/provider/Layers/ProviderRegistry.test.ts",
+      "owner": "t3code",
+      "baselineHash": "d82f4854a03b4ca3c729b7215eb5a0fefaa9593467a65162b25cb0658810e6eb"
+    },
+    {
+      "path": "apps/server/src/provider/Layers/ProviderService.test.ts",
+      "owner": "t3code",
+      "baselineHash": "43533d73002f073326d1d6dd2dc8c01c38aebda36ef0f0d00ae2f8a8df2275d7"
+    },
+    {
+      "path": "apps/server/src/provider/Layers/ProviderSessionDirectory.test.ts",
+      "owner": "t3code",
+      "baselineHash": "9e480ca9bf2cfe7f0da66b8063b236a9afbb6a1daab824bdc08437a59f454a71"
+    },
+    {
+      "path": "apps/server/src/provider/Layers/ProviderSessionDirectory.ts",
+      "owner": "t3code",
+      "baselineHash": "37a02b0644c0e0c8904b3a727981247412769e229a5f1b4363d039bb1fc22ef0"
+    },
+    {
+      "path": "apps/server/src/provider/makeManagedServerProvider.ts",
+      "owner": "t3code",
+      "baselineHash": "d1e8c753c836487e94bc79cf5a53ae202a3f5c779e9d8702e2f6ae6f81ac0b02"
+    },
+    {
+      "path": "apps/server/src/provider/providerSnapshot.ts",
+      "owner": "t3code",
+      "baselineHash": "84d4fff1a806140188466e9d455fd1b9066df9da238c566a32c70b739827036e"
+    },
+    {
+      "path": "apps/server/src/provider/Services/ClaudeAdapter.ts",
+      "owner": "t3code",
+      "baselineHash": "3a29de264c2beecdefe17e35c5c510b7bc69c9526b8579d14bfaffaa9fc25843"
+    },
+    {
+      "path": "apps/server/src/provider/Services/ClaudeProvider.ts",
+      "owner": "t3code",
+      "baselineHash": "651526712545db9194a87a10c06def7c71e622cd44af81ff94ccddbf11bb3595"
+    },
+    {
+      "path": "apps/server/src/provider/Services/CodexAdapter.ts",
+      "owner": "t3code",
+      "baselineHash": "f3e31fa36e04ce814185e7c54c90d751d0aff124935ffb915d51d48d0e598b7e"
+    },
+    {
+      "path": "apps/server/src/provider/Services/CodexProvider.ts",
+      "owner": "t3code",
+      "baselineHash": "88d48cccc267cc4c38d3a2b51d117cda356fd47e3ddadccd2460cb5a877f92b0"
+    },
+    {
+      "path": "apps/server/src/provider/Services/ProviderAdapter.ts",
+      "owner": "t3code",
+      "baselineHash": "23e88184b01b34e3198b04932357a2d8793106a481f8efa8c2b7e75332f3efb1"
+    },
+    {
+      "path": "apps/server/src/provider/Services/ProviderAdapterRegistry.ts",
+      "owner": "t3code",
+      "baselineHash": "de71cb947210c80f5a7e21bbdb6bb509ea4eb3dd6b1f2a6f3f7be86417176c26"
+    },
+    {
+      "path": "apps/server/src/provider/Services/ProviderRegistry.ts",
+      "owner": "t3code",
+      "baselineHash": "7d2e99df37ff102e4748920a2783c607064d7eac80e96e2871c80acff38d8d43"
+    },
+    {
+      "path": "apps/server/src/provider/Services/ProviderService.ts",
+      "owner": "t3code",
+      "baselineHash": "b508a62c3bc2c090f1959b8d417112227a06fbe83df32d099635c61f3f9bde36"
+    },
+    {
+      "path": "apps/server/src/provider/Services/ProviderSessionDirectory.ts",
+      "owner": "t3code",
+      "baselineHash": "ec787cc153cda33319a511887e36032c9ef2847a36a6cda4a854ab4dc525e87d"
+    },
+    {
+      "path": "apps/server/src/provider/Services/ServerProvider.ts",
+      "owner": "t3code",
+      "baselineHash": "2713bf10e4c4449d9cc381ffd32766579c0cabe2e9f02ec944ab87a67243dbb5"
+    },
+    {
+      "path": "apps/server/src/serverLifecycleEvents.test.ts",
+      "owner": "t3code",
+      "baselineHash": "fc60ee7c117b8e5160098e03945689af55f497b8f1acc93242176d731cd900b5"
+    },
+    {
+      "path": "apps/server/src/serverLifecycleEvents.ts",
+      "owner": "t3code",
+      "baselineHash": "80b17d78cbf41d1e425c1b3b3faa0311961f55ba396629d43ae153b18309ac6f"
+    },
+    {
+      "path": "apps/server/src/serverLogger.ts",
+      "owner": "t3code",
+      "baselineHash": "c70d4f9588bfa7eb6669851bfe5be6fd6f8ecbebd81713ddcacda508127ae545"
+    },
+    {
+      "path": "apps/server/src/serverRuntimeStartup.test.ts",
+      "owner": "t3code",
+      "baselineHash": "a4e30ef7e575a411c13f029b6ab6364ab40193f16dce58ad5e3774c01134ebf2"
+    },
+    {
+      "path": "apps/server/src/serverSettings.test.ts",
+      "owner": "t3code",
+      "baselineHash": "6055e6c02ad3a42bc1ec8a44d0ca7761582188206ecabe41d0ee38623d5b3436"
+    },
+    {
+      "path": "apps/server/src/serverSettings.ts",
+      "owner": "t3code",
+      "baselineHash": "15a352aef0b031650e3f2bc4fd2d0768ba687e9b93461aaefd329187a1bc0dfc"
+    },
+    {
+      "path": "apps/server/src/telemetry/Identify.ts",
+      "owner": "t3code",
+      "baselineHash": "4d380428fa0c0e53934d17387684c35011e67dc6398ff7cdb0a72775764e1046"
+    },
+    {
+      "path": "apps/server/src/telemetry/Layers/AnalyticsService.test.ts",
+      "owner": "t3code",
+      "baselineHash": "4cfe25f9539e5f36fba9313d25c5919cbe1f3776dded1348c3d7d94ecc71a96b"
+    },
+    {
+      "path": "apps/server/src/telemetry/Layers/AnalyticsService.ts",
+      "owner": "t3code",
+      "baselineHash": "10d8127654629754f417a8e6610251cb1da9bb20d174ea77d6a7fab3f3cf675e"
+    },
+    {
+      "path": "apps/server/src/telemetry/Services/AnalyticsService.ts",
+      "owner": "t3code",
+      "baselineHash": "273d4aee24e3d017c7e50aba46d5df95df2071068c6e2d354fc267645fb55ef5"
+    },
+    {
+      "path": "apps/server/src/terminal/Layers/BunPTY.ts",
+      "owner": "t3code",
+      "baselineHash": "c81dac1b3f12354b503061135843cacfd1eba2d1d303e7b5b5f735b077228aae"
+    },
+    {
+      "path": "apps/server/src/terminal/Layers/Manager.test.ts",
+      "owner": "t3code",
+      "baselineHash": "717520c17b487a1c7f091245425be6b4a35924d4aefc09f48d579367e33701e1"
+    },
+    {
+      "path": "apps/server/src/terminal/Layers/Manager.ts",
+      "owner": "t3code",
+      "baselineHash": "fd5a30ee030bb9e90d203d2f5b7b6ed05297ad65f1e08b20b4fca54ff97ce2d3"
+    },
+    {
+      "path": "apps/server/src/terminal/Layers/NodePTY.test.ts",
+      "owner": "t3code",
+      "baselineHash": "93a05b67a0221188c99e6de0ed0f1dc59f284a9d615ef530a040c9406f74c07c"
+    },
+    {
+      "path": "apps/server/src/terminal/Layers/NodePTY.ts",
+      "owner": "t3code",
+      "baselineHash": "ac7cf8387fc3131f1357d1080c2b7d25ffe3e6d26e647dda806cb8e868bbfa33"
+    },
+    {
+      "path": "apps/server/src/terminal/Services/Manager.ts",
+      "owner": "t3code",
+      "baselineHash": "cb68fe68dfa66fb611b9511ae577dacac3c6fe1a6d0a5222368ce2f6bc1de3f5"
+    },
+    {
+      "path": "apps/server/src/terminal/Services/PTY.ts",
+      "owner": "t3code",
+      "baselineHash": "0b0bf2692bb44193c7b4608cfddaf980f6a17e0a06a59a444e720bff0121426d"
+    },
+    {
+      "path": "apps/server/src/workspace/Layers/WorkspaceEntries.test.ts",
+      "owner": "t3code",
+      "baselineHash": "0d0a51355e30c94c406b6632994f863f64f03d51093d04b837ed157e558cb947"
+    },
+    {
+      "path": "apps/server/src/workspace/Layers/WorkspaceEntries.ts",
+      "owner": "t3code",
+      "baselineHash": "7fcb12534af58ebe95e6995b8d9793fb00105a399a06d755aeddfb1b746a16b5"
+    },
+    {
+      "path": "apps/server/src/workspace/Layers/WorkspaceFileSystem.test.ts",
+      "owner": "t3code",
+      "baselineHash": "7479d8ffa93afafe613f69b2eb7e6e04c5088cbfec09ae4940c0da6bed0464c4"
+    },
+    {
+      "path": "apps/server/src/workspace/Layers/WorkspaceFileSystem.ts",
+      "owner": "t3code",
+      "baselineHash": "f748bc32327148c66e67adb7395d214402d3852eda02dde557c6a679a6dc87d3"
+    },
+    {
+      "path": "apps/server/src/workspace/Layers/WorkspacePaths.test.ts",
+      "owner": "t3code",
+      "baselineHash": "b9169f6f8a9ecdd0e7ac978270be7081703648c00249c39bc979e0402eaf0259"
+    },
+    {
+      "path": "apps/server/src/workspace/Layers/WorkspacePaths.ts",
+      "owner": "t3code",
+      "baselineHash": "2aedc5570722ca940e4169e245fee3f5e2629b185d03db3906e09fc66b01638a"
+    },
+    {
+      "path": "apps/server/src/workspace/Services/WorkspaceEntries.ts",
+      "owner": "t3code",
+      "baselineHash": "ad21fdd3b5260851c541882cc5546350bf333c58acd30522a0746d3680293c73"
+    },
+    {
+      "path": "apps/server/src/workspace/Services/WorkspaceFileSystem.ts",
+      "owner": "t3code",
+      "baselineHash": "22e5f58ca16e90408a709049b747ae997d2b50170c06c403e7edca9a725e27d2"
+    },
+    {
+      "path": "apps/server/src/workspace/Services/WorkspacePaths.ts",
+      "owner": "t3code",
+      "baselineHash": "47666fb0b7355e77b8b168ff78512653e971ac7fe36a05a9bc1f880b6eba7fc2"
+    },
+    {
+      "path": "apps/server/tsconfig.json",
+      "owner": "t3code",
+      "baselineHash": "51449bd7e31efa13fdbaf9e6f2778492db1f80b7ae5a6cb4c8d4ea1b428d3846"
+    },
+    {
+      "path": "apps/server/tsdown.config.ts",
+      "owner": "t3code",
+      "baselineHash": "68be13227cb6ef9758d718da72ae7a53d9e28faa45a31b942d12c28f183db2d8"
+    },
+    {
+      "path": "apps/server/turbo.jsonc",
+      "owner": "t3code",
+      "baselineHash": "1b5186341b2455e4614d51e2cde895a00d43f6fd962231a1c212812f257cb5e0"
+    },
+    {
+      "path": "apps/server/vitest.config.ts",
+      "owner": "t3code",
+      "baselineHash": "1259681a02a26d9478770a3aeb49fcfad7bb40f5daa173862d04787f9efdaeb4"
+    },
+    {
+      "path": "apps/web/components.json",
+      "owner": "t3code",
+      "baselineHash": "e8874659e564b4ecc76cbaa3d593a3f074db0e320804010a03eeb4e1ac9173b2"
+    },
+    {
+      "path": "apps/web/package.json",
+      "owner": "t3code",
+      "baselineHash": "b0595158c54b995d811aa26dc8f28a30332d38efbeed274268f6f7622bb63a93"
+    },
+    {
+      "path": "apps/web/public/apple-touch-icon.png",
+      "owner": "t3code",
+      "baselineHash": "49d04ba18612af9dcfe8964d325c8eded5997f2e4b90f61b2ee6a1f9899c4283"
+    },
+    {
+      "path": "apps/web/public/favicon-16x16.png",
+      "owner": "t3code",
+      "baselineHash": "30e3ae01e3d9e391e473cb06cf0995e9a868565acef90a56eb57f86a0d8a5f1c"
+    },
+    {
+      "path": "apps/web/public/favicon-32x32.png",
+      "owner": "t3code",
+      "baselineHash": "382480fd8c443f4f0155b766ade6ba21e5cfe51cbfd9d1df5d96d32e14c6c56c"
+    },
+    {
+      "path": "apps/web/public/favicon.ico",
+      "owner": "t3code",
+      "baselineHash": "55dec8fb5f233c06fad6d37d0c0b0d268744db5b6cbfb5e957b51766a992f509"
+    },
+    {
+      "path": "apps/web/public/mockServiceWorker.js",
+      "owner": "t3code",
+      "baselineHash": "ca4fb566f194aefb6e6115e6645302447d9a2329a23b6d396b427d628aac9c5c"
+    },
+    {
+      "path": "apps/web/src/chat-scroll.test.ts",
+      "owner": "t3code",
+      "baselineHash": "5cd69b63d890a21e069fdd38601ce97e2b4706c11d4500f701a563b68cd1a798"
+    },
+    {
+      "path": "apps/web/src/chat-scroll.ts",
+      "owner": "t3code",
+      "baselineHash": "ce125cf079000feb7a15bcd92d983bba4676525641b4fa422e67b667b3a326a9"
+    },
+    {
+      "path": "apps/web/src/components/AppSidebarLayout.tsx",
+      "owner": "t3code",
+      "baselineHash": "4dd55fcd7a0c864cebfcde4cfc6a4f192ba5bcc56e6b1f1a6317a6c2f338be78"
+    },
+    {
+      "path": "apps/web/src/components/BranchToolbar.logic.test.ts",
+      "owner": "t3code",
+      "baselineHash": "21bb0f777bd55dc97042a0770cf20db17c7f28d1d8e08285576dcdc402ccd159"
+    },
+    {
+      "path": "apps/web/src/components/BranchToolbar.logic.ts",
+      "owner": "t3code",
+      "baselineHash": "e679899c760f176d6795952950c52fb67ec359d028c89a3e0c8b29d6da76e04f"
+    },
+    {
+      "path": "apps/web/src/components/BranchToolbar.tsx",
+      "owner": "t3code",
+      "baselineHash": "8e29507b8a1a13e8eb0e62eac44f1784fa0dbb84dd92f4f07dac7de59d429c88"
+    },
+    {
+      "path": "apps/web/src/components/BranchToolbarBranchSelector.tsx",
+      "owner": "t3code",
+      "baselineHash": "54bce9dc85f6671606c0ef077dd248c2c6c4ca1d25c2d0f2d285604533cc2df1"
+    },
+    {
+      "path": "apps/web/src/components/chat/ChangedFilesTree.test.tsx",
+      "owner": "t3code",
+      "baselineHash": "9aa000ee698cb378631ff069011d5207cd8f049c99391aee215a2681ea773869"
+    },
+    {
+      "path": "apps/web/src/components/chat/ChangedFilesTree.tsx",
+      "owner": "t3code",
+      "baselineHash": "6b3407bb6ecb442ad12aec5823c08ea2a31af13cd0efb62d837ec59fd1dbf378"
+    },
+    {
+      "path": "apps/web/src/components/chat/CompactComposerControlsMenu.browser.tsx",
+      "owner": "t3code",
+      "baselineHash": "7e88b1c0ff8928feb19e7671f13567da1872050131257bac217ddd5b107605b6"
+    },
+    {
+      "path": "apps/web/src/components/chat/CompactComposerControlsMenu.tsx",
+      "owner": "t3code",
+      "baselineHash": "850ee7dbfa7988f0157ac15d57946e9e02b790e151a1be506c1f1d829fad359c"
+    },
+    {
+      "path": "apps/web/src/components/chat/ComposerCommandMenu.tsx",
+      "owner": "t3code",
+      "baselineHash": "ba1411f2996333ed8f1ef2d4b00f2fd902ec14ab4af96c5ffb977b5ce920d9de"
+    },
+    {
+      "path": "apps/web/src/components/chat/ComposerPendingApprovalActions.tsx",
+      "owner": "t3code",
+      "baselineHash": "80c2b05ed2cf2bf627e24d2c14f5aed42636b58aabd49b497eee2b944f8264ac"
+    },
+    {
+      "path": "apps/web/src/components/chat/ComposerPendingApprovalPanel.tsx",
+      "owner": "t3code",
+      "baselineHash": "1058daf113e5a66c10fe211dce410e42565e7cd9617e43f57295cad169f58a44"
+    },
+    {
+      "path": "apps/web/src/components/chat/ComposerPendingTerminalContexts.test.tsx",
+      "owner": "t3code",
+      "baselineHash": "f469bd5e92719c894f041cc587dfc1bd4568356582d749cedeae1e235151a0fa"
+    },
+    {
+      "path": "apps/web/src/components/chat/ComposerPendingTerminalContexts.tsx",
+      "owner": "t3code",
+      "baselineHash": "e2c7af73d96f58286c39610de7e1ea6cba3ed1e6b08e76a5710d261b6590b3a5"
+    },
+    {
+      "path": "apps/web/src/components/chat/ComposerPendingUserInputPanel.tsx",
+      "owner": "t3code",
+      "baselineHash": "82e821634e1c16c20891abf27d173597c37432097a396054aa2cd533b98b2a47"
+    },
+    {
+      "path": "apps/web/src/components/chat/ComposerPlanFollowUpBanner.tsx",
+      "owner": "t3code",
+      "baselineHash": "0c9932cd6bd5a520f573f16eb1802a1791a66f700fc3413729657a4304e070c8"
+    },
+    {
+      "path": "apps/web/src/components/chat/composerProviderRegistry.test.tsx",
+      "owner": "t3code",
+      "baselineHash": "9dc7c5dde8ac3c05834616677f1e95c93ee374c1d8f35b878fef0a6afdb196a3"
+    },
+    {
+      "path": "apps/web/src/components/chat/composerProviderRegistry.tsx",
+      "owner": "t3code",
+      "baselineHash": "dee74008d03eb3273ab46c05617f310a4e21e979b09aed19b3142faf7dec7e21"
+    },
+    {
+      "path": "apps/web/src/components/chat/ContextWindowMeter.tsx",
+      "owner": "t3code",
+      "baselineHash": "987f82a672e764443fe8059d96a7c605506027e2b3f8f3ea9f964382e72c78b5"
+    },
+    {
+      "path": "apps/web/src/components/chat/DiffStatLabel.tsx",
+      "owner": "t3code",
+      "baselineHash": "f668382fd8e71376ec90df600cc94a20e83e77e24fd2ce951f3113096383b207"
+    },
+    {
+      "path": "apps/web/src/components/chat/ExpandedImagePreview.tsx",
+      "owner": "t3code",
+      "baselineHash": "8a34d56939e6ee85a0197143a9bd1ba74a5d953798271afe16672769ee813bac"
+    },
+    {
+      "path": "apps/web/src/components/chat/MessageCopyButton.tsx",
+      "owner": "t3code",
+      "baselineHash": "104f0e7c2495c6a5108d1b46894c2747b341a80f64cdf9a01a27f0fb305014c0"
+    },
+    {
+      "path": "apps/web/src/components/chat/MessagesTimeline.logic.test.ts",
+      "owner": "t3code",
+      "baselineHash": "1265c4e16f65ea0b46d90ed8845a0de04cb7608ee7b082c00ea74c94e7485b19"
+    },
+    {
+      "path": "apps/web/src/components/chat/OpenInPicker.tsx",
+      "owner": "t3code",
+      "baselineHash": "26c77dfae6c970b48caf399f7aa67a04e49e8baa34f3e8927f22cfdddda94724"
+    },
+    {
+      "path": "apps/web/src/components/chat/ProposedPlanCard.tsx",
+      "owner": "t3code",
+      "baselineHash": "a5f1bdacf848b1321275020d5e9c374dfc20207f3fd3d71f72bacadc366c4ebf"
+    },
+    {
+      "path": "apps/web/src/components/chat/ProviderModelPicker.browser.tsx",
+      "owner": "t3code",
+      "baselineHash": "de58547e84076a7c3c195935e69889351fcb7c67b8dbcbd6388a8d7bbb7a5a16"
+    },
+    {
+      "path": "apps/web/src/components/chat/ProviderStatusBanner.tsx",
+      "owner": "t3code",
+      "baselineHash": "d22a3d055f504e5489dfb69f719c8e627eeb3933b65cd114a7272f0b700bacb2"
+    },
+    {
+      "path": "apps/web/src/components/chat/TerminalContextInlineChip.tsx",
+      "owner": "t3code",
+      "baselineHash": "06b0b7929382e996921d8dc43100111d8e3a9129a1fb4df481323dce0ce7ee69"
+    },
+    {
+      "path": "apps/web/src/components/chat/ThreadErrorBanner.tsx",
+      "owner": "t3code",
+      "baselineHash": "be33922285faf76ce399b8717bab3249a8e6ce3ebe2ed4acdd14e52f1598b5fc"
+    },
+    {
+      "path": "apps/web/src/components/chat/TraitsPicker.browser.tsx",
+      "owner": "t3code",
+      "baselineHash": "f5b341e845fc2db38183aefd1a7acc3737adb2acbf04914504e07a30b9e023d0"
+    },
+    {
+      "path": "apps/web/src/components/chat/TraitsPicker.tsx",
+      "owner": "t3code",
+      "baselineHash": "0f79400c8d82e05949add3d246d93fd8ac0703decaed4d93dd6d45d0ff8728c9"
+    },
+    {
+      "path": "apps/web/src/components/chat/userMessageTerminalContexts.test.ts",
+      "owner": "t3code",
+      "baselineHash": "0a5a072c8aab11093a750889b39cb6b7b6b799daf477746560d3e48c26576f73"
+    },
+    {
+      "path": "apps/web/src/components/chat/userMessageTerminalContexts.ts",
+      "owner": "t3code",
+      "baselineHash": "c9ee82c7dd77e32cfc880cb8c22b64964fcdc7dafb6681bea6bd9d3d36dd827d"
+    },
+    {
+      "path": "apps/web/src/components/chat/VscodeEntryIcon.tsx",
+      "owner": "t3code",
+      "baselineHash": "ae9f71b57403c7f925545b3d548d10f3e6ed8b1e0181d4cb0345c87212fee3de"
+    },
+    {
+      "path": "apps/web/src/components/ChatMarkdown.tsx",
+      "owner": "t3code",
+      "baselineHash": "64fc821d3d1aa435995ceb4100ade04b78741e4e1052aa66e9eff13255746371"
+    },
+    {
+      "path": "apps/web/src/components/ChatView.browser.tsx",
+      "owner": "t3code",
+      "baselineHash": "5e50c4472703d6ca8ed547c7e59b6568353209a55bdb833eb14a48a28c86834b"
+    },
+    {
+      "path": "apps/web/src/components/ChatView.logic.test.ts",
+      "owner": "t3code",
+      "baselineHash": "d58259a910dfa754e5cd2feb965c3657fb22b98f56665ac9fd2821cb29e4831a"
+    },
+    {
+      "path": "apps/web/src/components/ChatView.logic.ts",
+      "owner": "t3code",
+      "baselineHash": "626f5a4a00a0f2bffb75860498bc7de48c4c5d8daa314ce02964a83f56ab35b5"
+    },
+    {
+      "path": "apps/web/src/components/composerFooterLayout.test.ts",
+      "owner": "t3code",
+      "baselineHash": "047971f8d7ddebc8acb4253cb62ab20dc92f82f87d91dcd877a96a8a80b82c00"
+    },
+    {
+      "path": "apps/web/src/components/composerFooterLayout.ts",
+      "owner": "t3code",
+      "baselineHash": "9ee27cf555c0063d9bb817bf57a689221bdc18d64971a4ca3049c3d12b7db173"
+    },
+    {
+      "path": "apps/web/src/components/composerInlineChip.ts",
+      "owner": "t3code",
+      "baselineHash": "3d81bbb0a8579229706473d2f10241f9d39491ffdac09b53136444232dd71bf2"
+    },
+    {
+      "path": "apps/web/src/components/ComposerPromptEditor.tsx",
+      "owner": "t3code",
+      "baselineHash": "9e9c6c585ea6d757ea6122fd354ee45c08df7ee6ead31a8e0961c6e4ae9f0860"
+    },
+    {
+      "path": "apps/web/src/components/desktopUpdate.logic.test.ts",
+      "owner": "t3code",
+      "baselineHash": "9c088a6f8be0a3cee48bdcddd848ea4cc858eb7cc40ba92760dea41db0a78051"
+    },
+    {
+      "path": "apps/web/src/components/desktopUpdate.logic.ts",
+      "owner": "t3code",
+      "baselineHash": "35f59c8aa0bb20558bd796d0e76a7df35f5568d6cf5e33a0e08da2532c06ac6e"
+    },
+    {
+      "path": "apps/web/src/components/DiffPanel.tsx",
+      "owner": "t3code",
+      "baselineHash": "ad2aa9a2a8166939a79464010bf8b83b036a114f16e9dbc06f8780c2c26e279c"
+    },
+    {
+      "path": "apps/web/src/components/DiffPanelShell.tsx",
+      "owner": "t3code",
+      "baselineHash": "aeaadfabb094178476349b78052def8900991137859952ffe072c84e60c4562f"
+    },
+    {
+      "path": "apps/web/src/components/DiffWorkerPoolProvider.tsx",
+      "owner": "t3code",
+      "baselineHash": "bbb10ccfb045799b75639a20c320bf029507a48857b18379020b3a704ae56a33"
+    },
+    {
+      "path": "apps/web/src/components/GitActionsControl.browser.tsx",
+      "owner": "t3code",
+      "baselineHash": "b7db2687332a695373e8bac3da629f7e39fdd665fc3cdd6d5b8906e752aae201"
+    },
+    {
+      "path": "apps/web/src/components/GitActionsControl.logic.test.ts",
+      "owner": "t3code",
+      "baselineHash": "f6bcf7daadfc1a8bcf030b6fc4ef2efb6481378e2c40ec0ea0739f5f18b11bfe"
+    },
+    {
+      "path": "apps/web/src/components/GitActionsControl.logic.ts",
+      "owner": "t3code",
+      "baselineHash": "d7d53545603d151cb65378f9a0eb28197a8121aa73ac0940784948bbabe8e445"
+    },
+    {
+      "path": "apps/web/src/components/GitActionsControl.tsx",
+      "owner": "t3code",
+      "baselineHash": "e76037817141cee17914a2dd119c7d99a269ade8827cd7cfbe8725d020f46d2d"
+    },
+    {
+      "path": "apps/web/src/components/Icons.tsx",
+      "owner": "t3code",
+      "baselineHash": "ea19d99a73f9e30595e49ed5434da00864504abe0ea655ed8e05de33f54ce06d"
+    },
+    {
+      "path": "apps/web/src/components/KeybindingsToast.browser.tsx",
+      "owner": "t3code",
+      "baselineHash": "f26ce4e72f56d7b28eeac28c817ef58155834e2d846f55a4d955202860495e0f"
+    },
+    {
+      "path": "apps/web/src/components/PlanSidebar.tsx",
+      "owner": "t3code",
+      "baselineHash": "b9c03f702e07d2072abbe1a6669df51f18fe40881a8e62655add1f628662569c"
+    },
+    {
+      "path": "apps/web/src/components/ProjectFavicon.tsx",
+      "owner": "t3code",
+      "baselineHash": "5e74c6c13d010e002b8c68849ece482d9e97e5d8b601cbe78d447a5df915f0ff"
+    },
+    {
+      "path": "apps/web/src/components/ProjectScriptsControl.tsx",
+      "owner": "t3code",
+      "baselineHash": "93f113ff95a3aebbb23efd9766d080dd41924bfb92cf14ee61c3cf1fb07462a8"
+    },
+    {
+      "path": "apps/web/src/components/PullRequestThreadDialog.tsx",
+      "owner": "t3code",
+      "baselineHash": "2663d0a24ac0c2fcecdda9cd69529236fd6beda2f94408d36ed7ab84bf8b1802"
+    },
+    {
+      "path": "apps/web/src/components/settings/SettingsPanels.browser.tsx",
+      "owner": "t3code",
+      "baselineHash": "6f939109fc187c500405582a012a01e6ecded80fb496572687a3400d0b8f9673"
+    },
+    {
+      "path": "apps/web/src/components/settings/SettingsSidebarNav.tsx",
+      "owner": "t3code",
+      "baselineHash": "a57340b0ec6226002aaf415b6000ff2b8a9b48c54f8f90feeb2146d1f6401f1b"
+    },
+    {
+      "path": "apps/web/src/components/Sidebar.logic.test.ts",
+      "owner": "t3code",
+      "baselineHash": "38c48fe4bf56be08c4df9548b5d444a9a65c72216011dd383218854d9f0dd004"
+    },
+    {
+      "path": "apps/web/src/components/Sidebar.logic.ts",
+      "owner": "t3code",
+      "baselineHash": "788e7cc04155d0b8017efa2d6ae6fc48aa7f3966e16baeaee7ae9a7ce8a66e01"
+    },
+    {
+      "path": "apps/web/src/components/Sidebar.tsx",
+      "owner": "t3code",
+      "baselineHash": "7cfb3376caef3050f8e1ca81265948c79b95cd50191dd8b4a3631a455d14ac56"
+    },
+    {
+      "path": "apps/web/src/components/sidebar/SidebarUpdatePill.tsx",
+      "owner": "t3code",
+      "baselineHash": "5e2ad422e94dd20f38505d7ab1a3c17ac0ac96fa392de9b2ae2d424b7042e4cc"
+    },
+    {
+      "path": "apps/web/src/components/ThreadTerminalDrawer.test.ts",
+      "owner": "t3code",
+      "baselineHash": "f03d82eb57e2b4e4e2b2d8041bf4f62d763467c2286e8199f685a89ada9f1ddd"
+    },
+    {
+      "path": "apps/web/src/components/ThreadTerminalDrawer.tsx",
+      "owner": "t3code",
+      "baselineHash": "4fc6e3a8296c511eea3add60f46b089d17f6f62656f32cf1f220de8a1a55f694"
+    },
+    {
+      "path": "apps/web/src/components/timelineHeight.test.ts",
+      "owner": "t3code",
+      "baselineHash": "34d5fbb3fa900fcba1e30806dabdc2b0a2955cf56a3ea48aa2da0f026b747465"
+    },
+    {
+      "path": "apps/web/src/components/timelineHeight.ts",
+      "owner": "t3code",
+      "baselineHash": "1aa30efbc107b8f3220175720c5383ec38154db86a48424e35d179e00d6b6d66"
+    },
+    {
+      "path": "apps/web/src/components/ui/alert-dialog.tsx",
+      "owner": "t3code",
+      "baselineHash": "8048f128ff38f3843518d396dd2c1b1f3b549f9cf6994266837c10a6001e855d"
+    },
+    {
+      "path": "apps/web/src/components/ui/alert.tsx",
+      "owner": "t3code",
+      "baselineHash": "a7de346d833f2086effbd2df9ed25bd35b97501e5dbdcea98b7fe98fe420a7d0"
+    },
+    {
+      "path": "apps/web/src/components/ui/autocomplete.tsx",
+      "owner": "t3code",
+      "baselineHash": "792139dd62baad3bd0d6873445ab58631f7c39bcbb6ef464fb98d720bd559e86"
+    },
+    {
+      "path": "apps/web/src/components/ui/badge.tsx",
+      "owner": "t3code",
+      "baselineHash": "d231c9f983bb9dc6bb24a776bab064b13fc05ec37e7ec4b97bc557ffac864120"
+    },
+    {
+      "path": "apps/web/src/components/ui/button.tsx",
+      "owner": "t3code",
+      "baselineHash": "d0683e28a3d34c1a685f216247cfd15ef60ad7e4a33b1d227af2fa18e6e03023"
+    },
+    {
+      "path": "apps/web/src/components/ui/card.tsx",
+      "owner": "t3code",
+      "baselineHash": "1dbeb64bf853df5720d92fd26813b695b4da5a737ad8e1f905184539ea77da26"
+    },
+    {
+      "path": "apps/web/src/components/ui/checkbox.tsx",
+      "owner": "t3code",
+      "baselineHash": "7873f001b086537e82aeb3855b968af5f46500c63e755588930978ea9efee21d"
+    },
+    {
+      "path": "apps/web/src/components/ui/collapsible.tsx",
+      "owner": "t3code",
+      "baselineHash": "3d0ac5f3397b2c20af05281f7b6aeb281321b74a7444cced3b4e8e4f91c50eea"
+    },
+    {
+      "path": "apps/web/src/components/ui/combobox.tsx",
+      "owner": "t3code",
+      "baselineHash": "dd7f49723c59c0c79911438ce99a1faeb55213d3e7aa45c3667d76dfbe926206"
+    },
+    {
+      "path": "apps/web/src/components/ui/command.tsx",
+      "owner": "t3code",
+      "baselineHash": "dc7812ce2128fd63304df9d16ed0e00b617d40e47f689babeb5a590aed2b5411"
+    },
+    {
+      "path": "apps/web/src/components/ui/dialog.tsx",
+      "owner": "t3code",
+      "baselineHash": "aed50d9aa2832d919e180e4d3aa94ca30690d95eadf2ce02109b24cc4ef17063"
+    },
+    {
+      "path": "apps/web/src/components/ui/empty.tsx",
+      "owner": "t3code",
+      "baselineHash": "9791f11bb3f3eba63dc2bf6a3d2f1fff2ae3b158edf71e6fca649c74e9f5f38c"
+    },
+    {
+      "path": "apps/web/src/components/ui/field.tsx",
+      "owner": "t3code",
+      "baselineHash": "1663f4c19614820eafd77d07b6b7e1a9506fe4508c7a761a79dcfeb6ffaacf21"
+    },
+    {
+      "path": "apps/web/src/components/ui/fieldset.tsx",
+      "owner": "t3code",
+      "baselineHash": "4e66f28dcbe73b7016c5eab80a77a93b75f6ad746cd0a67cd428fb220ee64c05"
+    },
+    {
+      "path": "apps/web/src/components/ui/form.tsx",
+      "owner": "t3code",
+      "baselineHash": "1d05f166b6eb6ce17d5d107e9d7d407a9fbdb4110535369d622866ec5823f78c"
+    },
+    {
+      "path": "apps/web/src/components/ui/group.tsx",
+      "owner": "t3code",
+      "baselineHash": "38d8e9d72b15e332de101a2b3d37c4962e247224f4f66cbb73d81a30414b04e4"
+    },
+    {
+      "path": "apps/web/src/components/ui/input-group.tsx",
+      "owner": "t3code",
+      "baselineHash": "a5b7c5485633acef1359dec4acb15aa0a33d70e91fcd33365718c8e6cc0739ba"
+    },
+    {
+      "path": "apps/web/src/components/ui/input.tsx",
+      "owner": "t3code",
+      "baselineHash": "d82a1cf5372e446fa181412763ac7ff8ce3aeef2a97e208102c4c95e6f0fe642"
+    },
+    {
+      "path": "apps/web/src/components/ui/kbd.tsx",
+      "owner": "t3code",
+      "baselineHash": "f0589fe3e38a2cb59e8f7e2d38298f50b6f5996d40725368410ba68aa933d690"
+    },
+    {
+      "path": "apps/web/src/components/ui/label.tsx",
+      "owner": "t3code",
+      "baselineHash": "59ada6763ed4410cc4319e4539fe3460ffbff1c0607dcb0bf8819b8226d9b13d"
+    },
+    {
+      "path": "apps/web/src/components/ui/menu.tsx",
+      "owner": "t3code",
+      "baselineHash": "48b435fcf311012e65e868e10a53539eba981ac45b149e197649328062dc7b45"
+    },
+    {
+      "path": "apps/web/src/components/ui/popover.tsx",
+      "owner": "t3code",
+      "baselineHash": "cbef9fbb6651e691186e3da8d4211d5c08dcea4adce1aa36808398d64266b569"
+    },
+    {
+      "path": "apps/web/src/components/ui/radio-group.tsx",
+      "owner": "t3code",
+      "baselineHash": "b365b127c16a756c0d82ec94683a5c4b9386f58f4ee42dc327c5b37419899698"
+    },
+    {
+      "path": "apps/web/src/components/ui/scroll-area.tsx",
+      "owner": "t3code",
+      "baselineHash": "01fae8b333f76d293fa34d4148afeac7ad7baf477f06e5b24b851611122722d8"
+    },
+    {
+      "path": "apps/web/src/components/ui/select.tsx",
+      "owner": "t3code",
+      "baselineHash": "23a5ce420a5f840b2393f9ba017fb732fd6aebac2bacbfeae10b502658a37ae4"
+    },
+    {
+      "path": "apps/web/src/components/ui/separator.tsx",
+      "owner": "t3code",
+      "baselineHash": "b99515751890f0d4c61b06e3badd14ccec6ee7104238135602ca0a2f119f476e"
+    },
+    {
+      "path": "apps/web/src/components/ui/sheet.tsx",
+      "owner": "t3code",
+      "baselineHash": "e2cced4190362cff5860a0b173e5929b2ad71e25dfe48af6f5616cf06a8c3841"
+    },
+    {
+      "path": "apps/web/src/components/ui/sidebar.test.tsx",
+      "owner": "t3code",
+      "baselineHash": "7658b94dbfe1f9d67f350aec89ec1e1454492f86e89a9b03621598a993db919a"
+    },
+    {
+      "path": "apps/web/src/components/ui/sidebar.tsx",
+      "owner": "t3code",
+      "baselineHash": "d9c2acf87899af63f6460e62ff035a053b6e8f6abe7795c755a10d6b1220521f"
+    },
+    {
+      "path": "apps/web/src/components/ui/skeleton.tsx",
+      "owner": "t3code",
+      "baselineHash": "49cee800431b30b009584967670a6c476c3c21cbdb27343d87c8556c099caf45"
+    },
+    {
+      "path": "apps/web/src/components/ui/spinner.tsx",
+      "owner": "t3code",
+      "baselineHash": "2c9fe2e4796af41d58eb1d87d8be29fbb3d4f17f4ec98e9de62a7fb7becbca0b"
+    },
+    {
+      "path": "apps/web/src/components/ui/switch.tsx",
+      "owner": "t3code",
+      "baselineHash": "77a855c6051b028adea861bbe9b3360d6f2d9fbe42429d4096a73bc1f6736666"
+    },
+    {
+      "path": "apps/web/src/components/ui/textarea.tsx",
+      "owner": "t3code",
+      "baselineHash": "9a8d3be108378d6a33b8fa7581474d3732167cf76054d342bf8c7d20d171975e"
+    },
+    {
+      "path": "apps/web/src/components/ui/toast.logic.test.ts",
+      "owner": "t3code",
+      "baselineHash": "880448cbcba50b0d74811af61c95550d35e0edfd29998ded09287bdbf90ba95a"
+    },
+    {
+      "path": "apps/web/src/components/ui/toast.logic.ts",
+      "owner": "t3code",
+      "baselineHash": "657a08e4592a2f6fb526b984887250ce3273a451462844c4cc861b975715b7cc"
+    },
+    {
+      "path": "apps/web/src/components/ui/toast.tsx",
+      "owner": "t3code",
+      "baselineHash": "055e73e3807917542d1e393e804a31d8d5cfb3f5f1454adbffa7e0694cdb0fe4"
+    },
+    {
+      "path": "apps/web/src/components/ui/toggle-group.tsx",
+      "owner": "t3code",
+      "baselineHash": "9d27a6dd351eaf9fa158007d819daec9e1965814b66e8ed0703e714f4f22e504"
+    },
+    {
+      "path": "apps/web/src/components/ui/toggle.tsx",
+      "owner": "t3code",
+      "baselineHash": "c43f44bd634d95e25b92a5f47c827dfdcfe26aa5972043dab3a37448505532c8"
+    },
+    {
+      "path": "apps/web/src/components/ui/tooltip.tsx",
+      "owner": "t3code",
+      "baselineHash": "25da10f5b184e4f5ae4a49670890020f822829b9b5be9ddf6c0713d1d78051b4"
+    },
+    {
+      "path": "apps/web/src/components/WebSocketConnectionSurface.logic.test.ts",
+      "owner": "t3code",
+      "baselineHash": "35ed0635e477ba217d341a58aba3a94dabfaa6ef5649a687e99f3df562c840c0"
+    },
+    {
+      "path": "apps/web/src/components/WebSocketConnectionSurface.tsx",
+      "owner": "t3code",
+      "baselineHash": "a4de24491c878b18d4c7a3e117a694074cb81fd6608c86d1c4a507916ffe609f"
+    },
+    {
+      "path": "apps/web/src/composer-editor-mentions.test.ts",
+      "owner": "t3code",
+      "baselineHash": "95b98b2b186d364388c027aed2f78ef1c4948b10a1ac1647e309e9b9a13d097f"
+    },
+    {
+      "path": "apps/web/src/composer-editor-mentions.ts",
+      "owner": "t3code",
+      "baselineHash": "8cdb5a80ab12906e9c360f6d004182072fa4e069ad80c5d727a7140b62048f27"
+    },
+    {
+      "path": "apps/web/src/composer-logic.test.ts",
+      "owner": "t3code",
+      "baselineHash": "ad08730a998525839a5995ff49f7147046ea8c8fe58d234695c6318a3b078a26"
+    },
+    {
+      "path": "apps/web/src/composer-logic.ts",
+      "owner": "t3code",
+      "baselineHash": "f8363519940f073512de6567f2302f473f63789c1f28f2e691b47246fc98ec70"
+    },
+    {
+      "path": "apps/web/src/composerDraftStore.test.ts",
+      "owner": "t3code",
+      "baselineHash": "919e9b224fba16d6e8a8c92228e07fba677465fbaec118f00742be18f39d7781"
+    },
+    {
+      "path": "apps/web/src/composerDraftStore.ts",
+      "owner": "t3code",
+      "baselineHash": "fbdd94d8d2c8485dcb824ed753475dad10014c443fdc4a2e04afaa1bf56191ea"
+    },
+    {
+      "path": "apps/web/src/contextMenuFallback.ts",
+      "owner": "t3code",
+      "baselineHash": "3f385a36613c8a53fd9da37e3dc89c5c9e94edc64289099fbbc830d2fe68722f"
+    },
+    {
+      "path": "apps/web/src/diffRouteSearch.test.ts",
+      "owner": "t3code",
+      "baselineHash": "75d58659b547a599ae35cdf7037beba84137f4870f72574b61697d0990512e3a"
+    },
+    {
+      "path": "apps/web/src/diffRouteSearch.ts",
+      "owner": "t3code",
+      "baselineHash": "f32d1502bf3c97e413d7df872991ea3385fa8e13e566f615596d906d2d5e5ca2"
+    },
+    {
+      "path": "apps/web/src/editorPreferences.ts",
+      "owner": "t3code",
+      "baselineHash": "e61cdd19dd847fb6cab2353b158898c298d0fe2741a2c714aa02ed4f812942d9"
+    },
+    {
+      "path": "apps/web/src/env.ts",
+      "owner": "t3code",
+      "baselineHash": "4df05240d1d00f35569aad6c97b813f6f4def49888419c102bbff103b1bad840"
+    },
+    {
+      "path": "apps/web/src/historyBootstrap.test.ts",
+      "owner": "t3code",
+      "baselineHash": "564774975da95abd2dd00fe108b7c0a90f8fb9fca6d9bb87a65d0cb09c0a498f"
+    },
+    {
+      "path": "apps/web/src/historyBootstrap.ts",
+      "owner": "t3code",
+      "baselineHash": "2a1a056ee9e28660e239f31d5740f93c8b40247ab77c7bf336bb1cba11d43fae"
+    },
+    {
+      "path": "apps/web/src/hooks/useCopyToClipboard.ts",
+      "owner": "t3code",
+      "baselineHash": "b5daf604f568c9e604427ba6ee0523acb21037886fa1ee8c05e0314d46890837"
+    },
+    {
+      "path": "apps/web/src/hooks/useHandleNewThread.ts",
+      "owner": "t3code",
+      "baselineHash": "f3f68102065fa11e225c13c91dd2461af1ecfe7df198b49f57c62c2fe1c1fddc"
+    },
+    {
+      "path": "apps/web/src/hooks/useLocalStorage.ts",
+      "owner": "t3code",
+      "baselineHash": "0a2c1e898742e238bff4ef4ddf8de7f2fb7954a9ac0feb52fd18ce90414d187a"
+    },
+    {
+      "path": "apps/web/src/hooks/useMediaQuery.ts",
+      "owner": "t3code",
+      "baselineHash": "eca632a42f3da41b2d760916748fc3117c70efa39cd596388018bc22e06fe8b2"
+    },
+    {
+      "path": "apps/web/src/hooks/useSettings.test.ts",
+      "owner": "t3code",
+      "baselineHash": "c7cbe8bf5cceca9ef07210303bd2156b5407197c7112c030f05a64bf7ab59a4b"
+    },
+    {
+      "path": "apps/web/src/hooks/useSettings.ts",
+      "owner": "t3code",
+      "baselineHash": "e700c96129f051811d84feb0d451df0ab48cec6d69e6c912430677928dc8397a"
+    },
+    {
+      "path": "apps/web/src/hooks/useTheme.ts",
+      "owner": "t3code",
+      "baselineHash": "c9f4441572b0c72944825a9b09d10c500783791b3590fd01cd950655ef076fa0"
+    },
+    {
+      "path": "apps/web/src/hooks/useThreadActions.ts",
+      "owner": "t3code",
+      "baselineHash": "6512d73a7c2927927d3013c834eac6289bf697dfd2bd15856be3b69d029ff2c1"
+    },
+    {
+      "path": "apps/web/src/hooks/useTurnDiffSummaries.ts",
+      "owner": "t3code",
+      "baselineHash": "c35ee4f703ade1fc05cb91bf70970a1f55ba744db71ec6c6b4ce2fb71f1c50f0"
+    },
+    {
+      "path": "apps/web/src/index.css",
+      "owner": "t3code",
+      "baselineHash": "2456d53e2bc367d60a90f49516d79f09fd98c901ae2b2fb15223cf77b02e195b"
+    },
+    {
+      "path": "apps/web/src/keybindings.test.ts",
+      "owner": "t3code",
+      "baselineHash": "23d008fb67afc9a94c01575cd4075d5fc9e00dfbd73779eeffa70da6c0f28a9e"
+    },
+    {
+      "path": "apps/web/src/keybindings.ts",
+      "owner": "t3code",
+      "baselineHash": "84ffe857d3821a40c58a7463f576cecb7ab1a777ae19b7f8c2d726db6474dde2"
+    },
+    {
+      "path": "apps/web/src/lib/contextWindow.test.ts",
+      "owner": "t3code",
+      "baselineHash": "bba9b2f856596536370a98e473dcdf27be4cb32dfb60a6ad9992a5519317f1b3"
+    },
+    {
+      "path": "apps/web/src/lib/contextWindow.ts",
+      "owner": "t3code",
+      "baselineHash": "3b5aeb2d5743e5d7a17e28026b787a99a8936116d8a6163e3068ee21f2b31296"
+    },
+    {
+      "path": "apps/web/src/lib/desktopUpdateReactQuery.test.ts",
+      "owner": "t3code",
+      "baselineHash": "a4ae088a946c5dcca9e62551da2e48a866c39d75f5c899a1d26d4d4491f350e9"
+    },
+    {
+      "path": "apps/web/src/lib/desktopUpdateReactQuery.ts",
+      "owner": "t3code",
+      "baselineHash": "28acbac77e17a2879b59d6898667d9e911aa31efe4442622c76333b11221edbb"
+    },
+    {
+      "path": "apps/web/src/lib/diffRendering.test.ts",
+      "owner": "t3code",
+      "baselineHash": "c229fb54f4fd6b70bf9192b3e6e065b85419600d50bf9589dc707a463adcb1db"
+    },
+    {
+      "path": "apps/web/src/lib/diffRendering.ts",
+      "owner": "t3code",
+      "baselineHash": "918bf908a71284cf1ead796ade7b48e1575e2534533c2f4dca6ad3bc88032fe4"
+    },
+    {
+      "path": "apps/web/src/lib/gitReactQuery.test.ts",
+      "owner": "t3code",
+      "baselineHash": "7cdec70eb36215d7e7a80b0d4c53016dfe450420d9c5ba8557d5abae262e3e11"
+    },
+    {
+      "path": "apps/web/src/lib/gitReactQuery.ts",
+      "owner": "t3code",
+      "baselineHash": "43742319c673eaf31ec09d651bcf2d706f2333248dfeae4e6b524cadfc970093"
+    },
+    {
+      "path": "apps/web/src/lib/gitStatusState.test.ts",
+      "owner": "t3code",
+      "baselineHash": "0d88376be9081f43dbee4bea1c8355b363d5f500270f70f69003ef3c4ba6bdf0"
+    },
+    {
+      "path": "apps/web/src/lib/gitStatusState.ts",
+      "owner": "t3code",
+      "baselineHash": "ae572bad32642212de50e90886c3a0154e6a9fe6a381ad0f61c2df4ea72c987c"
+    },
+    {
+      "path": "apps/web/src/lib/lruCache.test.ts",
+      "owner": "t3code",
+      "baselineHash": "47510be3ef89812217a541460dfc0fdeb473550dd051eefbf2097aa6eccca172"
+    },
+    {
+      "path": "apps/web/src/lib/lruCache.ts",
+      "owner": "t3code",
+      "baselineHash": "41403e782c3034d7194c0c65d56eff72329234d0fb1635e9cb597b847eeecc09"
+    },
+    {
+      "path": "apps/web/src/lib/projectReactQuery.ts",
+      "owner": "t3code",
+      "baselineHash": "7c7e1596cc2348ded727e46ad3aee95ce487ff605666012ec93de12ff4b3f7a7"
+    },
+    {
+      "path": "apps/web/src/lib/projectScriptKeybindings.test.ts",
+      "owner": "t3code",
+      "baselineHash": "ea3964a62cb61b2e3a81d029537b24f9537adc7931cd46c207a44b061462229d"
+    },
+    {
+      "path": "apps/web/src/lib/projectScriptKeybindings.ts",
+      "owner": "t3code",
+      "baselineHash": "e5bd54d60792a1f91752d4d2424a0782c533f450b5eb0699d41f928db6217528"
+    },
+    {
+      "path": "apps/web/src/lib/providerReactQuery.test.ts",
+      "owner": "t3code",
+      "baselineHash": "eb922d7a08b1712a796f410cdefec87376bf58acc8a86ff821d7a765c94f385a"
+    },
+    {
+      "path": "apps/web/src/lib/providerReactQuery.ts",
+      "owner": "t3code",
+      "baselineHash": "0e8924a136a85638e1c93267b20804813b69b37b7642c255727ecc555115dd9b"
+    },
+    {
+      "path": "apps/web/src/lib/storage.ts",
+      "owner": "t3code",
+      "baselineHash": "cdf7b3ae5d2981c710becda0b8f66957d6374eceb90c94526623841e53ec5a2c"
+    },
+    {
+      "path": "apps/web/src/lib/terminalContext.test.ts",
+      "owner": "t3code",
+      "baselineHash": "b9b3f6c542a11ab03cbf08b1ad424cfb4e16ed89ee3acfe38a87c5758c0cb284"
+    },
+    {
+      "path": "apps/web/src/lib/terminalContext.ts",
+      "owner": "t3code",
+      "baselineHash": "6f785b4b65b7c65762076d793b0548c86d3aa2b4bedc2c8d051c93c7b4b6b1a4"
+    },
+    {
+      "path": "apps/web/src/lib/terminalFocus.test.ts",
+      "owner": "t3code",
+      "baselineHash": "04f42ff14ef650a4a612c5afb44f29171ea067c57ae1f9ff9acb117430c6186f"
+    },
+    {
+      "path": "apps/web/src/lib/terminalFocus.ts",
+      "owner": "t3code",
+      "baselineHash": "2080f519e2f4e7161d2325742d94db1372cc2575bd0a6929dbf95adf50e455cd"
+    },
+    {
+      "path": "apps/web/src/lib/terminalStateCleanup.test.ts",
+      "owner": "t3code",
+      "baselineHash": "a930c5bdadd3c37f1cbf283067c69e23d9271a920b90fbd5e129b30b611469db"
+    },
+    {
+      "path": "apps/web/src/lib/terminalStateCleanup.ts",
+      "owner": "t3code",
+      "baselineHash": "76b62b3eeda3b13a7b1bb0feab0b420cfff80e6ab0e5810bcc21d8d0ef7bc609"
+    },
+    {
+      "path": "apps/web/src/lib/turnDiffTree.test.ts",
+      "owner": "t3code",
+      "baselineHash": "e6729bba1877ac4e3bb9bee28d4a5df5bb4b1fc68a8218f7d6ee5197555b55af"
+    },
+    {
+      "path": "apps/web/src/lib/turnDiffTree.ts",
+      "owner": "t3code",
+      "baselineHash": "0481a43667214018a771d522517d443be73de90f701164355817758e055a1b65"
+    },
+    {
+      "path": "apps/web/src/lib/utils.test.ts",
+      "owner": "t3code",
+      "baselineHash": "74acd8971a8aed4584f39209c8d17d073be092b99249a9dd22c2d28889bd067b"
+    },
+    {
+      "path": "apps/web/src/lib/utils.ts",
+      "owner": "t3code",
+      "baselineHash": "b29c1415cc1bf1a6193cd749b7cec138f68a04cccf926dbc3705f1e12b1282d5"
+    },
+    {
+      "path": "apps/web/src/main.tsx",
+      "owner": "t3code",
+      "baselineHash": "a22243069bc287267de7d0a6447d353109654fe235e1a65d57d397846c2d4e5a"
+    },
+    {
+      "path": "apps/web/src/markdown-links.test.ts",
+      "owner": "t3code",
+      "baselineHash": "4c5204fd7abe3ad85776039874beedba5933af849124d55a2249c18020b1bb25"
+    },
+    {
+      "path": "apps/web/src/markdown-links.ts",
+      "owner": "t3code",
+      "baselineHash": "46db66b661f3999b32c42b39aba9a4f7fe4ae8f9af883b639dacf75c64b65060"
+    },
+    {
+      "path": "apps/web/src/modelSelection.ts",
+      "owner": "t3code",
+      "baselineHash": "2488b47c2eac88caf180a3e66a65c499a566040aa891eec4e1a5074f497c86f6"
+    },
+    {
+      "path": "apps/web/src/nativeApi.ts",
+      "owner": "t3code",
+      "baselineHash": "07098a4361180bc3bed3b71025135ebeb5d36fb5591663435ba250b4689ed8c0"
+    },
+    {
+      "path": "apps/web/src/observability/clientTracing.ts",
+      "owner": "t3code",
+      "baselineHash": "bd388feb2478cf189841874f71ae8f12250d8a34e3310dd607a1c419b5798fe5"
+    },
+    {
+      "path": "apps/web/src/orchestrationEventEffects.test.ts",
+      "owner": "t3code",
+      "baselineHash": "1ca13922214aaa4b49aa44d5119d6c8720f9eaed65e7ae19655100021f5c39a5"
+    },
+    {
+      "path": "apps/web/src/orchestrationEventEffects.ts",
+      "owner": "t3code",
+      "baselineHash": "2fd3c9771db82904fe687d49e01f6e65576ea2eed765a85813abb8ca3794f3c1"
+    },
+    {
+      "path": "apps/web/src/orchestrationRecovery.test.ts",
+      "owner": "t3code",
+      "baselineHash": "5c2ebf43e2d418dc9df960f722a221e42c5d07d99abfb5c8c4ab006d62046901"
+    },
+    {
+      "path": "apps/web/src/orchestrationRecovery.ts",
+      "owner": "t3code",
+      "baselineHash": "d4f194c75bdfbfee472ef0ef9c3740d052a986b7b1ef5132f4afd3e115122705"
+    },
+    {
+      "path": "apps/web/src/pendingUserInput.test.ts",
+      "owner": "t3code",
+      "baselineHash": "81526b9cc67113ad1fa59494a8fe98ebe137f9452c5aef8b82e6c909c8b21577"
+    },
+    {
+      "path": "apps/web/src/pendingUserInput.ts",
+      "owner": "t3code",
+      "baselineHash": "22880ead8a9d2a7554d3a8bd057f7913fbb0a785ab0d73be3ff793b85e40baf2"
+    },
+    {
+      "path": "apps/web/src/projectScripts.test.ts",
+      "owner": "t3code",
+      "baselineHash": "3ffa57942e60bd3c6fc656014f1a945b4e4767303dc43dec7451c162738348c3"
+    },
+    {
+      "path": "apps/web/src/projectScripts.ts",
+      "owner": "t3code",
+      "baselineHash": "27cadf8802e56926217212da02cc06721bfb2c9856a020afd25e39cf5bc0e62f"
+    },
+    {
+      "path": "apps/web/src/proposedPlan.test.ts",
+      "owner": "t3code",
+      "baselineHash": "1cdf81a1799239b94a9d8e5a1d1d29e03602c5fd93cafafaef270edbcf2a75a9"
+    },
+    {
+      "path": "apps/web/src/proposedPlan.ts",
+      "owner": "t3code",
+      "baselineHash": "8a7969787c95d3b8802ac088e7a9c092c8cc735375018bf7f3973558d6766fea"
+    },
+    {
+      "path": "apps/web/src/providerModels.ts",
+      "owner": "t3code",
+      "baselineHash": "bfcc2ffb837b500702ac517b9dd802f10457599220a9a1d0d4d16d72fdfddba3"
+    },
+    {
+      "path": "apps/web/src/pullRequestReference.test.ts",
+      "owner": "t3code",
+      "baselineHash": "6a2b75eacf12707c7591e113c41a94fb524ec19c0df55bd4bd1d09e360800ab4"
+    },
+    {
+      "path": "apps/web/src/pullRequestReference.ts",
+      "owner": "t3code",
+      "baselineHash": "9376ca1be78f312a269c7e03a7d489e2e403cfcc9e56d48a31077d634de535d4"
+    },
+    {
+      "path": "apps/web/src/router.ts",
+      "owner": "t3code",
+      "baselineHash": "e192b0cc586e02d9113f06021ad4ad4e5e5c00343e2b9f05cfd734529a26d82e"
+    },
+    {
+      "path": "apps/web/src/routes/__root.tsx",
+      "owner": "t3code",
+      "baselineHash": "6ce60e954d0c6c6fad177ed00f4b81a7f83c5bb5f7e79d382e6e68041a47d7da"
+    },
+    {
+      "path": "apps/web/src/routes/_chat.$threadId.tsx",
+      "owner": "t3code",
+      "baselineHash": "1f8414fb319c75b4ada47a68bc3019e9b80d7ca6e20d5cd29048b611fa8c6516"
+    },
+    {
+      "path": "apps/web/src/routes/_chat.index.tsx",
+      "owner": "t3code",
+      "baselineHash": "cdbcf2a274dd133f143d94f2532bb55e237ff15cd754cb902af2dfc024294ed7"
+    },
+    {
+      "path": "apps/web/src/routes/_chat.tsx",
+      "owner": "t3code",
+      "baselineHash": "6c486b236a855e10d68664fbad8c182809047eacaf53583d80f0c79281e7ad70"
+    },
+    {
+      "path": "apps/web/src/routes/settings.archived.tsx",
+      "owner": "t3code",
+      "baselineHash": "3967348b3326b500f6a246f9891d997712ab15e1319e38eb4c80ffdc3b523e85"
+    },
+    {
+      "path": "apps/web/src/routes/settings.general.tsx",
+      "owner": "t3code",
+      "baselineHash": "1831e5e87bc81ca7128878b74215244124402d63c0ba53b2b8b348d4c07d84a0"
+    },
+    {
+      "path": "apps/web/src/routes/settings.tsx",
+      "owner": "t3code",
+      "baselineHash": "172d44dfa843cef1d3d48ff59a6390c7469d65408262211daf34516cf3ae723b"
+    },
+    {
+      "path": "apps/web/src/routeTree.gen.ts",
+      "owner": "t3code",
+      "baselineHash": "d01cc73425f42dd77484695ecb2745a93b1fcd4d6ff3b152124791bfcb40c8de"
+    },
+    {
+      "path": "apps/web/src/rpc/atomRegistry.tsx",
+      "owner": "t3code",
+      "baselineHash": "20654f25d8864c8e55c68da172133ead78f49da855d7ec605f278f185d57dee4"
+    },
+    {
+      "path": "apps/web/src/rpc/client.test.ts",
+      "owner": "t3code",
+      "baselineHash": "a041f390195b5319a75f4bce34f33aa1803abbd89ea7459055c5dbf6f1766e86"
+    },
+    {
+      "path": "apps/web/src/rpc/client.ts",
+      "owner": "t3code",
+      "baselineHash": "28631a08356db628f08f3e4734adaff84e7aedc50934a96b41bf645ed297bf5f"
+    },
+    {
+      "path": "apps/web/src/rpc/protocol.ts",
+      "owner": "t3code",
+      "baselineHash": "6e4130f27f90c0ef43d8c76aabfa2b492505b21a9cbc3d1237ab55fa8c671723"
+    },
+    {
+      "path": "apps/web/src/rpc/requestLatencyState.test.ts",
+      "owner": "t3code",
+      "baselineHash": "7c8e9e5d1f3a81b79ebca4cbfba40e507ca33d4a07ce7abfae82693f03bd688e"
+    },
+    {
+      "path": "apps/web/src/rpc/requestLatencyState.ts",
+      "owner": "t3code",
+      "baselineHash": "0b014ad231f79b6475003ea6e0cc5ea154253bae2a09928ea29b741e18ddcdf2"
+    },
+    {
+      "path": "apps/web/src/rpc/serverState.test.ts",
+      "owner": "t3code",
+      "baselineHash": "e3955e8bf9c78e0cf5ccc36b2d13af5b2664183868385069bdd5af415d0cce03"
+    },
+    {
+      "path": "apps/web/src/rpc/serverState.ts",
+      "owner": "t3code",
+      "baselineHash": "9495202fe648c38caa3d779a4c07c0c335730d4d668cf40b0120c725a172c0cb"
+    },
+    {
+      "path": "apps/web/src/rpc/transportError.test.ts",
+      "owner": "t3code",
+      "baselineHash": "935d40512c546b6de87960295621e97488afda11abfc5cc315b62ab3988fe2f7"
+    },
+    {
+      "path": "apps/web/src/rpc/transportError.ts",
+      "owner": "t3code",
+      "baselineHash": "022c430e06f327ec536177401ed336f1cf5f3386ce4eb394db703a476d2a56a8"
+    },
+    {
+      "path": "apps/web/src/rpc/wsConnectionState.test.ts",
+      "owner": "t3code",
+      "baselineHash": "d68b16c26a8042b0b0fd0dab826b2491157fdbe8cab7eed356873eb1b32c667f"
+    },
+    {
+      "path": "apps/web/src/rpc/wsConnectionState.ts",
+      "owner": "t3code",
+      "baselineHash": "872ebb8372f6fc415f0f754683ff9a750afc81d5f8cefcde2066d4846ed1fdfd"
+    },
+    {
+      "path": "apps/web/src/session-logic.test.ts",
+      "owner": "t3code",
+      "baselineHash": "8bda8ce561b497f3b3e1edf6a9111e0fe573a17df4ee56dd229b2f3fc64a598b"
+    },
+    {
+      "path": "apps/web/src/store.test.ts",
+      "owner": "t3code",
+      "baselineHash": "29fa54ae2ee561bc3123bbca5f1e35e0d16056cac3ad178a594fb52c87c102e5"
+    },
+    {
+      "path": "apps/web/src/store.ts",
+      "owner": "t3code",
+      "baselineHash": "dfdc3cc30617cf36bb01346d58d3aa85dc22661cb358c2dff932d6bcb76807d1"
+    },
+    {
+      "path": "apps/web/src/storeSelectors.ts",
+      "owner": "t3code",
+      "baselineHash": "f4867c9499e69d995e65e8828e99ea0e9cec855082e8044b67ba685a5e7cf0ca"
+    },
+    {
+      "path": "apps/web/src/terminal-links.test.ts",
+      "owner": "t3code",
+      "baselineHash": "312d5244736006634f86ce4f7daf92e6f143baf5ec0bc12ee76fd9470d38ce13"
+    },
+    {
+      "path": "apps/web/src/terminal-links.ts",
+      "owner": "t3code",
+      "baselineHash": "ae281415b221532624c8b9c33ad83076b4314acba16753cbd7ad477dd65f58ab"
+    },
+    {
+      "path": "apps/web/src/terminalActivity.test.ts",
+      "owner": "t3code",
+      "baselineHash": "3f8e065dcd9962e9d8199f687fc3970a0a65a9e693e34b537118da44f2ff0656"
+    },
+    {
+      "path": "apps/web/src/terminalActivity.ts",
+      "owner": "t3code",
+      "baselineHash": "2184869e3ee3a27a27c5afa2fb07efddbd4c94165e16986715e8b1874158da50"
+    },
+    {
+      "path": "apps/web/src/terminalStateStore.test.ts",
+      "owner": "t3code",
+      "baselineHash": "6e82203413e665b7bc57c8eacbb01dd9d062116c577342add41959305c13dc70"
+    },
+    {
+      "path": "apps/web/src/terminalStateStore.ts",
+      "owner": "t3code",
+      "baselineHash": "d8436baf0cd071341fcfb3b4f5d33191ecccf6fd7da20f45f4848a2a6a18a8d5"
+    },
+    {
+      "path": "apps/web/src/threadSelectionStore.test.ts",
+      "owner": "t3code",
+      "baselineHash": "ec4b832659515d208f7da6d84d7cddeab5672e0289b8ff53ae613e27155729d3"
+    },
+    {
+      "path": "apps/web/src/threadSelectionStore.ts",
+      "owner": "t3code",
+      "baselineHash": "6344ad830b3d3907ac7ffc37ae963b56895725d0557217e205c271c64178dee2"
+    },
+    {
+      "path": "apps/web/src/timestampFormat.test.ts",
+      "owner": "t3code",
+      "baselineHash": "c4b9a7aeb18d6e22ede3b302893dfccfe3e753d984dd86c5a0a330f23023e963"
+    },
+    {
+      "path": "apps/web/src/timestampFormat.ts",
+      "owner": "t3code",
+      "baselineHash": "16fdd9486335c9d977ed7d43085e6651f32a7f3c0253a5ddbe27a196b64f4e46"
+    },
+    {
+      "path": "apps/web/src/types.ts",
+      "owner": "t3code",
+      "baselineHash": "10dd4b512caa2e4e1d2dbc2a1b5a2ee837bf13869f7b76031f1bc378af35d5c8"
+    },
+    {
+      "path": "apps/web/src/uiStateStore.test.ts",
+      "owner": "t3code",
+      "baselineHash": "905a6805e75ff5d241b28ed72abd318cd1b0b6f96625dbbad5e33035e58459c0"
+    },
+    {
+      "path": "apps/web/src/uiStateStore.ts",
+      "owner": "t3code",
+      "baselineHash": "af619a5b276b9bc25ebe7595196b4aa910e5f934d6513fb7c10e5ad184eb82c2"
+    },
+    {
+      "path": "apps/web/src/vite-env.d.ts",
+      "owner": "t3code",
+      "baselineHash": "d4c2439ca7ac32c83486e13b7940c977010270418dd5e3f22e8aa775cbb5398d"
+    },
+    {
+      "path": "apps/web/src/vscode-icons-language-associations.json",
+      "owner": "t3code",
+      "baselineHash": "b6f32187fdb666bff5b060a0dd546e651cd77754ee32208a04839a4b13e6fc8c"
+    },
+    {
+      "path": "apps/web/src/vscode-icons-manifest.json",
+      "owner": "t3code",
+      "baselineHash": "533dcff529eea2b01aa7ff968396219d2e575deba38344a77e79290b8c802edc"
+    },
+    {
+      "path": "apps/web/src/vscode-icons.test.ts",
+      "owner": "t3code",
+      "baselineHash": "a77568ea94db4e4ca04895c8624fea06f41a32992691045baaeffc1a0ad5a7a7"
+    },
+    {
+      "path": "apps/web/src/vscode-icons.ts",
+      "owner": "t3code",
+      "baselineHash": "ea4342ed5daf266b3e370c5bbe85048afbcdc16b25f43550310274af8b7e6c73"
+    },
+    {
+      "path": "apps/web/src/worktreeCleanup.test.ts",
+      "owner": "t3code",
+      "baselineHash": "0775e1245e029142facb020ee8241b7160931175c6b693609c35fb9d52233363"
+    },
+    {
+      "path": "apps/web/src/worktreeCleanup.ts",
+      "owner": "t3code",
+      "baselineHash": "10e50fba32ed6e20013393f2311783ef6a350637846dbd9c2b39f0ace3a9fb47"
+    },
+    {
+      "path": "apps/web/src/wsRpcClient.test.ts",
+      "owner": "t3code",
+      "baselineHash": "d1c7c2b5b3948440131420c6a8cbcfbb395cb66556d8fc200d86e54f02b6fd0d"
+    },
+    {
+      "path": "apps/web/src/wsTransport.test.ts",
+      "owner": "t3code",
+      "baselineHash": "7336e2d7f5bffd6785e23d2c586c0d7eebff1d360ed600bdc3599b250b99f081"
+    },
+    {
+      "path": "apps/web/src/wsTransport.ts",
+      "owner": "t3code",
+      "baselineHash": "1c6cb84799c576a730609f22fb0b9c6e76f61ef9ddf3361e9126f3b2143e7afc"
+    },
+    {
+      "path": "apps/web/test/wsRpcHarness.ts",
+      "owner": "t3code",
+      "baselineHash": "cc7000eca4a841bd6e0d0302059db111322c5aa7bda29c5f5d7bb4c13fe3c7b1"
+    },
+    {
+      "path": "apps/web/tsconfig.json",
+      "owner": "t3code",
+      "baselineHash": "a3e1d526d90cd5d88ebdaa5ed8341297844e98d7425f35b65a029b28d6fcffba"
+    },
+    {
+      "path": "apps/web/turbo.jsonc",
+      "owner": "t3code",
+      "baselineHash": "c88154e5df4cea2c72a7ac9b676a2ee4798cf24d7baf76c2a41b631c9cec0deb"
+    },
+    {
+      "path": "apps/web/vite.config.ts",
+      "owner": "t3code",
+      "baselineHash": "04abb7176c340b93b47a5d02c99f505e4c8d75aa3654e937d5af39597e309065"
+    },
+    {
+      "path": "apps/web/vitest.browser.config.ts",
+      "owner": "t3code",
+      "baselineHash": "2f100330f2c4a35328da32c15cfeace7de32e1b36e7ae52a9a9b27a3cbc570ad"
+    },
+    {
+      "path": "assets/dev/blueprint-ios-1024.png",
+      "owner": "t3code",
+      "baselineHash": "a0e2f06e02dc51d4f070654956d7574f2b516b22b7baa0a3889974f3a590faad"
+    },
+    {
+      "path": "assets/dev/blueprint-macos-1024.png",
+      "owner": "t3code",
+      "baselineHash": "f3989be7983be9f90f0565806ddeb051e5dc459949fb30dc7cdcb79eff112e83"
+    },
+    {
+      "path": "assets/dev/blueprint-universal-1024.png",
+      "owner": "t3code",
+      "baselineHash": "a0e2f06e02dc51d4f070654956d7574f2b516b22b7baa0a3889974f3a590faad"
+    },
+    {
+      "path": "assets/dev/blueprint-web-apple-touch-180.png",
+      "owner": "t3code",
+      "baselineHash": "49d04ba18612af9dcfe8964d325c8eded5997f2e4b90f61b2ee6a1f9899c4283"
+    },
+    {
+      "path": "assets/dev/blueprint-web-favicon-16x16.png",
+      "owner": "t3code",
+      "baselineHash": "30e3ae01e3d9e391e473cb06cf0995e9a868565acef90a56eb57f86a0d8a5f1c"
+    },
+    {
+      "path": "assets/dev/blueprint-web-favicon-32x32.png",
+      "owner": "t3code",
+      "baselineHash": "382480fd8c443f4f0155b766ade6ba21e5cfe51cbfd9d1df5d96d32e14c6c56c"
+    },
+    {
+      "path": "assets/dev/blueprint-web-favicon.ico",
+      "owner": "t3code",
+      "baselineHash": "55dec8fb5f233c06fad6d37d0c0b0d268744db5b6cbfb5e957b51766a992f509"
+    },
+    {
+      "path": "assets/dev/blueprint-windows.ico",
+      "owner": "t3code",
+      "baselineHash": "55dec8fb5f233c06fad6d37d0c0b0d268744db5b6cbfb5e957b51766a992f509"
+    },
+    {
+      "path": "assets/prod/black-ios-1024.png",
+      "owner": "t3code",
+      "baselineHash": "062a2aa03429f1be8f012a12fa57758bb0d1159403843dda1f8aac40f38887dd"
+    },
+    {
+      "path": "assets/prod/black-macos-1024.png",
+      "owner": "t3code",
+      "baselineHash": "222ca0543e5a0bd065c15ac883ec1250d2d93d42451c359da5cb2788a8498afa"
+    },
+    {
+      "path": "assets/prod/black-universal-1024.png",
+      "owner": "t3code",
+      "baselineHash": "e0b80146cf5cae437d5b8febcf278b629cc6a7246002cd53687bfc2d01beb09c"
+    },
+    {
+      "path": "assets/prod/logo.svg",
+      "owner": "t3code",
+      "baselineHash": "fbceddbceeb75136fb8e2c702cf0fe459d153b629abbda6262a63d7c4c65e673"
+    },
+    {
+      "path": "assets/prod/t3-black-web-apple-touch-180.png",
+      "owner": "t3code",
+      "baselineHash": "94ed3ca45cec1ca02ec7c7f9cd65f1dabb880e29833e934aaf04ec6176ffcdf7"
+    },
+    {
+      "path": "assets/prod/t3-black-web-favicon-16x16.png",
+      "owner": "t3code",
+      "baselineHash": "43f2b40fffc8ec753b6fa91f1e10c3114781fc10675f910e2e35ecbcfce3dc19"
+    },
+    {
+      "path": "assets/prod/t3-black-web-favicon-32x32.png",
+      "owner": "t3code",
+      "baselineHash": "6246d5830fdaaeead0be523dfdd7439661e4303e8e8584ced58d942624a88bbd"
+    },
+    {
+      "path": "assets/prod/t3-black-web-favicon.ico",
+      "owner": "t3code",
+      "baselineHash": "cd1bbc6cfd45a7198f9b71ee3a4515a1e355748b6249ab698f10eab53e361592"
+    },
+    {
+      "path": "assets/prod/t3-black-windows.ico",
+      "owner": "t3code",
+      "baselineHash": "cd1bbc6cfd45a7198f9b71ee3a4515a1e355748b6249ab698f10eab53e361592"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "owner": "t3code",
+      "baselineHash": "a57343311bd79becf6f6ba53dadaa348c5f3da69bd9f76797ff58ff2d6fb2f9e"
+    },
+    {
+      "path": "docs/effect-fn-checklist.md",
+      "owner": "t3code",
+      "baselineHash": "5a8af442b2c6165ee304fbbdd8c0aff95afa4a32a6dee63d7b3c42209b2bc377"
+    },
+    {
+      "path": "docs/observability.md",
+      "owner": "t3code",
+      "baselineHash": "cccf8499a909df040ff7117661bb1829728d2a987f46f4ba62abc4fb29a7c299"
+    },
+    {
+      "path": "docs/release.md",
+      "owner": "t3code",
+      "baselineHash": "a5600d40aaea9b45efda5c05e3e55755adcd796e695893db3b97dadc88861e00"
+    },
+    {
+      "path": "KEYBINDINGS.md",
+      "owner": "t3code",
+      "baselineHash": "74273e114c465c2746f7752d748d50cf996c2168ffca5f8146bae93e3fff7bd0"
+    },
+    {
+      "path": "LICENSE",
+      "owner": "t3code",
+      "baselineHash": "935d8f2af0c703f9c39517ee57cc4930b19d02d533be930b63f0e82f93614b43"
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "owner": "t3code",
+      "baselineHash": "82bdc5f68dae7ad96f82561acb248908fe417af6565308daeec4f69bb2032df8"
+    },
+    {
+      "path": "packages/contracts/src/baseSchemas.ts",
+      "owner": "t3code",
+      "baselineHash": "45d7e0cd8394f432f860ddd01600be9cb6a7eaa0f21b6440107f3ebfe9591521"
+    },
+    {
+      "path": "packages/contracts/src/editor.ts",
+      "owner": "t3code",
+      "baselineHash": "b8ce9df6a34ddecd277ac1464f3c992d5f12230ca17099a7666a3ac2dbd385ff"
+    },
+    {
+      "path": "packages/contracts/src/git.test.ts",
+      "owner": "t3code",
+      "baselineHash": "0c7d927e381d364cfc9fba8d92c377f80c6dd87584be1789555817aa79d7ce02"
+    },
+    {
+      "path": "packages/contracts/src/git.ts",
+      "owner": "t3code",
+      "baselineHash": "7dce761e65688f1714fc4560d2e6e1b4eac3a817efa1bdf5ec17078afea7768e"
+    },
+    {
+      "path": "packages/contracts/src/index.ts",
+      "owner": "t3code",
+      "baselineHash": "3f8c66414171c85e04f239d9c2b992383532fd00ae2e543e6393d45ac3301484"
+    },
+    {
+      "path": "packages/contracts/src/keybindings.test.ts",
+      "owner": "t3code",
+      "baselineHash": "9918b72d1c36d17714d528a6389e3f1d047754f6b014ee176eef290c7704a1b2"
+    },
+    {
+      "path": "packages/contracts/src/keybindings.ts",
+      "owner": "t3code",
+      "baselineHash": "728b39c89981de73e2f4d218e50b321ddce41925947aaa089818ed3f557c2a37"
+    },
+    {
+      "path": "packages/contracts/src/project.ts",
+      "owner": "t3code",
+      "baselineHash": "383f4f63d1de686d08e4dcea75305b53c4309004871c03aea72109532635c986"
+    },
+    {
+      "path": "packages/contracts/src/providerRuntime.test.ts",
+      "owner": "t3code",
+      "baselineHash": "d6e4f9840745d1b4dfcf7f3c1eb55a09cbfb788ca36bb0dc69889680b5c07369"
+    },
+    {
+      "path": "packages/contracts/src/providerRuntime.ts",
+      "owner": "t3code",
+      "baselineHash": "e60019f01d16c4134b891e3f2ba91b40669edc252e86e3359da91cde1d8e88f1"
+    },
+    {
+      "path": "packages/contracts/src/server.ts",
+      "owner": "t3code",
+      "baselineHash": "0891743b8ebd378e97b7fa4253dd0b92de336169945136f2e4df984f5e0ec133"
+    },
+    {
+      "path": "packages/contracts/src/terminal.test.ts",
+      "owner": "t3code",
+      "baselineHash": "7578b17ec2dcd1d3ca73bff8460172a4559832d2e4d6582517b35c7ec3ae40e0"
+    },
+    {
+      "path": "packages/contracts/src/terminal.ts",
+      "owner": "t3code",
+      "baselineHash": "1a333a6a3a3e425597f99483d26522ddd5f9b3e26e3ee3114ca9fbde8cf53d76"
+    },
+    {
+      "path": "packages/contracts/tsconfig.json",
+      "owner": "t3code",
+      "baselineHash": "36379da1f0a51b2b59c3a82f628392ae1505f2e666761a3880f082c487e89542"
+    },
+    {
+      "path": "packages/shared/package.json",
+      "owner": "t3code",
+      "baselineHash": "0d803c5068ded4810e646d7fd20bcf559305f94546604d647dbe0c51efa09451"
+    },
+    {
+      "path": "packages/shared/src/DrainableWorker.test.ts",
+      "owner": "t3code",
+      "baselineHash": "5d165f8da680a40369f85d2ac6b800e04c60f3cec13d142aa8086f419be0b7a8"
+    },
+    {
+      "path": "packages/shared/src/DrainableWorker.ts",
+      "owner": "t3code",
+      "baselineHash": "935d4bcae27426c8572f93a02fd484262bcf5dd1165dea1e7bc766bfead8e6bf"
+    },
+    {
+      "path": "packages/shared/src/git.test.ts",
+      "owner": "t3code",
+      "baselineHash": "5e95f169d598ab183477ad8d1a43f1cfc0127036775b14e1c3074522ffbf18b2"
+    },
+    {
+      "path": "packages/shared/src/git.ts",
+      "owner": "t3code",
+      "baselineHash": "ebe0f6599e9bd23e58fe1a46b4e9f80bc33d1c319da6958da2e647f1483a9850"
+    },
+    {
+      "path": "packages/shared/src/KeyedCoalescingWorker.test.ts",
+      "owner": "t3code",
+      "baselineHash": "ac23e9e156455a8d5abda5bc7ff245b76b2f80aead36ec8bbfc5393e8dc3b4d9"
+    },
+    {
+      "path": "packages/shared/src/KeyedCoalescingWorker.ts",
+      "owner": "t3code",
+      "baselineHash": "0630c62d260f10108fbb83c3bc0dd5a44cd76a334f99686f48c9ad99665ab0d0"
+    },
+    {
+      "path": "packages/shared/src/logging.ts",
+      "owner": "t3code",
+      "baselineHash": "946c808b2968aeea37b1f16233f13446ff33ca1541bc91e6ef8ffcde1e8ae59d"
+    },
+    {
+      "path": "packages/shared/src/model.test.ts",
+      "owner": "t3code",
+      "baselineHash": "73c7a16df16817b01fac8e263c5b0c335421300953ae35364584efaf4bc52cf6"
+    },
+    {
+      "path": "packages/shared/src/model.ts",
+      "owner": "t3code",
+      "baselineHash": "c5c800fabe5831d9d1b9f5ee87be32249863d6f35a28a37d49d7e01a055a6a4c"
+    },
+    {
+      "path": "packages/shared/src/Net.test.ts",
+      "owner": "t3code",
+      "baselineHash": "d19530d2d953b0bfc57dc77ca9fe2e274f270f8d62e8e3d78fa0cfb457da2dd5"
+    },
+    {
+      "path": "packages/shared/src/Net.ts",
+      "owner": "t3code",
+      "baselineHash": "7d612abf25fa1695c39fb4f1b9e3edf259dbf064a638ad142ed26e4b394ff2bf"
+    },
+    {
+      "path": "packages/shared/src/projectScripts.ts",
+      "owner": "t3code",
+      "baselineHash": "a56cda462dd900f24db6cc42ceda5336eb1a43997008cff56b3ee901c7e23c7f"
+    },
+    {
+      "path": "packages/shared/src/schemaJson.ts",
+      "owner": "t3code",
+      "baselineHash": "f0ec7c3683c30ca2ec4056ed3ae6d222d4a02c66f2fd2e48e862735e85931b21"
+    },
+    {
+      "path": "packages/shared/src/serverSettings.test.ts",
+      "owner": "t3code",
+      "baselineHash": "4915801a3fb5fd18a6e644c495bf006ac67714d013981c760e9bbe054ed48606"
+    },
+    {
+      "path": "packages/shared/src/serverSettings.ts",
+      "owner": "t3code",
+      "baselineHash": "1e335ad6b9f17b4923a87565f2f47c6b6a50a22e18d56b9c8a78509223ce5dbb"
+    },
+    {
+      "path": "packages/shared/src/shell.test.ts",
+      "owner": "t3code",
+      "baselineHash": "6170cd0b12dccd2caa7ee90c0f399656ad3effc2b267786b20b011b8864a1a44"
+    },
+    {
+      "path": "packages/shared/src/shell.ts",
+      "owner": "t3code",
+      "baselineHash": "e85365127db8da75017d845873c8635b6475b9f6a406ea0eefbbb06a5e598eb0"
+    },
+    {
+      "path": "packages/shared/src/String.test.ts",
+      "owner": "t3code",
+      "baselineHash": "87cb049a3752ea0832454cae9e8b21a1406b0e219b803592e6c3a165f2da7ef1"
+    },
+    {
+      "path": "packages/shared/src/String.ts",
+      "owner": "t3code",
+      "baselineHash": "3ddc633583fb3aece4fef80e0d5162d7cbb7a4fa914fe1e5892fac0d6f6f3a41"
+    },
+    {
+      "path": "packages/shared/src/Struct.ts",
+      "owner": "t3code",
+      "baselineHash": "102b756d9104e40afe8cd12d2f7993af679abf6b0f464f46ffd5960c829173b0"
+    },
+    {
+      "path": "packages/shared/tsconfig.json",
+      "owner": "t3code",
+      "baselineHash": "8f6e85eeaa8025fe7b2f01763e03f32540d3e2869ae857490d685098460f4e3a"
+    },
+    {
+      "path": "REMOTE.md",
+      "owner": "t3code",
+      "baselineHash": "a4f04efd2e9952de23ccac6cf430c0ac7eacd0746fdc381e6b044d56168f4a35"
+    },
+    {
+      "path": "scripts/build-desktop-artifact.ts",
+      "owner": "t3code",
+      "baselineHash": "b373d0008841a51b7ca3a2371af6e93702e6b33f9380df6a969656dff45b9139"
+    },
+    {
+      "path": "scripts/dev-runner.test.ts",
+      "owner": "t3code",
+      "baselineHash": "ea8f928339f55bd2fa33cf9ca6e5ccddfcbc6f2227909104b65cefc2d17039c4"
+    },
+    {
+      "path": "scripts/dev-runner.ts",
+      "owner": "t3code",
+      "baselineHash": "8720c36beb91230dcda556981fefdb134e127462fe5fbd8c0b9d0b99f8690e54"
+    },
+    {
+      "path": "scripts/lib/brand-assets.ts",
+      "owner": "t3code",
+      "baselineHash": "d53ce77f555e0234d9f419b52d035127942cd6eac93c48f8953421abd490b75a"
+    },
+    {
+      "path": "scripts/lib/resolve-catalog.ts",
+      "owner": "t3code",
+      "baselineHash": "3eb3db1d6caae53ffaf73c967fc623fb8a404ef885eeb73e2f8c6fdaa7425ff8"
+    },
+    {
+      "path": "scripts/merge-mac-update-manifests.test.ts",
+      "owner": "t3code",
+      "baselineHash": "2ed8bef228477a6dc2340a3517c8bace5fb7cd6eab5316f508df1ee2c1e5b726"
+    },
+    {
+      "path": "scripts/merge-mac-update-manifests.ts",
+      "owner": "t3code",
+      "baselineHash": "8f313170b079396376f5bc24e8cb85f2a694d51593e92a27b66c9e6480863c3e"
+    },
+    {
+      "path": "scripts/mock-update-server.ts",
+      "owner": "t3code",
+      "baselineHash": "d254f50a83dbb77b1d233cbe3443da96761eb5fc0db34678e74432e82b2cf003"
+    },
+    {
+      "path": "scripts/release-smoke.ts",
+      "owner": "t3code",
+      "baselineHash": "8c0fb812b87216252e73066639f6db5f2b22300b678e316e8bd906d7835bdcc5"
+    },
+    {
+      "path": "scripts/sync-vscode-icons.mjs",
+      "owner": "t3code",
+      "baselineHash": "20f27df977df5129d90916711a96231d23a5082359ae670e2a405b7c52beb77e"
+    },
+    {
+      "path": "scripts/tsconfig.json",
+      "owner": "t3code",
+      "baselineHash": "3240801d3f264fa9b580ff14581b6b2e54b3236fe772579732bff4645638a9ff"
+    },
+    {
+      "path": "scripts/update-release-package-versions.ts",
+      "owner": "t3code",
+      "baselineHash": "639623acdd687a5aad8a2f8f539ce728e64c483cebda02f44aad9e23e649cecc"
+    },
+    {
+      "path": "TODO.md",
+      "owner": "t3code",
+      "baselineHash": "504b330c58720fbed8c49b1ff022470aaa56011cddc024a87b63bd94717da8e8"
+    },
+    {
+      "path": "tsconfig.base.json",
+      "owner": "t3code",
+      "baselineHash": "88757b22618d2d8f72f23f6e0901b14d3e21974f40a368bb66a78e88a8497efd"
+    },
+    {
+      "path": "turbo.json",
+      "owner": "t3code",
+      "baselineHash": "38cb2f3842ffb8c7af74a335eb473e522630be681b528d8485a3eb47342e2b9d"
+    },
+    {
+      "path": "vitest.config.ts",
+      "owner": "t3code",
+      "baselineHash": "a2eedc16fda6b552429e29a122a289635c569fa75d07d2171a624a27b3b8c034"
+    }
+  ]
+}

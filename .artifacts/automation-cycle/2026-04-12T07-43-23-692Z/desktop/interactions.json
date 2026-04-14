@@ -1,0 +1,15 @@
+[
+  {
+    "action": "prompt-entered",
+    "observedAt": "2026-04-12T07:43:42.204Z",
+    "detail": "Inspect this repo and summarize where Pi runtime integration and processing-state UI live. Use repo tools if needed."
+  },
+  {
+    "action": "send-clicked",
+    "observedAt": "2026-04-12T07:43:42.789Z"
+  },
+  {
+    "action": "queue-followup-clicked",
+    "observedAt": "2026-04-12T07:43:49.000Z"
+  }
+]

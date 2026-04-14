@@ -1,0 +1,40 @@
+Code
+ALPHA
+PROJECTS
+t3code-pi
+Inspect this repo and summarize where Pi runtime i...
+just now
+Settings
+Inspect this repo and summarize where Pi runtime i...
+t3code-pi
+Add action
+Open
+Commit
+Inspect this repo and summarize where Pi runtime integration and processing-state UI live. Use repo tools if needed.
+
+12:31:44 AM
+
+WORK LOG (6)
+
+Bash - find . -maxdepth 4 \( -path './node_modules' -o -path './.git' -o -path './dist' -o -path './build' \) -prune -o -type f | sed 's#^./##' | sort | head -500
+
+Bash - pwd && rg -n "\bPi\b|pi runtime|runtime integration|processing state|isProcessing|processingState|providerManager|codex app-server|orchestration.domainEvent|NativeApi|wsServer|codexAppServerManager" .
+
+Bash - find . -maxdepth 4 \( -path './node_modules' -o -path './.git' -o -path './dist' -o -path './build' \) -prune -o -type f | sed 's#^./##' | sort | head -500
+
+Bash - { "content": [ { "type": "text", "text": "/Users/suns/Developer/t3code-pi\n./NOTICE.md:3:Pi Code combines and modifies code from these upstream MIT projects:\n...
+
+Bash - { "content": [ { "type": "text", "text": ".artifacts/automation-cycle/2026-04-12T07-18-30-506Z/autoresearch-context.md\n.automation/program.md\n.docs/architect...
+
+Checkpoint capture failed - Checkpoint captured, but turn diff summary is unavailable: Git command failed in CheckpointStore.diffCheckpoints: git diff --patch --minimal --no-color 2a941eeb7a589dbe45649ef9f535008859f599e5 ae199ba78e1584bcb2308f834cd3dd8c90396bd9 (/Users/suns/Developer/t3code-pi) - git diff --patch --minimal --no-color 2a941eeb7a589dbe45649ef9f535008859f599e5 ae199ba78e1584bcb2308f834cd3dd8c90396bd9 output exceeded 1000000 bytes and was truncated.
+
+
+
+
+Ask anything, @tag files/folders, or use / to show available commands
+Default (pi)
+High
+Build
+Full access
+Local
+main

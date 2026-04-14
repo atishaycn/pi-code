@@ -1,0 +1,38 @@
+{
+  "prompt": "Inspect this repo and summarize where Pi runtime integration and processing-state UI live. Use repo tools if needed.",
+  "steerPrompt": "Actually focus on ChatView processing states and queued follow-up behavior. Use repo tools if needed.",
+  "scenario": "steer-queue",
+  "artifactDir": "/Users/suns/Developer/t3code-pi/.artifacts/automation-cycle/2026-04-12T07-49-56-445Z/desktop",
+  "startedAt": "2026-04-12T07:49:56.902Z",
+  "completedAt": "2026-04-12T07:50:27.990Z",
+  "durationMs": 31088,
+  "statuses": [
+    {
+      "state": "Pi working for 3.0s",
+      "observedAt": "2026-04-12T07:50:27.626Z"
+    }
+  ],
+  "interactions": [
+    {
+      "action": "prompt-entered",
+      "observedAt": "2026-04-12T07:50:18.771Z",
+      "detail": "Inspect this repo and summarize where Pi runtime integration and processing-state UI live. Use repo tools if needed."
+    },
+    {
+      "action": "send-clicked",
+      "observedAt": "2026-04-12T07:50:19.131Z"
+    },
+    {
+      "action": "queue-followup-clicked",
+      "observedAt": "2026-04-12T07:50:24.813Z"
+    },
+    {
+      "action": "steer-now-clicked",
+      "observedAt": "2026-04-12T07:50:27.240Z",
+      "detail": "Actually focus on ChatView processing states and queued follow-up behavior. Use repo tools if needed."
+    }
+  ],
+  "completionDetected": true,
+  "runStarted": true,
+  "pageTitle": "Pi Code (Alpha)"
+}

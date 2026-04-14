@@ -1,0 +1,23 @@
+Code
+ALPHA
+PROJECTS
+t3code-pi
+New thread
+just now
+Settings
+New thread
+t3code-pi
+Add action
+Open
+Commit
+
+Send a message to start the conversation.
+
+Inspect this repo and summarize where Pi runtime integration and processing-state UI live. Use repo tools if needed.
+
+Default (pi)
+High
+Build
+Full access
+Local
+main

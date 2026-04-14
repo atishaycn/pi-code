@@ -1,0 +1,42 @@
+Code
+ALPHA
+PROJECTS
+t3code-pi
+Inspect this repo and summarize where Pi runtime i...
+just now
+Settings
+Inspect this repo and summarize where Pi runtime i...
+t3code-pi
+Add action
+Open
+Commit
+Inspect this repo and summarize where Pi runtime integration and processing-state UI live. Use repo tools if needed.
+
+12:33:28 AM
+
+WORK LOG (24)
+
+SHOW 18 MORE
+
+Bash - pwd && rg -n "\bPi\b|pi runtime|processing|isProcessing|processing state|provider session|orchestration.domainEvent|codex app-server|app-server|runtime" . --glob '!node_modules' --glob '!dist' --glob '!build'
+
+Bash - pwd && rg -n "\bPi\b|pi runtime|processing|isProcessing|processing state|provider session|orchestration.domainEvent|codex app-server|app-server|runtime" . --glob '!node_modules' --glob '!dist' --glob '!build'
+
+Bash - pwd && rg -n "\bPi\b|pi runtime|processing|isProcessing|processing state|provider session|orchestration.domainEvent|codex app-server|app-server|runtime" . --glob '!node_modules' --glob '!dist' --glob '!build'
+
+Bash - { "content": [ { "type": "text", "text": "./apps/server/src/provider/Layers/ProviderService.test.ts:325: runtimeMode: \"full-access\",\n./apps/server/...
+
+Bash - { "content": [ { "type": "text", "text": "./.docs/provider-architecture.md\n./.docs/runtime-modes.md\n./scripts/node_modules/@anthropic-ai\n./packages/contract...
+
+Checkpoint capture failed - Checkpoint captured, but turn diff summary is unavailable: Git command failed in CheckpointStore.diffCheckpoints: git diff --patch --minimal --no-color 45e028a7a943afdd291163314106d089f6b7ffb7 fb8b770532b88363916d019a0d7dada4ec53476d (/Users/suns/Developer/t3code-pi) - git diff --patch --minimal --no-color 45e028a7a943afdd291163314106d089f6b7ffb7 fb8b770532b88363916d019a0d7dada4ec53476d output exceeded 1000000 bytes and was truncated.
+
+
+
+
+Ask anything, @tag files/folders, or use / to show available commands
+Default (pi)
+High
+Build
+Full access
+Local
+main

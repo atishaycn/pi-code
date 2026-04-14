@@ -1,0 +1,33 @@
+{
+  "generatedAt": "2026-04-13T23:40:06Z",
+  "checks": [
+    {
+      "id": "fmt",
+      "label": "bun fmt",
+      "status": "pass",
+      "updatedAt": "2026-04-13T23:40:06Z",
+      "durationMs": 0
+    },
+    {
+      "id": "lint",
+      "label": "bun lint",
+      "status": "pass",
+      "updatedAt": "2026-04-13T23:40:06Z",
+      "durationMs": 0
+    },
+    {
+      "id": "typecheck",
+      "label": "bun typecheck",
+      "status": "pass",
+      "updatedAt": "2026-04-13T23:40:06Z",
+      "durationMs": 0
+    },
+    {
+      "id": "test",
+      "label": "bun run test",
+      "status": "pass",
+      "updatedAt": "2026-04-13T23:40:06Z",
+      "durationMs": 0
+    }
+  ]
+}
