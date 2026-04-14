@@ -121,6 +121,32 @@ function normalizeRuntimeTurnState(
   }
 }
 
+function isTurnHeartbeatRuntimeEvent(event: ProviderRuntimeEvent): boolean {
+  switch (event.type) {
+    case "content.delta":
+    case "item.started":
+    case "item.updated":
+    case "item.completed":
+    case "task.started":
+    case "task.progress":
+    case "task.completed":
+    case "turn.plan.updated":
+    case "turn.proposed.delta":
+    case "turn.proposed.completed":
+    case "turn.diff.updated":
+    case "thread.token-usage.updated":
+    case "thread.state.changed":
+    case "request.opened":
+    case "request.resolved":
+    case "user-input.requested":
+    case "user-input.resolved":
+    case "runtime.warning":
+      return true;
+    default:
+      return false;
+  }
+}
+
 function orchestrationSessionStatusFromRuntimeState(
   state: "starting" | "running" | "waiting" | "ready" | "interrupted" | "stopped" | "error",
 ): "starting" | "running" | "ready" | "interrupted" | "stopped" | "error" {
@@ -958,7 +984,22 @@ const make = Effect.fn("make")(function* () {
 
     const now = event.createdAt;
     const eventTurnId = toTurnId(event.turnId);
-    const activeTurnId = thread.session?.activeTurnId ?? null;
+    const shouldTreatEventAsTurnHeartbeat =
+      eventTurnId !== undefined && isTurnHeartbeatRuntimeEvent(event);
+    const providerExpectedTurnId =
+      shouldTreatEventAsTurnHeartbeat &&
+      (thread.session?.activeTurnId == null ||
+        !sameId(thread.session?.activeTurnId, eventTurnId ?? null))
+        ? yield* getExpectedProviderTurnIdForThread(thread.id)
+        : undefined;
+    const adoptedActiveTurnId =
+      shouldTreatEventAsTurnHeartbeat &&
+      eventTurnId !== undefined &&
+      providerExpectedTurnId !== undefined &&
+      sameId(providerExpectedTurnId, eventTurnId)
+        ? eventTurnId
+        : null;
+    const activeTurnId = adoptedActiveTurnId ?? thread.session?.activeTurnId ?? null;
 
     const conflictsWithActiveTurn =
       activeTurnId !== null && eventTurnId !== undefined && !sameId(activeTurnId, eventTurnId);
@@ -994,6 +1035,35 @@ const make = Effect.fn("make")(function* () {
       event.type === "turn.started" && shouldApplyThreadLifecycle
         ? yield* getSourceProposedPlanReferenceForAcceptedTurnStart(thread.id, eventTurnId)
         : null;
+
+    const shouldRefreshRunningSessionHeartbeat =
+      shouldTreatEventAsTurnHeartbeat &&
+      eventTurnId !== undefined &&
+      activeTurnId !== null &&
+      sameId(activeTurnId, eventTurnId) &&
+      normalizeRuntimeTurnState(
+        event.type === "turn.completed" ? event.payload.state : undefined,
+      ) !== "failed" &&
+      event.type !== "turn.completed" &&
+      event.type !== "runtime.error";
+
+    if (shouldRefreshRunningSessionHeartbeat) {
+      yield* orchestrationEngine.dispatch({
+        type: "thread.session.set",
+        commandId: providerCommandId(event, "thread-session-heartbeat"),
+        threadId: thread.id,
+        session: {
+          threadId: thread.id,
+          status: "running",
+          providerName: event.provider,
+          runtimeMode: thread.session?.runtimeMode ?? "full-access",
+          activeTurnId,
+          lastError: thread.session?.lastError ?? null,
+          updatedAt: now,
+        },
+        createdAt: now,
+      });
+    }
 
     if (
       event.type === "session.started" ||

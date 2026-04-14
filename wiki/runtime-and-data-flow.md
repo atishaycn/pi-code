@@ -131,6 +131,21 @@ Ingestion caches/buffers:
 
 This means state bugs may depend on event order, not just final events.
 
+### Live-turn heartbeat + turn re-adoption
+
+`ProviderRuntimeIngestion` now also treats live turn-scoped runtime events as heartbeat signals.
+
+What this does:
+
+- if same active turn is still producing runtime events (`content.delta`, `item.updated`, `runtime.warning`, etc.), ingestion refreshes `thread.session.updatedAt` with a new `thread.session.set`
+- this keeps web runtime derivation from expiring a genuinely active turn just because no fresh lifecycle event arrived yet
+- if provider session truth says a newer turn is active, and live runtime arrives for that turn, ingestion can re-adopt that turn into orchestration session state even before a fresh `turn.started` reaches web read model
+
+Why this matters:
+
+- fixes cases where provider logs clearly show ongoing work, but sidebar/chat lost `Working` because client running-heartbeat timestamps went stale
+- fixes resumed/reopened work cases where runtime is active on newer turn but web read model was still anchored to older completed turn
+
 ## Checkpoint flow
 
 Main file: [`apps/server/src/orchestration/Layers/CheckpointReactor.ts`](../apps/server/src/orchestration/Layers/CheckpointReactor.ts)
@@ -247,6 +262,8 @@ Target visible behavior:
 
 - show `Working` while real processing continues
 - switch to `Completed` only after work actually goes quiet
+- never show green `Completed` for interrupted / aborted turns
+- web stop button now dispatches `thread.turn.interrupt` with current orchestration `turnId`, so optimistic UI interrupt handling matches pi TUI escape behavior more closely
 
 ## Desktop backend boot flow
 

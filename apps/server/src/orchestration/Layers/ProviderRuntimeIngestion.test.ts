@@ -1905,6 +1905,132 @@ describe("ProviderRuntimeIngestion", () => {
     expect(thread.session?.lastError).toBeNull();
   });
 
+  it("refreshes the running session heartbeat from live same-turn runtime events", async () => {
+    const harness = await createHarness();
+    const startedAt = "2026-04-14T20:42:30.024Z";
+    const heartbeatAt = "2026-04-14T20:43:57.454Z";
+
+    harness.emit({
+      type: "turn.started",
+      eventId: asEventId("evt-heartbeat-turn-started"),
+      provider: "codex",
+      createdAt: startedAt,
+      threadId: asThreadId("thread-1"),
+      turnId: asTurnId("turn-heartbeat"),
+    });
+
+    await waitForThread(
+      harness.engine,
+      (thread) =>
+        thread.session?.status === "running" && thread.session?.activeTurnId === "turn-heartbeat",
+    );
+
+    harness.emit({
+      type: "content.delta",
+      eventId: asEventId("evt-heartbeat-content-delta"),
+      provider: "codex",
+      createdAt: heartbeatAt,
+      threadId: asThreadId("thread-1"),
+      turnId: asTurnId("turn-heartbeat"),
+      itemId: asItemId("item-heartbeat"),
+      payload: {
+        streamKind: "assistant_text",
+        delta: "still streaming",
+      },
+    });
+
+    const thread = await waitForThread(
+      harness.engine,
+      (entry) =>
+        entry.session?.status === "running" &&
+        entry.session?.activeTurnId === "turn-heartbeat" &&
+        entry.session?.updatedAt === heartbeatAt &&
+        entry.updatedAt === heartbeatAt,
+    );
+
+    expect(thread.session?.updatedAt).toBe(heartbeatAt);
+    expect(thread.updatedAt).toBe(heartbeatAt);
+  });
+
+  it("re-adopts the provider active turn when live runtime resumes on a newer turn", async () => {
+    const harness = await createHarness();
+    const oldTurnStartedAt = "2026-04-14T20:00:00.000Z";
+    const oldTurnCompletedAt = "2026-04-14T20:00:05.000Z";
+    const resumedAt = "2026-04-14T20:04:35.106Z";
+
+    harness.emit({
+      type: "turn.started",
+      eventId: asEventId("evt-old-turn-started"),
+      provider: "codex",
+      createdAt: oldTurnStartedAt,
+      threadId: asThreadId("thread-1"),
+      turnId: asTurnId("turn-old"),
+    });
+
+    await waitForThread(
+      harness.engine,
+      (thread) =>
+        thread.session?.status === "running" && thread.session?.activeTurnId === "turn-old",
+    );
+
+    harness.emit({
+      type: "turn.completed",
+      eventId: asEventId("evt-old-turn-completed"),
+      provider: "codex",
+      createdAt: oldTurnCompletedAt,
+      threadId: asThreadId("thread-1"),
+      turnId: asTurnId("turn-old"),
+      payload: {
+        state: "completed",
+      },
+    });
+
+    await waitForThread(
+      harness.engine,
+      (thread) => thread.session?.status === "ready" && thread.session?.activeTurnId === null,
+    );
+
+    harness.setProviderSession({
+      provider: "codex",
+      status: "running",
+      runtimeMode: "approval-required",
+      threadId: asThreadId("thread-1"),
+      createdAt: oldTurnStartedAt,
+      updatedAt: resumedAt,
+      activeTurnId: asTurnId("turn-new"),
+    });
+
+    harness.emit({
+      type: "item.updated",
+      eventId: asEventId("evt-new-turn-item-updated"),
+      provider: "codex",
+      createdAt: resumedAt,
+      threadId: asThreadId("thread-1"),
+      turnId: asTurnId("turn-new"),
+      itemId: asItemId("item-new-turn"),
+      payload: {
+        itemType: "command_execution",
+        status: "in_progress",
+        title: "Run tests",
+        detail: "bun run test",
+      },
+    });
+
+    const thread = await waitForThread(
+      harness.engine,
+      (entry) =>
+        entry.session?.status === "running" &&
+        entry.session?.activeTurnId === "turn-new" &&
+        entry.latestTurn?.turnId === "turn-new" &&
+        entry.latestTurn?.state === "running" &&
+        entry.session?.updatedAt === resumedAt,
+    );
+
+    expect(thread.session?.activeTurnId).toBe("turn-new");
+    expect(thread.latestTurn?.turnId).toBe("turn-new");
+    expect(thread.latestTurn?.state).toBe("running");
+  });
+
   it("maps session/thread lifecycle and item.started into session/activity projections", async () => {
     const harness = await createHarness();
     const now = new Date().toISOString();
