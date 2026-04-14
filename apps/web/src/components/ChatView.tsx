@@ -1076,7 +1076,7 @@ export default function ChatView({ threadId }: ChatViewProps) {
   );
 
   const showActiveThreadCompletedStatus = useMemo(() => {
-    if (!serverThread) {
+    if (!serverThread || !latestTurnSettled) {
       return false;
     }
 
@@ -1095,6 +1095,7 @@ export default function ChatView({ threadId }: ChatViewProps) {
     activeThread?.interactionMode,
     activeThread?.session,
     activeThreadLastVisitedAt,
+    latestTurnSettled,
     serverThread,
   ]);
 

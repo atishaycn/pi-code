@@ -544,7 +544,7 @@ describe("incremental orchestration updates", () => {
     expect(next.threads[1]).toBe(thread2);
   });
 
-  it("applies replay batches in sequence and updates session state", () => {
+  it("keeps the turn running after the final assistant reply until turn settlement arrives", () => {
     const thread = makeThread({
       latestTurn: {
         turnId: TurnId.makeUnsafe("turn-1"),
@@ -591,7 +591,13 @@ describe("incremental orchestration updates", () => {
     ]);
 
     expect(next.threads[0]?.session?.status).toBe("running");
-    expect(next.threads[0]?.latestTurn?.state).toBe("completed");
+    expect(next.threads[0]?.latestTurn).toMatchObject({
+      turnId: TurnId.makeUnsafe("turn-1"),
+      state: "running",
+      completedAt: null,
+      assistantMessageId: MessageId.makeUnsafe("assistant-1"),
+    });
+    expect(next.sidebarThreadsById[thread.id]?.isRunningTurn).toBe(true);
     expect(next.threads[0]?.messages).toHaveLength(1);
   });
 

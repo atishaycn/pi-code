@@ -553,6 +553,24 @@ describe("deriveIsRunningTurn", () => {
     ).toBe(false);
   });
 
+  it("keeps the working state while the final assistant reply is visible but the turn is not settled yet", () => {
+    expect(
+      deriveIsRunningTurn({
+        activeLatestTurn: {
+          turnId: TurnId.makeUnsafe("turn-finalizing"),
+          assistantMessageId: "assistant-1" as never,
+          completedAt: null,
+        },
+        latestTurnSettled: false,
+        sessionOrchestrationStatus: "running",
+        sessionActiveTurnId: TurnId.makeUnsafe("turn-finalizing"),
+        hasStreamingAssistantMessage: false,
+        hasAssistantReplyForActiveTurn: true,
+        hasWorkLogEntry: true,
+      }),
+    ).toBe(true);
+  });
+
   it("ignores stale running-session state once the final assistant reply is already visible", () => {
     expect(
       deriveIsRunningTurn({

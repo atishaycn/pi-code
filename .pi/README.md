@@ -3,6 +3,7 @@
 This repo enables Caveman-style response compression through:
 
 - `.pi/APPEND_SYSTEM.md`
+- repo-local subagents through `.pi/extensions/subagent/` and `.pi/agents/`
 
 ## What it does
 
@@ -27,6 +28,21 @@ Re-enable:
 ```bash
 mv .pi/APPEND_SYSTEM.md.disabled .pi/APPEND_SYSTEM.md
 ```
+
+## Subagents in this repo
+
+Repo-local subagent setup now lives in:
+
+- `.pi/extensions/subagent/index.ts` - registers `subagent` tool
+- `.pi/extensions/subagent/agents.ts` - discovers repo/user agent definitions
+- `.pi/agents/*.md` - repo-local agents (`scout`, `planner`, `worker`, `reviewer`)
+- `.pi/prompts/subagent-*.md` - convenience chain prompts
+
+Default behavior in this repo:
+
+- `subagent` defaults to `agentScope: "project"`
+- project-agent confirmation defaults to `false`
+- child subagents run isolated `pi --mode json -p --no-session` processes
 
 ## Notes
 

@@ -1504,7 +1504,9 @@ export function deriveIsRunningTurn(input: {
   allowPostCompletionReplyWait?: boolean;
 }): boolean {
   const hasCompletedAssistantReplyForActiveTurn =
-    input.hasAssistantReplyForActiveTurn && !input.hasStreamingAssistantMessage;
+    input.hasAssistantReplyForActiveTurn &&
+    !input.hasStreamingAssistantMessage &&
+    input.activeLatestTurn?.completedAt !== null;
   const hasSettledAssistantReplyForActiveTurn =
     input.hasAssistantReplyForActiveTurn &&
     !input.latestTurnSettled &&

@@ -33,6 +33,14 @@ Boundaries:
 - Keep commit messages, issue comments, PR comments, and changelog entries in standard concise technical style unless user explicitly asks for caveman style there too.
 - If user asks to stop caveman or use normal mode, stop for that response or until changed again.
 
+Subagents:
+
+- Repo ships repo-local `subagent` tool via `.pi/extensions/subagent/`.
+- Use it when task benefits from isolated recon, planning, review, or parallel search.
+- Default repo setup uses project agents from `.pi/agents/` automatically.
+- Prefer `scout` for codebase recon, `planner` for plans, `worker` for implementation, `reviewer` for review.
+- Use subagents when they clearly improve quality or speed. Do not force them for trivial tasks.
+
 Repo wiki:
 
 - `wiki/` = compiled repo memory.

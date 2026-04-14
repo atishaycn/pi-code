@@ -90,6 +90,25 @@ Settings matter:
 - full-autonomy toggle (`--full-autonomy` passed at process start)
 - telemetry disabled for embedded runs
 
+### Embedded home isolation
+
+Embedded pi launches now isolate user-global resources before spawn.
+
+What happens for embedded launches:
+
+- if `providers.codex.homePath` is set, that path is used as source agent dir
+- otherwise embedded runs isolate default `~/.pi/agent`
+- auth and model files are copied into an app-managed temp agent dir
+- global `extensions/` are not loaded into embedded sessions
+- `settings.json` is sanitized so resource arrays are removed and package entries keep `extensions: []`
+- project-local `.pi/extensions/` still load from the repo cwd
+
+Why:
+
+- prevents user-global extension/package tool conflicts from crashing embedded RPC startup
+- keeps repo-local app extensions authoritative for T3 Code runtime behavior
+- still preserves user auth/model state needed for provider access
+
 ## pi event mapping
 
 Adapter receives pi RPC events and emits canonical `ProviderRuntimeEvent` values.

@@ -13,6 +13,25 @@
 | `packages/client-runtime` | environment targeting helpers     | `src/index.ts`                                       |
 | `scripts`                 | automation and maintenance        | `dev-runner.ts`, `upstream-sync.ts`, etc.            |
 
+## Repo-local pi resources
+
+Repo carries project-local pi customizations under `.pi/`.
+
+High-signal files/directories:
+
+- `.pi/APPEND_SYSTEM.md`: repo-local system prompt append, including caveman style and subagent guidance.
+- `.pi/extensions/subagent/index.ts`: registers repo-local `subagent` tool.
+- `.pi/extensions/subagent/agents.ts`: discovers user/project agent definitions for that tool.
+- `.pi/agents/*.md`: repo-local agent definitions used by subagent tool (`scout`, `planner`, `worker`, `reviewer`).
+- `.pi/prompts/subagent-*.md`: convenience prompt templates for common scout/plan/implement/review chains.
+
+Current subagent defaults in this repo:
+
+- tool defaults to `agentScope: "project"`
+- project-agent confirmation defaults to `false`
+- child agents are separate `pi --mode json -p --no-session` processes
+- repo agents are configured as leaf workers; `worker` gets explicit coding tools and agents are instructed not to recurse into subagents by default
+
 ## `apps/server`
 
 ### What it owns

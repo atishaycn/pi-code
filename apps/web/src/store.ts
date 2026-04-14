@@ -900,6 +900,10 @@ export function applyOrchestrationEvent(state: AppState, event: OrchestrationEve
                 event.payload.messageId,
               )
             : thread.turnDiffSummaries;
+        const inferredAssistantCompletionAt =
+          !mergedMessage.streaming && existingMessage?.completedAt
+            ? existingMessage.completedAt
+            : null;
         const latestTurn: Thread["latestTurn"] =
           event.payload.role === "assistant" &&
           event.payload.turnId !== null &&
@@ -907,13 +911,12 @@ export function applyOrchestrationEvent(state: AppState, event: OrchestrationEve
             ? buildLatestTurn({
                 previous: thread.latestTurn,
                 turnId: event.payload.turnId,
-                state: mergedMessage.streaming
-                  ? "running"
-                  : thread.latestTurn?.state === "interrupted"
-                    ? "interrupted"
-                    : thread.latestTurn?.state === "error"
-                      ? "error"
-                      : "completed",
+                state:
+                  thread.latestTurn?.turnId === event.payload.turnId
+                    ? thread.latestTurn.state
+                    : inferredAssistantCompletionAt
+                      ? "completed"
+                      : "running",
                 requestedAt:
                   thread.latestTurn?.turnId === event.payload.turnId
                     ? thread.latestTurn.requestedAt
@@ -923,11 +926,10 @@ export function applyOrchestrationEvent(state: AppState, event: OrchestrationEve
                     ? (thread.latestTurn.startedAt ?? mergedMessage.createdAt)
                     : mergedMessage.createdAt,
                 sourceProposedPlan: thread.pendingSourceProposedPlan,
-                completedAt: mergedMessage.streaming
-                  ? thread.latestTurn?.turnId === event.payload.turnId
+                completedAt:
+                  thread.latestTurn?.turnId === event.payload.turnId
                     ? (thread.latestTurn.completedAt ?? null)
-                    : null
-                  : (mergedMessage.completedAt ?? null),
+                    : inferredAssistantCompletionAt,
                 assistantMessageId: event.payload.messageId,
               })
             : thread.latestTurn;

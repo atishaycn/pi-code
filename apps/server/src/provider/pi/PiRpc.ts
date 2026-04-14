@@ -1,4 +1,5 @@
 import * as ChildProcess from "node:child_process";
+import * as crypto from "node:crypto";
 import * as FS from "node:fs";
 import * as OS from "node:os";
 import * as Path from "node:path";
@@ -13,6 +14,7 @@ const DEFAULT_PI_DEV_LAUNCHER_CANDIDATES = [
 ] as const;
 const PI_AUTOREASON_ENABLE_ARGS = ["--enable-autoreason"] as const;
 const EMBEDDED_PI_TELEMETRY_ENV = "0";
+const EMBEDDED_PI_AGENT_DIR_ROOT = Path.join(OS.tmpdir(), "t3code-pi-agent-home");
 
 export type PiThinkingLevel = "off" | "minimal" | "low" | "medium" | "high" | "xhigh";
 
@@ -440,6 +442,112 @@ export function buildPiLauncherEnv(input?: {
   return env;
 }
 
+function getDefaultPiAgentDir(): string {
+  return Path.join(process.env.HOME || OS.homedir(), ".pi", "agent");
+}
+
+function embeddedPiAgentDirForSource(sourceAgentDir: string): string {
+  const digest = crypto.createHash("sha256").update(sourceAgentDir).digest("hex").slice(0, 16);
+  return Path.join(EMBEDDED_PI_AGENT_DIR_ROOT, digest);
+}
+
+function sanitizePiAgentSettingsForEmbeddedRuntime(
+  settings: Record<string, unknown>,
+): Record<string, unknown> {
+  const sanitized: Record<string, unknown> = { ...settings };
+
+  delete sanitized.extensions;
+  delete sanitized.skills;
+  delete sanitized.prompts;
+  delete sanitized.themes;
+
+  if (Array.isArray(settings.packages)) {
+    sanitized.packages = settings.packages.flatMap((entry) => {
+      if (typeof entry === "string") {
+        return [{ source: entry, extensions: [] }];
+      }
+      if (isRecord(entry) && typeof entry.source === "string" && entry.source.trim().length > 0) {
+        return [{ ...entry, extensions: [] }];
+      }
+      return [];
+    });
+  }
+
+  return sanitized;
+}
+
+async function syncPiAgentFile(sourcePath: string, destinationPath: string): Promise<void> {
+  try {
+    const sourceBytes = await FS.promises.readFile(sourcePath);
+    const existingBytes = await FS.promises.readFile(destinationPath).catch(() => null);
+    if (existingBytes && Buffer.compare(sourceBytes, existingBytes) === 0) {
+      return;
+    }
+    await FS.promises.mkdir(Path.dirname(destinationPath), { recursive: true });
+    await FS.promises.writeFile(destinationPath, sourceBytes);
+  } catch (error) {
+    const code = (error as NodeJS.ErrnoException | undefined)?.code;
+    if (code === "ENOENT") {
+      return;
+    }
+    throw error;
+  }
+}
+
+async function syncEmbeddedPiSettings(
+  sourceAgentDir: string,
+  destinationAgentDir: string,
+): Promise<void> {
+  const sourceSettingsPath = Path.join(sourceAgentDir, "settings.json");
+  const destinationSettingsPath = Path.join(destinationAgentDir, "settings.json");
+  let parsedSettings: unknown;
+  try {
+    parsedSettings = JSON.parse(await FS.promises.readFile(sourceSettingsPath, "utf8"));
+  } catch (error) {
+    const code = (error as NodeJS.ErrnoException | undefined)?.code;
+    if (code === "ENOENT") {
+      return;
+    }
+    throw error;
+  }
+
+  if (!isRecord(parsedSettings)) {
+    return;
+  }
+
+  const sanitized = `${JSON.stringify(sanitizePiAgentSettingsForEmbeddedRuntime(parsedSettings), null, 2)}\n`;
+  const existing = await FS.promises.readFile(destinationSettingsPath, "utf8").catch(() => null);
+  if (existing === sanitized) {
+    return;
+  }
+  await FS.promises.mkdir(destinationAgentDir, { recursive: true });
+  await FS.promises.writeFile(destinationSettingsPath, sanitized, "utf8");
+}
+
+export async function prepareEmbeddedPiLauncherEnv(
+  env?: NodeJS.ProcessEnv,
+): Promise<NodeJS.ProcessEnv | undefined> {
+  const sourceAgentDir = env?.PI_CODING_AGENT_DIR?.trim() || getDefaultPiAgentDir();
+  const destinationAgentDir = embeddedPiAgentDirForSource(sourceAgentDir);
+  await FS.promises.mkdir(destinationAgentDir, { recursive: true });
+  await Promise.all([
+    syncEmbeddedPiSettings(sourceAgentDir, destinationAgentDir),
+    syncPiAgentFile(
+      Path.join(sourceAgentDir, "auth.json"),
+      Path.join(destinationAgentDir, "auth.json"),
+    ),
+    syncPiAgentFile(
+      Path.join(sourceAgentDir, "models.json"),
+      Path.join(destinationAgentDir, "models.json"),
+    ),
+  ]);
+
+  return {
+    ...env,
+    PI_CODING_AGENT_DIR: destinationAgentDir,
+  };
+}
+
 export function parsePiVersion(output: string): string | null {
   const match = output.match(/\b(\d+\.\d+\.\d+)\b/);
   return match?.[1] ?? null;
@@ -591,6 +699,7 @@ export class PiRpcProcess {
     });
     await FS.promises.mkdir(Path.dirname(input.sessionFile), { recursive: true });
 
+    const preparedEnv = await prepareEmbeddedPiLauncherEnv(input.env);
     const child = ChildProcess.spawn(
       launcher.binaryPath,
       [...launcher.args, "--mode", "rpc", "--session", input.sessionFile],
@@ -598,7 +707,7 @@ export class PiRpcProcess {
         cwd: input.cwd,
         env: {
           ...process.env,
-          ...input.env,
+          ...preparedEnv,
         },
         stdio: ["pipe", "pipe", "pipe"],
         shell: process.platform === "win32",
@@ -802,12 +911,13 @@ export async function probePiVersion(input: {
       ? { enableAutoreason: input.enableAutoreason }
       : {}),
   });
+  const preparedEnv = await prepareEmbeddedPiLauncherEnv(input.env);
   return new Promise<string | null>((resolve, reject) => {
     const child = ChildProcess.spawn(launcher.binaryPath, [...launcher.args, "--version"], {
       cwd: OS.homedir(),
       env: {
         ...process.env,
-        ...input.env,
+        ...preparedEnv,
       },
       stdio: ["ignore", "pipe", "pipe"],
       shell: process.platform === "win32",
