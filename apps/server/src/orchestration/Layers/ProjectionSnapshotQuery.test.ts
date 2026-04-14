@@ -473,6 +473,221 @@ projectionSnapshotLayer("ProjectionSnapshotQuery", (it) => {
       }),
   );
 
+  it.effect("caps oversized per-thread snapshot payloads to recent entries", () =>
+    Effect.gen(function* () {
+      const snapshotQuery = yield* ProjectionSnapshotQuery;
+      const sql = yield* SqlClient.SqlClient;
+
+      yield* sql`DELETE FROM projection_projects`;
+      yield* sql`DELETE FROM projection_threads`;
+      yield* sql`DELETE FROM projection_thread_messages`;
+      yield* sql`DELETE FROM projection_thread_activities`;
+      yield* sql`DELETE FROM projection_thread_proposed_plans`;
+      yield* sql`DELETE FROM projection_turns`;
+      yield* sql`DELETE FROM projection_thread_sessions`;
+      yield* sql`DELETE FROM projection_state`;
+
+      yield* sql`
+        INSERT INTO projection_projects (
+          project_id,
+          title,
+          workspace_root,
+          default_model_selection_json,
+          scripts_json,
+          created_at,
+          updated_at,
+          deleted_at
+        )
+        VALUES (
+          'project-capped',
+          'Capped Project',
+          '/tmp/project-capped',
+          '{"provider":"codex","model":"gpt-5-codex"}',
+          '[]',
+          '2026-03-02T00:00:00.000Z',
+          '2026-03-02T00:00:01.000Z',
+          NULL
+        )
+      `;
+
+      yield* sql`
+        INSERT INTO projection_threads (
+          thread_id,
+          project_id,
+          title,
+          model_selection_json,
+          runtime_mode,
+          interaction_mode,
+          branch,
+          worktree_path,
+          latest_turn_id,
+          created_at,
+          updated_at,
+          archived_at,
+          deleted_at
+        )
+        VALUES (
+          'thread-capped',
+          'project-capped',
+          'Thread Capped',
+          '{"provider":"codex","model":"gpt-5-codex"}',
+          'full-access',
+          'default',
+          NULL,
+          NULL,
+          'turn-209',
+          '2026-03-02T00:00:02.000Z',
+          '2026-03-02T00:00:03.000Z',
+          NULL,
+          NULL
+        )
+      `;
+
+      for (let index = 0; index < 210; index += 1) {
+        const padded = String(index).padStart(3, "0");
+        const hour = String(Math.floor(index / 60)).padStart(2, "0");
+        const minute = String(index % 60).padStart(2, "0");
+        yield* sql`
+          INSERT INTO projection_thread_messages (
+            message_id,
+            thread_id,
+            turn_id,
+            role,
+            text,
+            is_streaming,
+            created_at,
+            updated_at
+          )
+          VALUES (
+            ${`message-${padded}`},
+            'thread-capped',
+            ${`turn-${padded}`},
+            'assistant',
+            ${`message ${padded}`},
+            0,
+            ${`2026-03-02T${hour}:${minute}:00.000Z`},
+            ${`2026-03-02T${hour}:${minute}:30.000Z`}
+          )
+        `;
+      }
+
+      for (let index = 0; index < 110; index += 1) {
+        const padded = String(index).padStart(3, "0");
+        const hour = String(Math.floor(index / 60)).padStart(2, "0");
+        const minute = String(index % 60).padStart(2, "0");
+        yield* sql`
+          INSERT INTO projection_thread_activities (
+            activity_id,
+            thread_id,
+            turn_id,
+            tone,
+            kind,
+            summary,
+            payload_json,
+            sequence,
+            created_at
+          )
+          VALUES (
+            ${`activity-${padded}`},
+            'thread-capped',
+            ${`turn-${padded}`},
+            'info',
+            'runtime.note',
+            ${`activity ${padded}`},
+            ${JSON.stringify({ padded })},
+            ${index},
+            ${`2026-03-03T${hour}:${minute}:00.000Z`}
+          )
+        `;
+      }
+
+      for (let index = 0; index < 60; index += 1) {
+        const padded = String(index).padStart(3, "0");
+        const minute = String(index).padStart(2, "0");
+        yield* sql`
+          INSERT INTO projection_thread_proposed_plans (
+            plan_id,
+            thread_id,
+            turn_id,
+            plan_markdown,
+            implemented_at,
+            implementation_thread_id,
+            created_at,
+            updated_at
+          )
+          VALUES (
+            ${`plan-${padded}`},
+            'thread-capped',
+            ${`turn-${padded}`},
+            ${`# Plan ${padded}`},
+            NULL,
+            NULL,
+            ${`2026-03-04T00:${minute}:00.000Z`},
+            ${`2026-03-04T00:${minute}:30.000Z`}
+          )
+        `;
+      }
+
+      for (let index = 0; index < 55; index += 1) {
+        const padded = String(index + 1).padStart(3, "0");
+        const minute = String(index).padStart(2, "0");
+        yield* sql`
+          INSERT INTO projection_turns (
+            thread_id,
+            turn_id,
+            pending_message_id,
+            source_proposed_plan_thread_id,
+            source_proposed_plan_id,
+            assistant_message_id,
+            state,
+            requested_at,
+            started_at,
+            completed_at,
+            checkpoint_turn_count,
+            checkpoint_ref,
+            checkpoint_status,
+            checkpoint_files_json
+          )
+          VALUES (
+            'thread-capped',
+            ${`turn-${padded}`},
+            NULL,
+            NULL,
+            NULL,
+            ${`message-${padded}`},
+            'completed',
+            ${`2026-03-05T00:${minute}:00.000Z`},
+            ${`2026-03-05T00:${minute}:00.000Z`},
+            ${`2026-03-05T00:${minute}:30.000Z`},
+            ${index + 1},
+            ${`checkpoint-${padded}`},
+            'ready',
+            '[]'
+          )
+        `;
+      }
+
+      const snapshot = yield* snapshotQuery.getSnapshot();
+      const thread = snapshot.threads[0];
+      if (!thread) {
+        return yield* Effect.fail(new Error("Expected capped thread snapshot."));
+      }
+
+      assert.equal(thread.messages.length, 200);
+      assert.equal(thread.messages[0]?.id, asMessageId("message-010"));
+      assert.equal(thread.messages.at(-1)?.id, asMessageId("message-209"));
+      assert.equal(thread.activities.length, 100);
+      assert.equal(thread.activities[0]?.id, asEventId("activity-010"));
+      assert.equal(thread.activities.at(-1)?.id, asEventId("activity-109"));
+      assert.equal(thread.proposedPlans.length, 50);
+      assert.equal(thread.proposedPlans[0]?.id, "plan-010");
+      assert.equal(thread.proposedPlans.at(-1)?.id, "plan-059");
+      assert.equal(thread.checkpoints.length, 50);
+      assert.equal(thread.checkpoints[0]?.checkpointTurnCount, 6);
+      assert.equal(thread.checkpoints.at(-1)?.checkpointTurnCount, 55);
+    }),
+  );
+
   it.effect("reads single-thread checkpoint context without hydrating unrelated threads", () =>
     Effect.gen(function* () {
       const snapshotQuery = yield* ProjectionSnapshotQuery;
